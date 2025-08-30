@@ -1,0 +1,1449 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * Quantum Real-Time Monitor System
+ * ===============================
+ * 
+ * Sistema de monitoreo en tiempo real para el sistema de trading cuántico
+ * Proporciona visualización y análisis en tiempo real de métricas cuánticas,
+ * rendimiento de trading y estado del sistema
+ */
+
+const EventEmitter = require('events');
+const WebSocket = require('ws');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+class QuantumRealTimeMonitor extends EventEmitter {
+    constructor(port = Number(process.env.MONITOR_PORT || 8082)) {
+        super();
+        
+        this.port = port;
+        this.server = null;
+        this.wss = null;
+        this.clients = new Set();
+        
+        // Datos de monitoreo en tiempo real
+        this.monitoringData = {
+            system: {
+                status: 'active',
+                uptime: 0,
+                memoryUsage: 0,
+                cpuUsage: 0,
+                lastUpdate: Date.now()
+            },
+            quantum: {
+                efficiency: 0.75,
+                accuracy: 0.85,
+                coherence: 0.8,
+                entanglement: 0.7,
+                superposition: 0.6,
+                decoherenceRate: 0.05,
+                advantage: 0.0,
+                stateStability: 0.8,
+                qubits: 8,
+                quantumState: 'optimized'
+            },
+            trading: {
+                activeTrades: 0,
+                totalTrades: 0,
+                successfulTrades: 0,
+                totalProfit: 0,
+                totalLoss: 0,
+                currentDrawdown: 0,
+                maxDrawdown: 0,
+                winRate: 0,
+                profitFactor: 0,
+                lastTradeTime: null,
+                averageTradeTime: 0
+            },
+            market: {
+                regime: 'unknown',
+                volatility: 0.0,
+                trend: 'neutral',
+                liquidity: 0.0,
+                sentiment: 0.0,
+                lastUpdate: Date.now()
+            },
+            strategies: {
+                active: [],
+                performance: {},
+                diversity: 0.0,
+                adaptability: 0.0
+            },
+            predictions: {
+                portfolio: { decision: 'HOLD', confidence: 0, score: 0 },
+                list: []
+            },
+            sentiment: {
+                score: 0.5,
+                sizeAdj: 1.0,
+                capAdj: 1.0,
+                components: {
+                    fundingBias: 0,
+                    basisZ: 0,
+                    orderbookImbalance: 0,
+                    takerImbalance: 0
+                }
+            },
+            risk: {
+                currentRisk: 0.0,
+                maxRisk: 0.0,
+                riskBudget: 1.0,
+                riskAdjustedReturn: 0.0,
+                sharpeRatio: 0.0,
+                sortinoRatio: 0.0,
+                var99: 0.0,
+                cvar99: 0.0
+            },
+            alerts: {
+                active: [],
+                history: [],
+                severity: {
+                    low: 0,
+                    medium: 0,
+                    high: 0,
+                    critical: 0
+                }
+            }
+        };
+        
+        // Configuración de umbrales
+        this.thresholds = {
+            quantum: {
+                efficiency: { min: 0.6, max: 1.0 },
+                coherence: { min: 0.5, max: 1.0 },
+                decoherenceRate: { min: 0.0, max: 0.1 }
+            },
+            trading: {
+                winRate: { min: 0.6, max: 1.0 },
+                profitFactor: { min: 1.2, max: 10.0 },
+                drawdown: { min: 0.0, max: 0.2 }
+            },
+            risk: {
+                currentRisk: { min: 0.0, max: 0.8 },
+                riskBudget: { min: 0.5, max: 1.0 }
+            }
+        };
+        
+        // Endpoints del servicio principal (index.js) para leer métricas reales
+        this.coreApiPort = Number(process.env.BOT_OPCIONES_PORT || 4601);
+    }
+    
+    /**
+     * Inicializa el sistema de monitoreo
+     */
+    initializeMonitor() {
+        console.log('🖥️ Inicializando Sistema de Monitoreo en Tiempo Real...');
+        
+        // Crear servidor HTTP
+        this.createHttpServer();
+        
+        // Crear servidor WebSocket
+        this.createWebSocketServer();
+        
+        // Configurar actualización periódica de datos
+        this.setupPeriodicUpdates();
+        
+        // Configurar sistema de alertas
+        this.setupAlertSystem();
+        
+        console.log(`[OK] Sistema de Monitoreo en Tiempo Real inicializado en puerto ${this.port}`);
+    }
+    
+    /**
+     * Crea servidor HTTP para servir la interfaz web
+     */
+    createHttpServer() {
+        this.server = http.createServer((req, res) => {
+            // Basic CORS for monitor endpoints
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control');
+            if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+            this.handleHttpRequest(req, res);
+        });
+        
+        this.server.listen(this.port, () => {
+            console.log(`[API] Servidor HTTP iniciado en puerto ${this.port}`);
+        });
+    }
+    
+    /**
+     * Maneja peticiones HTTP
+     */
+    handleHttpRequest(req, res) {
+        const url = req.url;
+        
+        if (url === '/') {
+            this.serveDashboard(res);
+        } else if (url === '/api/monitoring-data') {
+            this.serveMonitoringData(res);
+        } else if (url === '/api/alerts') {
+            this.serveAlerts(res);
+        } else if (url === '/status') {
+            // Simple health/status endpoint for external checks
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.end(JSON.stringify({ status: 'ok', port: this.port, ts: Date.now() }));
+        } else if (url.startsWith('/static/')) {
+            this.serveStaticFile(req, res);
+        } else {
+            this.serveNotFound(res);
+        }
+    }
+    
+    /**
+     * Sirve el dashboard HTML
+     */
+    serveDashboard(res) {
+        const html = this.generateDashboardHTML();
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(html);
+    }
+    
+    /**
+     * Genera el HTML del dashboard
+     */
+    generateDashboardHTML() {
+        return `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Trading Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-active {
+            background-color: #00ff00;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #00ffff;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: #00ff00;
+        }
+        
+        .metric-value.warning {
+            color: #ffff00;
+        }
+        
+        .metric-value.danger {
+            color: #ff0000;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            transition: width 0.3s ease;
+        }
+        
+        .alerts-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        
+        .alert-low {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #00ff00;
+        }
+        
+        .alert-medium {
+            background: rgba(255, 255, 0, 0.1);
+            border-color: #ffff00;
+        }
+        
+        .alert-high {
+            background: rgba(255, 165, 0, 0.1);
+            border-color: #ffa500;
+        }
+        
+        .alert-critical {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: #ff0000;
+        }
+        
+        .quantum-visualization {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quantum-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: quantumFloat 3s infinite ease-in-out;
+        }
+        
+        @keyframes quantumFloat {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            33% { transform: translateY(-20px) translateX(10px); }
+            66% { transform: translateY(10px) translateX(-10px); }
+        }
+        
+        .last-update {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quantum Trading Monitor</h1>
+            <div>
+                <span class="status-indicator status-active"></span>
+                <span>Estado: <span id="system-status">Activo</span></span>
+            </div>
+        </header>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>Sistema</h2>
+                <div class="metric">
+                    <span>Tiempo activo:</span>
+                    <span class="metric-value" id="uptime">0s</span>
+                </div>
+                <div class="metric">
+                    <span>Uso de memoria:</span>
+                    <span class="metric-value" id="memory">0%</span>
+                </div>
+                <div class="metric">
+                    <span>Uso de CPU:</span>
+                    <span class="metric-value" id="cpu">0%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Métricas Cuánticas</h2>
+                <div class="metric">
+                    <span>Eficiencia:</span>
+                    <span class="metric-value" id="quantum-efficiency">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quantum-efficiency-bar" style="width: 0%"></div>
+                </div>
+                <div class="metric">
+                    <span>Coherencia:</span>
+                    <span class="metric-value" id="quantum-coherence">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quantum-coherence-bar" style="width: 0%"></div>
+                </div>
+                <div class="metric">
+                    <span>Ventaja cuántica:</span>
+                    <span class="metric-value" id="quantum-advantage">0%</span>
+                </div>
+                <div class="quantum-visualization" id="quantum-viz"></div>
+            </div>
+            
+            <div class="card">
+                <h2>Predicciones</h2>
+                <div class="metric">
+                    <span>Cartera:</span>
+                    <span class="metric-value" id="pred-portfolio">HOLD 0%</span>
+                </div>
+                <div style="margin-top:10px;">
+                    <table style="width:100%; font-size:0.9em; border-collapse:collapse;">
+                        <thead>
+                            <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.2);">
+                                <th>Símbolo</th><th>Decisión</th><th>Conf.</th><th>Edge</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pred-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Trading</h2>
+                <div class="metric">
+                    <span>Operaciones totales:</span>
+                    <span class="metric-value" id="total-trades">0</span>
+                </div>
+                <div class="metric">
+                    <span>Tasa de éxito:</span>
+                    <span class="metric-value" id="win-rate">0%</span>
+                </div>
+                <div class="metric">
+                    <span>Profit total:</span>
+                    <span class="metric-value" id="total-profit">$0</span>
+                </div>
+                <div class="metric">
+                    <span>Factor de beneficio:</span>
+                    <span class="metric-value" id="profit-factor">0</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Sentimiento</h2>
+                <div class="metric">
+                    <span>Score:</span>
+                    <span class="metric-value" id="sentiment-score">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="sentiment-score-bar" style="width: 0%"></div>
+                </div>
+                <div class="metric">
+                    <span>Ajuste Tamaño:</span>
+                    <span class="metric-value" id="sentiment-size">1.0x</span>
+                </div>
+                <div class="metric">
+                    <span>Ajuste Cap:</span>
+                    <span class="metric-value" id="sentiment-cap">1.0x</span>
+                </div>
+                <div class="metric">
+                    <span>Funding bias:</span>
+                    <span class="metric-value" id="sentiment-funding">0</span>
+                </div>
+                <div class="metric">
+                    <span>Basis z:</span>
+                    <span class="metric-value" id="sentiment-basis">0</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Riesgo</h2>
+                <div class="metric">
+                    <span>Riesgo actual:</span>
+                    <span class="metric-value" id="current-risk">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="current-risk-bar" style="width: 0%"></div>
+                </div>
+                <div class="metric">
+                    <span>Drawdown máximo:</span>
+                    <span class="metric-value" id="max-drawdown">0%</span>
+                </div>
+                <div class="metric">
+                    <span>Ratio de Sharpe:</span>
+                    <span class="metric-value" id="sharpe-ratio">0</span>
+                </div>
+                <div class="metric">
+                    <span>Ratio de Sortino:</span>
+                    <span class="metric-value" id="sortino-ratio">0</span>
+                </div>
+                <div class="metric">
+                    <span>VaR 99%:</span>
+                    <span class="metric-value" id="var99">0</span>
+                </div>
+                <div class="metric">
+                    <span>CVaR 99%:</span>
+                    <span class="metric-value" id="cvar99">0</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Mercado</h2>
+                <div class="metric">
+                    <span>Régimen:</span>
+                    <span class="metric-value" id="market-regime">Desconocido</span>
+                </div>
+                <div class="metric">
+                    <span>Volatilidad:</span>
+                    <span class="metric-value" id="market-volatility">0%</span>
+                </div>
+                <div class="metric">
+                    <span>Tendencia:</span>
+                    <span class="metric-value" id="market-trend">Neutral</span>
+                </div>
+                <div class="metric">
+                    <span>Sentimiento:</span>
+                    <span class="metric-value" id="market-sentiment">0%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Estrategias</h2>
+                <div class="metric">
+                    <span>Diversidad:</span>
+                    <span class="metric-value" id="strategy-diversity">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="strategy-diversity-bar" style="width: 0%"></div>
+                </div>
+                <div class="metric">
+                    <span>Adaptabilidad:</span>
+                    <span class="metric-value" id="strategy-adaptability">0%</span>
+                </div>
+                <div class="metric">
+                    <span>Estrategias activas:</span>
+                    <span class="metric-value" id="active-strategies">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alerts-section">
+            <h2>Alertas</h2>
+            <div id="alerts-container">
+                <p>No hay alertas activas</p>
+            </div>
+        </div>
+        
+        <div class="last-update">
+            Última actualización: <span id="last-update">Nunca</span>
+        </div>
+    </div>
+    
+    <script>
+        // Conexión WebSocket
+        const ws = new WebSocket('ws://localhost:${this.port}');
+        
+        ws.onopen = () => {
+            console.log('Conectado al servidor de monitoreo');
+        };
+        
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            updateDashboard(data);
+        };
+        
+        ws.onclose = () => {
+            console.log('Desconectado del servidor de monitoreo');
+            // Intentar reconectar después de 5 segundos
+            setTimeout(() => {
+                location.reload();
+            }, 5000);
+        };
+        
+        function updateDashboard(data) {
+            // Actualizar métricas del sistema
+            document.getElementById('uptime').textContent = formatUptime(data.system.uptime);
+            document.getElementById('memory').textContent = data.system.memoryUsage.toFixed(1) + '%';
+            document.getElementById('cpu').textContent = data.system.cpuUsage.toFixed(1) + '%';
+            
+            // Actualizar métricas cuánticas
+            updateMetric('quantum-efficiency', data.quantum.efficiency, '%');
+            updateProgressBar('quantum-efficiency-bar', data.quantum.efficiency);
+            updateMetric('quantum-coherence', data.quantum.coherence, '%');
+            updateProgressBar('quantum-coherence-bar', data.quantum.coherence);
+            updateMetric('quantum-advantage', data.quantum.advantage, '%');
+            
+            // Actualizar visualización cuántica
+            updateQuantumVisualization(data.quantum);
+            
+            // Predicciones
+            try {
+                const pf = data.predictions && data.predictions.portfolio ? data.predictions.portfolio : { decision:'HOLD', confidence:0 };
+                var pfText = String(pf.decision||'HOLD') + ' ' + String(Math.round((Number(pf.confidence||0))*100)) + '%';
+                var pfEl = document.getElementById('pred-portfolio'); if (pfEl) pfEl.textContent = pfText;
+                var list = (data.predictions && Array.isArray(data.predictions.list)) ? data.predictions.list : [];
+                var tbody = document.getElementById('pred-body'); if (tbody) {
+                    tbody.innerHTML = '';
+                    var top = list.slice(0,5);
+                    for (var i=0;i<top.length;i++){
+                        var p = top[i]||{};
+                        var tr = document.createElement('tr');
+                        var sym = String(p.symbol||'-');
+                        var dec = String(p.decision||'HOLD');
+                        var conf = (Number(p.confidence||0)*100).toFixed(1)+'%';
+                        var edge = (Number(p.expectedEdge||0)*100).toFixed(1)+'%';
+                        tr.innerHTML = '<td>'+sym+'</td><td>'+dec+'</td><td>'+conf+'</td><td>'+edge+'</td>';
+                        tbody.appendChild(tr);
+                    }
+                }
+            } catch (_) {}
+
+            // Actualizar métricas de trading
+            document.getElementById('total-trades').textContent = data.trading.totalTrades;
+            updateMetric('win-rate', data.trading.winRate, '%');
+            document.getElementById('total-profit').textContent = '$' + data.trading.totalProfit.toFixed(2);
+            document.getElementById('profit-factor').textContent = data.trading.profitFactor.toFixed(2);
+            
+            // Actualizar métricas de riesgo
+            updateMetric('current-risk', data.risk.currentRisk, '%');
+            updateProgressBar('current-risk-bar', data.risk.currentRisk);
+            updateMetric('max-drawdown', data.trading.maxDrawdown, '%');
+            document.getElementById('sharpe-ratio').textContent = data.risk.sharpeRatio.toFixed(2);
+            const srEl = document.getElementById('sortino-ratio'); if (srEl) srEl.textContent = (data.risk.sortinoRatio||0).toFixed(2);
+            const varEl = document.getElementById('var99'); if (varEl) varEl.textContent = (Math.abs(data.risk.var99||0)).toFixed(4);
+            const cvarEl = document.getElementById('cvar99'); if (cvarEl) cvarEl.textContent = (Math.abs(data.risk.cvar99||0)).toFixed(4);
+
+            // Actualizar sentimiento
+            try {
+                const s = data.sentiment || {};
+                const sc = Math.max(0, Math.min(1, Number(s.score||0.5)));
+                const sz = Number(s.sizeAdj||1.0);
+                const cp = Number(s.capAdj||1.0);
+                const comp = s.components || {};
+                updateMetric('sentiment-score', sc, '%');
+                updateProgressBar('sentiment-score-bar', sc);
+                const szEl = document.getElementById('sentiment-size'); if (szEl) szEl.textContent = (sz.toFixed(2) + 'x');
+                const cpEl = document.getElementById('sentiment-cap'); if (cpEl) cpEl.textContent = (cp.toFixed(2) + 'x');
+                const fbEl = document.getElementById('sentiment-funding'); if (fbEl) fbEl.textContent = (Number(comp.fundingBias||0)).toFixed(3);
+                const bzEl = document.getElementById('sentiment-basis'); if (bzEl) bzEl.textContent = (Number(comp.basisZ||0)).toFixed(3);
+            } catch (_) {}
+            
+            // Actualizar métricas de mercado
+            document.getElementById('market-regime').textContent = data.market.regime;
+            updateMetric('market-volatility', data.market.volatility, '%');
+            document.getElementById('market-trend').textContent = data.market.trend;
+            updateMetric('market-sentiment', data.market.sentiment, '%');
+            
+            // Actualizar métricas de estrategias
+            updateMetric('strategy-diversity', data.strategies.diversity, '%');
+            updateProgressBar('strategy-diversity-bar', data.strategies.diversity);
+            updateMetric('strategy-adaptability', data.strategies.adaptability, '%');
+            document.getElementById('active-strategies').textContent = data.strategies.active.length;
+            
+            // Actualizar alertas
+            updateAlerts(data.alerts);
+            
+            // Actualizar timestamp
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+        }
+        
+        function updateMetric(id, value, suffix = '') {
+            const element = document.getElementById(id);
+            element.textContent = (value * 100).toFixed(1) + suffix;
+            
+            // Añadir clases de advertencia según umbrales
+            element.classList.remove('warning', 'danger');
+            if (value < 0.5) {
+                element.classList.add('danger');
+            } else if (value < 0.7) {
+                element.classList.add('warning');
+            }
+        }
+        
+        function updateProgressBar(id, value) {
+            const element = document.getElementById(id);
+            element.style.width = (value * 100) + '%';
+        }
+        
+        function updateQuantumVisualization(quantumData) {
+            const viz = document.getElementById('quantum-viz');
+            
+            // Limpiar partículas existentes
+            viz.innerHTML = '';
+            
+            // Crear nuevas partículas basadas en el estado cuántico
+            const particleCount = Math.floor(quantumData.coherence * 20);
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'quantum-particle';
+                particle.style.left = ((Date.now() % 100)) + '%';
+                particle.style.top = ((Date.now() % 100)) + '%';
+                particle.style.animationDelay = ((Date.now() % 3)) + 's';
+                particle.style.opacity = quantumData.coherence;
+                viz.appendChild(particle);
+            }
+        }
+        
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alerts-container');
+            
+            if (alerts.active.length === 0) {
+                container.innerHTML = '<p>No hay alertas activas</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            alerts.active.forEach(alert => {
+                const alertElement = document.createElement('div');
+                alertElement.className = 'alert alert-' + alert.severity;
+                alertElement.innerHTML = '<strong>' + alert.type + ':</strong> ' + alert.message;
+                container.appendChild(alertElement);
+            });
+        }
+        
+        function formatUptime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return hours + 'h ' + minutes + 'm ' + secs + 's';
+            } else if (minutes > 0) {
+                return minutes + 'm ' + secs + 's';
+            } else {
+                return secs + 's';
+            }
+        }
+    </script>
+</body>
+</html>`;
+    }
+    
+    /**
+     * Sirve datos de monitoreo vía API
+     */
+    serveMonitoringData(res) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(this.monitoringData));
+    }
+    
+    /**
+     * Sirve alertas vía API
+     */
+    serveAlerts(res) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(this.monitoringData.alerts));
+    }
+    
+    /**
+     * Sirve archivos estáticos
+     */
+    serveStaticFile(req, res) {
+        // Implementar serving de archivos estáticos si es necesario
+        res.writeHead(404);
+        res.end('Not found');
+    }
+    
+    /**
+     * Sirve página 404
+     */
+    serveNotFound(res) {
+        res.writeHead(404);
+        res.end('Not found');
+    }
+    
+    /**
+     * Crea servidor WebSocket para actualizaciones en tiempo real
+     */
+    createWebSocketServer() {
+        this.wss = new WebSocket.Server({ server: this.server });
+        
+        this.wss.on('connection', (ws) => {
+            console.log('🔗 Nuevo cliente conectado al monitoreo');
+            this.clients.add(ws);
+            
+            // Enviar datos iniciales
+            ws.send(JSON.stringify(this.monitoringData));
+            
+            ws.on('close', () => {
+                console.log('🔌 Cliente desconectado del monitoreo');
+                this.clients.delete(ws);
+            });
+            
+            ws.on('error', (error) => {
+                console.error('[ERROR] Error en conexión WebSocket:', error);
+                this.clients.delete(ws);
+            });
+        });
+    }
+    
+    /**
+     * Configura actualizaciones periódicas de datos
+     */
+    setupPeriodicUpdates() {
+        // Actualizar datos del sistema cada segundo
+        setInterval(() => {
+            this.updateSystemData();
+        }, 1000);
+        
+        // Actualizar datos cuánticos cada 5 segundos
+        setInterval(() => {
+            this.updateQuantumData();
+        }, 5000);
+        
+        // Actualizar datos de trading cada 10 segundos
+        setInterval(() => {
+            this.updateTradingData();
+        }, 10000);
+        
+        // Actualizar datos de mercado cada 30 segundos
+        setInterval(() => {
+            this.updateMarketData();
+        }, 30000);
+        
+        // Enviar actualización a todos los clientes cada segundo
+        setInterval(() => {
+            this.broadcastToClients();
+        }, 1000);
+    }
+    
+    /**
+     * Configura sistema de alertas
+     */
+    setupAlertSystem() {
+        // Verificar umbrales cada 5 segundos
+        setInterval(() => {
+            this.checkThresholds();
+        }, 5000);
+    }
+    
+    /**
+     * Actualiza datos del sistema
+     */
+    updateSystemData() {
+        const usage = process.memoryUsage();
+        const uptime = process.uptime();
+        
+        this.monitoringData.system = {
+            status: 'active',
+            uptime: uptime,
+            memoryUsage: usage.heapUsed / usage.heapTotal,
+            cpuUsage: this.getCPUUsage(),
+            lastUpdate: Date.now()
+        };
+    }
+    
+    /**
+     * Actualiza datos cuánticos (desde payload o desde Core /performance)
+     */
+    updateQuantumData(payload) {
+        // Si recibimos payload desde el core (quantumUpdate), intentar derivar métricas
+        try {
+            if (payload && payload.quantumMatrix && Array.isArray(payload.quantumMatrix)) {
+                const qm = payload.quantumMatrix;
+                let sumEnt = 0, sumCoh = 0, n = 0;
+                for (const row of qm) {
+                    if (Array.isArray(row)) {
+                        if (typeof row[0] === 'number') sumEnt += row[0];
+                        if (typeof row[1] === 'number') sumCoh += row[1];
+                        n++;
+                    }
+                }
+                if (n > 0) {
+                    const ent = Math.max(0, Math.min(1, sumEnt / n));
+                    const coh = Math.max(0, Math.min(1, sumCoh / n));
+                    const acc = Math.max(0, Math.min(1, this.monitoringData.quantum.accuracy || 0.85));
+                    this.monitoringData.quantum = {
+                        efficiency: Math.max(0, Math.min(1, this.monitoringData.quantum.efficiency || 0.75)),
+                        accuracy: acc,
+                        coherence: coh,
+                        entanglement: ent,
+                        superposition: this.monitoringData.quantum.superposition,
+                        decoherenceRate: this.monitoringData.quantum.decoherenceRate,
+                        advantage: this.calculateQuantumAdvantage(),
+                        stateStability: this.calculateQuantumStateStability(),
+                        qubits: 8,
+                        quantumState: 'optimized'
+                    };
+                    return; // ya actualizamos desde payload
+                }
+            }
+        } catch (_) {
+            // ignorar y continuar con fetch
+        }
+
+        // Fallback: consultar al Core
+        const url = `http://localhost:${this.coreApiPort}/performance`;
+        this.fetchLocalJson(url)
+            .then((resp) => {
+                const perf = (resp && resp.metrics) ? resp.metrics : (resp && resp.data) ? resp.data : {};
+                const qEff = Number(perf?.quantumEfficiency || 0.75);
+                const coherence = Number(perf?.quantumCoherence || 0.8);
+                const accuracy = Number(perf?.quantumAccuracy || 0.85);
+                this.monitoringData.quantum = {
+                    efficiency: qEff,
+                    accuracy: accuracy,
+                    coherence: coherence,
+                    entanglement: this.monitoringData.quantum.entanglement,
+                    superposition: this.monitoringData.quantum.superposition,
+                    decoherenceRate: this.monitoringData.quantum.decoherenceRate,
+                    advantage: this.calculateQuantumAdvantage(),
+                    stateStability: this.calculateQuantumStateStability(),
+                    qubits: 8,
+                    quantumState: 'optimized'
+                };
+                // Propagar nueva filosofía de KPIs de riesgo si están disponibles
+                try {
+                    const rk = resp?.kpis?.risk || null;
+                    if (rk) {
+                        if (Number.isFinite(rk.sharpeRatio)) this.monitoringData.risk.sharpeRatio = Number(rk.sharpeRatio);
+                        if (Number.isFinite(rk.sortinoRatio)) this.monitoringData.risk.sortinoRatio = Number(rk.sortinoRatio);
+                        if (Number.isFinite(rk.var99)) this.monitoringData.risk.var99 = Number(rk.var99);
+                        if (Number.isFinite(rk.cvar99)) this.monitoringData.risk.cvar99 = Number(rk.cvar99);
+                    }
+                } catch(_) { /* tolerante */ }
+            })
+            .catch(() => {
+                // mantener valores anteriores si falla
+            });
+    }
+    
+    /**
+     * Actualiza datos de trading
+     */
+    updateTradingData() {
+        const url = `http://localhost:${this.coreApiPort}/performance`;
+        this.fetchLocalJson(url)
+            .then((resp) => {
+                const perf = (resp && resp.metrics) ? resp.metrics : (resp && resp.data) ? resp.data : {};
+                const totalTrades = Number(perf?.totalTrades || 0);
+                const successfulTrades = Number(perf?.successfulTrades || 0);
+                const totalProfit = Number(perf?.totalProfit || 0);
+                const maxDrawdown = Number(perf?.maxDrawdown || 0);
+                const winRate = totalTrades > 0 ? successfulTrades / totalTrades : 0;
+                const totalLoss = Number(perf?.totalLoss || 0);
+                const profitFactor = totalLoss > 0 ? Math.abs(totalProfit / totalLoss) : (winRate > 0 ? 1 : 0);
+                this.monitoringData.trading = {
+                    activeTrades: Number(perf?.activePositions || 0),
+                    totalTrades,
+                    successfulTrades,
+                    totalProfit,
+                    currentDrawdown: this.monitoringData.trading.currentDrawdown,
+                    maxDrawdown,
+                    winRate,
+                    profitFactor,
+                    lastTradeTime: this.monitoringData.trading.lastTradeTime,
+                    averageTradeTime: this.monitoringData.trading.averageTradeTime
+                };
+                // Propagar KPIs de riesgo (Sharpe/Sortino) al panel de riesgo si están en resp.kpis.risk
+                try {
+                    const rk = resp?.kpis?.risk || null;
+                    if (rk) {
+                        if (Number.isFinite(rk.sharpeRatio)) this.monitoringData.risk.sharpeRatio = Number(rk.sharpeRatio);
+                        if (Number.isFinite(rk.sortinoRatio)) this.monitoringData.risk.sortinoRatio = Number(rk.sortinoRatio);
+                    }
+                } catch(_) { /* tolerante */ }
+                // Propagar Sentimiento y Predicciones si /performance lo expone
+                try {
+                    const s = (resp && resp.sentiment) ? resp.sentiment : null;
+                    if (s) {
+                        const sc = Math.max(0, Math.min(1, Number(s.score||0.5)));
+                        this.monitoringData.sentiment = {
+                            score: sc,
+                            sizeAdj: Number((s.gating && s.gating.sizeAdj) || s.sizeAdj || 1.0),
+                            capAdj: Number((s.gating && s.gating.capAdj) || s.capAdj || 1.0),
+                            components: s.components || {}
+                        };
+                    }
+                    if (resp && Array.isArray(resp.predictionsTop)) {
+                        this.monitoringData.predictions.list = resp.predictionsTop;
+                        // Portfolio decision no viene en /performance: derivar simple por mayoría
+                        const buys = resp.predictionsTop.filter(p=> String(p.decision||'').toUpperCase()==='BUY').length;
+                        const sells = resp.predictionsTop.filter(p=> String(p.decision||'').toUpperCase()==='SELL').length;
+                        const decision = buys> sells? 'BUY' : (sells>buys? 'SELL' : 'HOLD');
+                        const avgConf = resp.predictionsTop.reduce((s,p)=> s + Number(p.confidence||0), 0)/Math.max(1, resp.predictionsTop.length);
+                        this.monitoringData.predictions.portfolio = { decision, confidence: avgConf, score: avgConf };
+                    }
+                } catch (_) { /* tolerante */ }
+            })
+            .catch(() => {
+                // mantener valores anteriores si falla
+            });
+    }
+    
+    /**
+     * Actualiza métricas a partir de señales generadas
+     * payload: { signals: [...], timestamp, quantumMatrix? } | Signal
+     */
+    updateSignalMetrics(payload) {
+        try {
+            const signals = Array.isArray(payload?.signals) ? payload.signals : (payload ? [payload] : []);
+            if (!signals.length) return;
+
+            for (const s of signals) {
+                const strategy = (s?.strategy || 'unknown').toString();
+                if (!this.monitoringData.strategies.performance[strategy]) {
+                    this.monitoringData.strategies.performance[strategy] = {
+                        trades: 0,
+                        successfulTrades: 0,
+                        totalProfit: 0,
+                        winRate: 0
+                    };
+                }
+                // contabilizar actividad por estrategia vía señal
+                this.monitoringData.strategies.performance[strategy].trades += 1;
+
+                // marcar como activa
+                if (!this.monitoringData.strategies.active.includes(strategy)) {
+                    this.monitoringData.strategies.active.push(strategy);
+                }
+            }
+            // recalcular diversidad/adaptabilidad
+            this.updateStrategyDiversity();
+
+            // si viene matriz, actualizar cuántica con payload para coherencia/entrelazamiento
+            if (payload?.quantumMatrix) {
+                this.updateQuantumData(payload);
+            }
+        } catch (_) { /* tolerante */ }
+    }
+
+    /**
+     * Actualiza métricas a partir de eventos de posición
+     * payload: { position, profitLoss?, closeResult? } | position
+     */
+    updatePositionMetrics(payload) {
+        try {
+            const pos = payload?.position || payload;
+            if (!pos) return;
+            const strategy = (pos?.strategy || 'unknown').toString();
+
+            if (!this.monitoringData.strategies.performance[strategy]) {
+                this.monitoringData.strategies.performance[strategy] = {
+                    trades: 0,
+                    successfulTrades: 0,
+                    totalProfit: 0,
+                    winRate: 0
+                };
+            }
+
+            // mantener lista de activas
+            if (String(pos?.status || '').toUpperCase() === 'OPEN') {
+                if (!this.monitoringData.strategies.active.includes(strategy)) {
+                    this.monitoringData.strategies.active.push(strategy);
+                }
+                // incrementar activeTrades si aplica
+                this.monitoringData.trading.activeTrades = Math.max(0, (this.monitoringData.trading.activeTrades || 0) + 1);
+            } else if (String(pos?.status || '').toUpperCase() === 'CLOSED') {
+                this.monitoringData.trading.activeTrades = Math.max(0, (this.monitoringData.trading.activeTrades || 0) - 1);
+            }
+
+            this.updateStrategyDiversity();
+        } catch (_) { /* tolerante */ }
+    }
+
+    /**
+     * Actualiza datos de mercado
+     */
+    updateMarketData() {
+        // Simular actualización de datos de mercado
+        // En un sistema real, estos datos vendrían de APIs de mercado
+        this.monitoringData.market = {
+            regime: this.determineMarketRegime(),
+            volatility: ((Date.now() % 50) / 100),
+            trend: this.determineMarketTrend(),
+            liquidity: 0.7 + ((Date.now() % 30) / 100),
+            sentiment: 0.5 + (((Date.now() % 100) / 100) - 0.5) * 0.4,
+            lastUpdate: Date.now()
+        };
+    }
+    
+    /**
+     * Verifica umbrales y genera alertas
+     */
+    checkThresholds() {
+        const alerts = [];
+        
+        // Verificar umbrales cuánticos
+        if (this.monitoringData.quantum.efficiency < this.thresholds.quantum.efficiency.min) {
+            alerts.push({
+                type: 'Quantum Efficiency',
+                severity: 'high',
+                message: 'Quantum efficiency below threshold',
+                timestamp: Date.now()
+            });
+        }
+        
+        if (this.monitoringData.quantum.coherence < this.thresholds.quantum.coherence.min) {
+            alerts.push({
+                type: 'Quantum Coherence',
+                severity: 'medium',
+                message: 'Quantum coherence below threshold',
+                timestamp: Date.now()
+            });
+        }
+        
+        if (this.monitoringData.quantum.decoherenceRate > this.thresholds.quantum.decoherenceRate.max) {
+            alerts.push({
+                type: 'Quantum Decoherence',
+                severity: 'high',
+                message: 'Quantum decoherence rate above threshold',
+                timestamp: Date.now()
+            });
+        }
+        
+        // Verificar umbrales de trading
+        if (this.monitoringData.trading.winRate < this.thresholds.trading.winRate.min) {
+            alerts.push({
+                type: 'Win Rate',
+                severity: 'medium',
+                message: 'Win rate below threshold',
+                timestamp: Date.now()
+            });
+        }
+        
+        if (this.monitoringData.trading.maxDrawdown > this.thresholds.trading.drawdown.max) {
+            alerts.push({
+                type: 'Drawdown',
+                severity: 'critical',
+                message: 'Maximum drawdown exceeded',
+                timestamp: Date.now()
+            });
+        }
+        
+        // Verificar umbrales de riesgo
+        if (this.monitoringData.risk.currentRisk > this.thresholds.risk.currentRisk.max) {
+            alerts.push({
+                type: 'Risk Level',
+                severity: 'high',
+                message: 'Current risk level above threshold',
+                timestamp: Date.now()
+            });
+        }
+        
+        // Actualizar alertas
+        this.updateAlerts(alerts);
+    }
+    
+    /**
+     * Actualiza alertas
+     */
+    updateAlerts(newAlerts) {
+        // Agregar nuevas alertas
+        newAlerts.forEach(alert => {
+            // Verificar si la alerta ya existe
+            const exists = this.monitoringData.alerts.active.some(
+                existing => existing.type === alert.type
+            );
+            
+            if (!exists) {
+                this.monitoringData.alerts.active.push(alert);
+                this.monitoringData.alerts.history.push(alert);
+                
+                // Actualizar contador de severidad
+                this.monitoringData.alerts.severity[alert.severity]++;
+                
+                // Emitir evento de alerta
+                this.emit('alert', alert);
+            }
+        });
+        
+        // Eliminar alertas resueltas
+        this.monitoringData.alerts.active = this.monitoringData.alerts.active.filter(
+            alert => this.isAlertStillActive(alert)
+        );
+    }
+    
+    /**
+     * Verifica si una alerta sigue activa
+     */
+    isAlertStillActive(alert) {
+        // Lógica para determinar si una alerta sigue siendo relevante
+        // Por ahora, eliminamos alertas después de 5 minutos
+        return Date.now() - alert.timestamp < 5 * 60 * 1000;
+    }
+    
+    /**
+     * Envía datos a todos los clientes WebSocket
+     */
+    broadcastToClients() {
+        const data = JSON.stringify(this.monitoringData);
+        
+        this.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(data);
+            }
+        });
+    }
+    
+    /**
+     * Actualiza métricas después de una operación
+     */
+    updateTradeMetrics(tradeResult) {
+        this.monitoringData.trading.totalTrades++;
+        
+        if (tradeResult.profit > 0) {
+            this.monitoringData.trading.successfulTrades++;
+            this.monitoringData.trading.totalProfit += tradeResult.profit;
+        } else {
+            this.monitoringData.trading.totalLoss += Math.abs(tradeResult.profit);
+        }
+        
+        this.monitoringData.trading.lastTradeTime = Date.now();
+        
+        // Actualizar drawdown
+        if (tradeResult.profit < 0) {
+            this.monitoringData.trading.currentDrawdown += Math.abs(tradeResult.profit);
+            this.monitoringData.trading.maxDrawdown = Math.max(
+                this.monitoringData.trading.maxDrawdown,
+                this.monitoringData.trading.currentDrawdown
+            );
+        } else {
+            this.monitoringData.trading.currentDrawdown = Math.max(0, 
+                this.monitoringData.trading.currentDrawdown - tradeResult.profit);
+        }
+        
+        // Emitir evento de actualización
+        this.emit('tradeMetricsUpdated', {
+            trade: tradeResult,
+            metrics: this.monitoringData.trading
+        });
+    }
+    
+    /**
+     * Actualiza métricas de estrategia (por estrategia individual)
+     */
+    updateStrategyPerf(strategy, performance) {
+        if (!this.monitoringData.strategies.performance[strategy]) {
+            this.monitoringData.strategies.performance[strategy] = {
+                trades: 0,
+                successfulTrades: 0,
+                totalProfit: 0,
+                winRate: 0
+            };
+        }
+        
+        const strategyPerf = this.monitoringData.strategies.performance[strategy];
+        strategyPerf.trades++;
+        strategyPerf.successfulTrades += performance.successful ? 1 : 0;
+        strategyPerf.totalProfit += performance.profit;
+        strategyPerf.winRate = strategyPerf.trades > 0 ?
+            strategyPerf.successfulTrades / strategyPerf.trades : 0;
+        
+        // Actualizar estrategias activas
+        if (!this.monitoringData.strategies.active.includes(strategy)) {
+            this.monitoringData.strategies.active.push(strategy);
+        }
+        
+        // Actualizar diversidad y adaptabilidad
+        this.updateStrategyDiversity();
+    }
+    
+    /**
+     * Actualiza métricas globales de diversidad/adaptabilidad de estrategias
+     */
+    updateStrategyDiversity() {
+        const strategies = Object.keys(this.monitoringData.strategies.performance);
+        const totalTrades = strategies.reduce((sum, strategy) =>
+            sum + this.monitoringData.strategies.performance[strategy].trades, 0);
+        
+        if (totalTrades > 0) {
+            // Calcular diversidad
+            let diversity = 0;
+            for (const strategy of strategies) {
+                const proportion = this.monitoringData.strategies.performance[strategy].trades / totalTrades;
+                if (proportion > 0) {
+                    diversity -= proportion * Math.log(proportion);
+                }
+            }
+            
+            const maxDiversity = Math.log(Math.max(1, strategies.length));
+            this.monitoringData.strategies.diversity = strategies.length > 1 ?
+                diversity / maxDiversity : 0;
+            
+            // Calcular adaptabilidad (simplificado)
+            this.monitoringData.strategies.adaptability = Math.min(1.0,
+                strategies.length / 10);
+        }
+    }
+    
+    // Métodos auxiliares
+    getCPUUsage() {
+        // Implementar medición real de CPU
+        return ((Date.now() % 50) / 100);
+    }
+    
+    calculateQuantumAdvantage() {
+        return this.monitoringData.quantum.efficiency * 
+               this.monitoringData.quantum.accuracy * 
+               this.monitoringData.quantum.coherence * 
+               (1 - this.monitoringData.quantum.decoherenceRate);
+    }
+    
+    fetchLocalJson(urlStr) {
+        return new Promise((resolve, reject) => {
+            try {
+                const u = new URL(urlStr);
+                const client = u.protocol === 'https:' ? require('https') : require('http');
+                const req = client.request({ hostname: u.hostname, port: u.port, path: u.pathname, method: 'GET' }, (resp) => {
+                    let buf = '';
+                    resp.on('data', d => buf += d);
+                    resp.on('end', () => {
+                        try { resolve(JSON.parse(buf || '{}')); } catch (e) { resolve({}); }
+                    });
+                });
+                req.on('error', reject);
+                req.end();
+            } catch (e) { reject(e); }
+        });
+    }
+    calculateQuantumStateStability() {
+        return this.monitoringData.quantum.coherence * 
+               this.monitoringData.quantum.entanglement * 
+               (1 - this.monitoringData.quantum.decoherenceRate);
+    }
+    
+    determineMarketRegime() {
+        const volatility = this.monitoringData.market.volatility;
+        if (volatility < 0.2) return 'low_volatility';
+        if (volatility < 0.4) return 'normal';
+        return 'high_volatility';
+    }
+    
+    determineMarketTrend() {
+        const sentiment = this.monitoringData.market.sentiment;
+        if (sentiment < 0.4) return 'bearish';
+        if (sentiment > 0.6) return 'bullish';
+        return 'neutral';
+    }
+    
+    /**
+     * Detiene el servidor de monitoreo
+     */
+    stop() {
+        console.log('🛑 Deteniendo Sistema de Monitoreo en Tiempo Real...');
+        
+        if (this.wss) {
+            this.wss.close();
+        }
+        
+        if (this.server) {
+            this.server.close();
+        }
+        
+        console.log('[OK] Sistema de Monitoreo en Tiempo Real detenido');
+    }
+}
+
+// Ejecutar como servicio si se invoca directamente
+if (require.main === module) {
+    const port = Number(process.env.MONITOR_PORT || 8082);
+    const monitor = new QuantumRealTimeMonitor(port);
+    monitor.initializeMonitor();
+}
+
+module.exports = QuantumRealTimeMonitor;

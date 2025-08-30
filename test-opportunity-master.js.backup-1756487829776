@@ -1,0 +1,294 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * 🧪 Test del Opportunity Master System
+ * Verifica la arquitectura SPOT → OPTIONS → FUTURES
+ */
+
+const axios = require('axios');
+
+const OPPORTUNITY_MASTER_URL = 'http://localhost:4601';
+const FRONTEND_URL = 'http://localhost:4603';
+
+async function testEndpoint(url, description) {
+    try {
+        console.log(`🔍 Probando: ${description}`);
+        const response = await axios.get(url, { timeout: 5000 });
+        
+        if (response.status === 200) {
+            console.log(`✅ ${description}: OK`);
+            return { success: true, data: response.data };
+        } else {
+            console.log(`❌ ${description}: Status ${response.status}`);
+            return { success: false, error: `Status ${response.status}` };
+        }
+    } catch (error) {
+        console.log(`❌ ${description}: ${error.message}`);
+        return { success: false, error: error.message };
+    }
+}
+
+async function testOpportunityMasterEndpoints() {
+    console.log('\n🌙 === TESTING OPPORTUNITY MASTER SYSTEM ===\n');
+    
+    const tests = [
+        {
+            url: `${OPPORTUNITY_MASTER_URL}/health`,
+            description: 'Health Check del Opportunity Master'
+        },
+        {
+            url: `${OPPORTUNITY_MASTER_URL}/api/opportunities`,
+            description: 'API de Oportunidades'
+        },
+        {
+            url: `${OPPORTUNITY_MASTER_URL}/api/market-health`,
+            description: 'API de Salud del Mercado'
+        }
+    ];
+    
+    const results = [];
+    
+    for (const test of tests) {
+        const result = await testEndpoint(test.url, test.description);
+        results.push({ ...test, result });
+        
+        if (result.success && result.data) {
+            console.log(`📊 Datos recibidos: ${JSON.stringify(result.data, null, 2).substring(0, 200)}...`);
+        }
+        
+        console.log('');
+    }
+    
+    return results;
+}
+
+async function testFrontendEndpoints() {
+    console.log('\n🌐 === TESTING FRONTEND OPPORTUNITY MASTER ===\n');
+    
+    const tests = [
+        {
+            url: `${FRONTEND_URL}/api/status`,
+            description: 'Status del Frontend'
+        },
+        {
+            url: `${FRONTEND_URL}/api/opportunities`,
+            description: 'Oportunidades del Frontend'
+        },
+        {
+            url: `${FRONTEND_URL}/api/market-health`,
+            description: 'Salud del Mercado del Frontend'
+        },
+        {
+            url: `${FRONTEND_URL}/api/top-opportunities`,
+            description: 'Top Oportunidades'
+        },
+        {
+            url: `${FRONTEND_URL}/api/execute-now`,
+            description: 'Ejecutar Ahora'
+        },
+        {
+            url: `${FRONTEND_URL}/api/quantum-metrics`,
+            description: 'Métricas Cuánticas'
+        }
+    ];
+    
+    const results = [];
+    
+    for (const test of tests) {
+        const result = await testEndpoint(test.url, test.description);
+        results.push({ ...test, result });
+        
+        if (result.success && result.data) {
+            console.log(`📊 Datos recibidos: ${JSON.stringify(result.data, null, 2).substring(0, 200)}...`);
+        }
+        
+        console.log('');
+    }
+    
+    return results;
+}
+
+async function testVisualizationEndpoints() {
+    console.log('\n📈 === TESTING VISUALIZATION ENDPOINTS ===\n');
+    
+    const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'HUMAUSDT', 'AUSDT'];
+    const results = [];
+    
+    for (const symbol of symbols) {
+        const tests = [
+            {
+                url: `${FRONTEND_URL}/api/market-sparkline?symbol=${symbol}&interval=5m&limit=60`,
+                description: `Sparkline para ${symbol}`
+            },
+            {
+                url: `${FRONTEND_URL}/api/orderbook?symbol=${symbol}`,
+                description: `Orderbook para ${symbol}`
+            },
+            {
+                url: `${FRONTEND_URL}/api/klines?symbol=${symbol}&interval=5m&limit=100`,
+                description: `Klines para ${symbol}`
+            }
+        ];
+        
+        for (const test of tests) {
+            const result = await testEndpoint(test.url, test.description);
+            results.push({ ...test, result });
+            
+            if (result.success && result.data) {
+                console.log(`📊 ${test.description}: ${result.data.source || 'unknown'} source`);
+            }
+            
+            console.log('');
+        }
+    }
+    
+    return results;
+}
+
+async function verifyArchitecture() {
+    console.log('\n🏗️ === VERIFICANDO ARQUITECTURA SPOT → OPTIONS → FUTURES ===\n');
+    
+    try {
+        const response = await axios.get(`${OPPORTUNITY_MASTER_URL}/api/opportunities`);
+        
+        if (response.data.success) {
+            const data = response.data.data;
+            
+            console.log('📊 Verificando componentes de la arquitectura:');
+            
+            // Verificar SPOT Intelligence
+            if (data.market && data.market.sentiment) {
+                console.log(`✅ SPOT Intelligence: ${data.market.sentiment}`);
+            } else {
+                console.log('⚠️ SPOT Intelligence: No encontrado');
+            }
+            
+            // Verificar OPTIONS Intelligence (a través de quantum metrics)
+            if (data.quantum) {
+                console.log(`✅ OPTIONS Intelligence: Quantum metrics disponibles`);
+                console.log(`   - Coherence: ${(data.quantum.coherence * 100).toFixed(1)}%`);
+                console.log(`   - Consciousness: ${(data.quantum.consciousness * 100).toFixed(1)}%`);
+                console.log(`   - Entanglement: ${(data.quantum.entanglement * 100).toFixed(1)}%`);
+            } else {
+                console.log('⚠️ OPTIONS Intelligence: No encontrado');
+            }
+            
+            // Verificar FUTURES Opportunities
+            if (data.top && data.top.length > 0) {
+                console.log(`✅ FUTURES Opportunities: ${data.top.length} oportunidades encontradas`);
+                console.log(`   - Top 3: ${data.top.slice(0, 3).map(op => op.symbol).join(', ')}`);
+            } else {
+                console.log('⚠️ FUTURES Opportunities: No encontradas');
+            }
+            
+            // Verificar Execution Queue
+            if (data.executeNow && data.executeNow.length > 0) {
+                console.log(`✅ Execution Queue: ${data.executeNow.length} operaciones inmediatas`);
+            } else {
+                console.log('⚠️ Execution Queue: Vacía');
+            }
+            
+            // Verificar Market Health
+            if (data.market && data.market.strongSignals !== undefined) {
+                console.log(`✅ Market Health: ${data.market.strongSignals} señales fuertes`);
+            } else {
+                console.log('⚠️ Market Health: No disponible');
+            }
+            
+        } else {
+            console.log('❌ No se pudo verificar la arquitectura');
+        }
+        
+    } catch (error) {
+        console.log(`❌ Error verificando arquitectura: ${error.message}`);
+    }
+}
+
+async function runOpportunityMasterTest() {
+    console.log('🚀 Iniciando test completo del Opportunity Master System...\n');
+    
+    try {
+        // Test del Opportunity Master
+        const masterResults = await testOpportunityMasterEndpoints();
+        
+        // Test del Frontend
+        const frontendResults = await testFrontendEndpoints();
+        
+        // Test de visualización
+        const visualizationResults = await testVisualizationEndpoints();
+        
+        // Verificar arquitectura
+        await verifyArchitecture();
+        
+        // Resumen
+        console.log('\n📋 === RESUMEN DE TESTS ===\n');
+        
+        const allResults = [...masterResults, ...frontendResults, ...visualizationResults];
+        const successful = allResults.filter(r => r.result.success).length;
+        const total = allResults.length;
+        
+        console.log(`✅ Tests exitosos: ${successful}/${total}`);
+        console.log(`📊 Tasa de éxito: ${((successful / total) * 100).toFixed(1)}%`);
+        
+        if (successful === total) {
+            console.log('\n🎉 ¡SISTEMA OPPORTUNITY MASTER FUNCIONANDO PERFECTAMENTE!');
+            console.log('🏆 Arquitectura SPOT → OPTIONS → FUTURES verificada');
+            console.log('🚀 Listo para operaciones de trading');
+        } else {
+            console.log('\n⚠️ Algunos tests fallaron. Revisar logs anteriores.');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error en test:', error.message);
+    }
+}
+
+// Ejecutar test
+if (require.main === module) {
+    runOpportunityMasterTest();
+}
+
+module.exports = { runOpportunityMasterTest };

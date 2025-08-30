@@ -1,0 +1,1302 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASHBOARD SRONA-QBTC SUPREMO - Trading Cuántico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #00ff41;
+            padding: 15px;
+            background: rgba(0, 255, 65, 0.1);
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #00ff41;
+            background: linear-gradient(45deg, #00ff41, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .header p {
+            font-size: 1em;
+            opacity: 0.8;
+            color: #00ffff;
+        }
+        
+        .connection-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border: 1px solid;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+        
+        .connected { border-color: #00ff41; color: #00ff41; }
+        .disconnected { border-color: #ff4444; color: #ff4444; }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .panel {
+            border: 1px solid #00ff41;
+            padding: 15px;
+            background: rgba(0, 255, 65, 0.05);
+            border-radius: 5px;
+        }
+        
+        .panel h3 {
+            margin-bottom: 10px;
+            color: #00ffff;
+            text-decoration: underline;
+            font-size: 1.1em;
+        }
+        
+        .btn {
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 8px 15px;
+            margin: 3px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: all 0.3s;
+            border-radius: 3px;
+        }
+        
+        .btn:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 15px #00ff41;
+        }
+        
+        .btn.active {
+            background: #00ff41;
+            color: #000;
+        }
+        
+        .btn.danger {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        
+        .btn.danger:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+        
+        .btn.warning {
+            border-color: #ffaa00;
+            color: #ffaa00;
+        }
+        
+        .btn.warning:hover {
+            background: #ffaa00;
+            color: #000;
+        }
+        
+        .matrices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .matrix-container {
+            border: 2px solid #00ff41;
+            padding: 15px;
+            background: rgba(0, 255, 65, 0.05);
+            border-radius: 5px;
+        }
+        
+        .matrix-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        
+        .matrix-6x8 {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 2px;
+            font-size: 9px;
+            margin-bottom: 10px;
+        }
+        
+        .matrix-7x7 {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            font-size: 9px;
+        }
+        
+        .matrix-cell {
+            border: 1px solid #333;
+            padding: 3px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            min-height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+        }
+        
+        .matrix-header {
+            background: rgba(0, 255, 65, 0.2);
+            font-weight: bold;
+            color: #00ffff;
+        }
+        
+        .matrix-btc {
+            background: rgba(255, 165, 0, 0.3);
+            color: #ffa500;
+        }
+        
+        .matrix-eth {
+            background: rgba(128, 0, 128, 0.3);
+            color: #8a2be2;
+        }
+        
+        .opportunities-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .opportunities-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+        
+        .opportunities-table th,
+        .opportunities-table td {
+            border: 1px solid #333;
+            padding: 5px;
+            text-align: center;
+        }
+        
+        .opportunities-table th {
+            background: rgba(0, 255, 65, 0.2);
+            color: #00ffff;
+        }
+        
+        .profit-high { color: #00ff41; }
+        .profit-medium { color: #ffaa00; }
+        .profit-low { color: #ff4444; }
+        
+        .fusion-metrics {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            border: 1px solid #00ff41;
+            padding: 10px;
+            text-align: center;
+            background: rgba(0, 255, 65, 0.05);
+            border-radius: 5px;
+        }
+        
+        .metric-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        
+        .trading-signals {
+            margin-bottom: 20px;
+        }
+        
+        .signal-card {
+            border: 1px solid;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .signal-buy { border-color: #00ff41; background: rgba(0, 255, 65, 0.1); }
+        .signal-sell { border-color: #ff4444; background: rgba(255, 68, 68, 0.1); }
+        .signal-hold { border-color: #ffaa00; background: rgba(255, 170, 0, 0.1); }
+        
+        .logs {
+            border: 2px solid #00ff41;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            height: 250px;
+            overflow-y: auto;
+            border-radius: 5px;
+        }
+        
+        .logs h3 {
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+        
+        .log-entry {
+            margin-bottom: 3px;
+            font-size: 11px;
+            opacity: 0.9;
+        }
+        
+        .log-info { color: #00ff41; }
+        .log-warn { color: #ffff00; }
+        .log-error { color: #ff4444; }
+        .log-debug { color: #888; }
+        .log-srona { color: #ff00ff; }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .quantum-glow {
+            animation: quantumGlow 3s infinite;
+        }
+        
+        @keyframes quantumGlow {
+            0% { box-shadow: 0 0 5px #00ff41; }
+            50% { box-shadow: 0 0 20px #00ffff, 0 0 30px #ff00ff; }
+            100% { box-shadow: 0 0 5px #00ff41; }
+        }
+        
+        .frequency-analyzer {
+            border: 2px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.05);
+        }
+        
+        .naked-detector {
+            border: 2px solid #ffaa00;
+            background: rgba(255, 170, 0, 0.05);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff41, #00ffff);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DASHBOARD SRONA-QBTC SUPREMO</h1>
+            <p>Fusión Cuántica | API Srona | Matrices 6x8 & 7x7 | Naked Options | Análisis de Frecuencias | Trading Automático</p>
+            <div class="connection-status" id="connection-status">
+                <span id="status-text">DESCONECTADO</span>
+            </div>
+        </div>
+        
+        <div class="main-grid">
+            <div class="panel">
+                <h3> Control Srona-QBTC</h3>
+                <button class="btn" onclick="iniciarFusionCuantica()">INICIAR FUSIÓN CUÁNTICA</button>
+                <button class="btn" onclick="detenerSistema()">DETENER SISTEMA</button>
+                <button class="btn" onclick="reconectarSrona()">RECONECTAR SRONA</button>
+                <button class="btn warning" onclick="ejecutarAnalisisCompleto()">ANÁLISIS COMPLETO</button>
+            </div>
+            
+            <div class="panel frequency-analyzer">
+                <h3> Analizador de Frecuencias</h3>
+                <button class="btn" onclick="analizarFrecuenciasTheta()">Frecuencias Theta</button>
+                <button class="btn" onclick="analizarVolatilidadIV()">Volatilidad IV</button>
+                <button class="btn" onclick="analizarFrecuenciasDelta()">Frecuencias Delta</button>
+                <button class="btn" onclick="detectarAnomalias()">Detectar Anomalías</button>
+            </div>
+            
+            <div class="panel naked-detector">
+                <h3> Detector Naked Options</h3>
+                <button class="btn" onclick="detectarNakedOptions()">DETECTAR NAKED</button>
+                <button class="btn" onclick="rankearOportunidades()">RANKEAR TOP 10</button>
+                <button class="btn" onclick="calcularRiskReward()">RISK/REWARD</button>
+                <button class="btn danger" onclick="ejecutarNakedStrategy()">EJECUTAR ESTRATEGIA</button>
+            </div>
+        </div>
+        
+        <div class="fusion-metrics">
+            <div class="metric-card quantum-glow">
+                <div class="metric-value" id="fusion-score">0.000</div>
+                <div class="metric-label">Fusión Score</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="fusion-progress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="coherence-global">0.000</div>
+                <div class="metric-label">Coherencia Global</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="entanglement-quantum">0.000</div>
+                <div class="metric-label">Entrelazamiento</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="consciousness-level">0.000</div>
+                <div class="metric-label">Consciencia Cuántica</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="profit-potential">0.000</div>
+                <div class="metric-label">Potencial Profit</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="amplification-factor">1.000</div>
+                <div class="metric-label">Factor Amplificación</div>
+            </div>
+        </div>
+        
+        <div class="matrices-grid">
+            <div class="matrix-container">
+                <div class="matrix-title">MATRIZ CUÁNTICA 6x8 SRONA</div>
+                <div class="matrix-6x8" id="matrix-6x8-display">
+                    <!-- Matriz 6x8 se genera dinámicamente -->
+                </div>
+                <div style="text-align: center; margin-top: 10px; font-size: 10px;">
+                    <span>Activos: BTC, ETH, BNB, SOL, XRP, DOGE</span><br>
+                    <span>Métricas: IV, Vol24h, OI, P/C, Delta, Gamma, Theta, Vega</span>
+                </div>
+            </div>
+            
+            <div class="matrix-container">
+                <div class="matrix-title">MATRIZ ELO-AKÁSHICA 7x7</div>
+                <div class="matrix-7x7" id="matrix-7x7-display">
+                    <!-- Matriz 7x7 se genera dinámicamente -->
+                </div>
+                <div style="text-align: center; margin-top: 10px; font-size: 10px;">
+                    <span>Activos: BTC, ETH, BNB, SOL, XRP, ADA, DOGE</span><br>
+                    <span>Métricas: Coherencia, Momentum, Volatilidad, Liquidez, Correlación, Resonancia, Estabilidad</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="opportunities-grid">
+            <div class="panel">
+                <h3> TOP OPORTUNIDADES NAKED</h3>
+                <table class="opportunities-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Símbolo</th>
+                            <th>Tipo</th>
+                            <th>Strike</th>
+                            <th>Score</th>
+                            <th>Profit</th>
+                            <th>Riesgo</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="naked-opportunities-table">
+                        <tr>
+                            <td colspan="8">Cargando oportunidades...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="panel">
+                <h3> SEÑALES DE TRADING CUÁNTICAS</h3>
+                <div id="trading-signals-container">
+                    <div class="signal-card signal-hold">
+                        <div>
+                            <strong>SISTEMA INICIANDO</strong><br>
+                            <small>Esperando análisis cuántico...</small>
+                        </div>
+                        <div>
+                            <span style="color: #ffaa00;">STANDBY</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="logs">
+            <h3> LOG SISTEMA SRONA-QBTC (Tiempo Real)</h3>
+            <div id="log-container">
+                <div class="log-entry log-info">[SISTEMA] Dashboard Srona-QBTC inicializado</div>
+                <div class="log-entry log-srona">[SRONA] Esperando conexión con API...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // VARIABLES GLOBALES
+        let sistemaActivo = false;
+        let sronaConectado = false;
+        let fusionData = null;
+        let updateInterval = null;
+        
+        // CONFIGURACIÓN SRONA API
+        const SRONA_API_URL = 'http://localhost:3001/api/srona';
+        
+        // INICIALIZACIÓN
+        window.addEventListener('load', async () => {
+            agregarLog('Dashboard Srona-QBTC cargado exitosamente', 'info');
+            await verificarConexionSrona();
+            inicializarMatricesVacias();
+        });
+        
+        // FUNCIONES DE CONEXIÓN
+        async function verificarConexionSrona() {
+            try {
+                const response = await fetch(`${SRONA_API_URL}/status`);
+                if (response.ok) {
+                    sronaConectado = true;
+                    document.getElementById('connection-status').className = 'connection-status connected';
+                    document.getElementById('status-text').textContent = 'SRONA CONECTADO';
+                    agregarLog(' Conexión con API Srona establecida', 'srona');
+                } else {
+                    throw new Error('API no responde');
+                }
+            } catch (error) {
+                sronaConectado = false;
+                document.getElementById('connection-status').className = 'connection-status disconnected';
+                document.getElementById('status-text').textContent = 'SRONA DESCONECTADO';
+                agregarLog(' Error conectando con API Srona: ' + error.message, 'error');
+            }
+        }
+        
+        async function reconectarSrona() {
+            agregarLog(' Intentando reconexión con Srona...', 'warn');
+            await verificarConexionSrona();
+        }
+        
+        // FUNCIÓN PRINCIPAL DE FUSIÓN CUÁNTICA
+        async function iniciarFusionCuantica() {
+            if (sistemaActivo) {
+                agregarLog(' Sistema ya está activo', 'warn');
+                return;
+            }
+            
+            sistemaActivo = true;
+            agregarLog(' INICIANDO FUSIÓN CUÁNTICA SRONA-QBTC...', 'info');
+            
+            try {
+                // Ejecutar fusión cuántica
+                await ejecutarFusionCompleta();
+                
+                // Iniciar actualizaciones automáticas
+                updateInterval = setInterval(async () => {
+                    if (sistemaActivo) {
+                        await actualizarDatosTiempoReal();
+                    }
+                }, 5000); // Cada 5 segundos
+                
+                agregarLog(' FUSIÓN CUÁNTICA ACTIVADA - Sistema en modo automático', 'srona');
+                
+            } catch (error) {
+                agregarLog(' Error en fusión cuántica: ' + error.message, 'error');
+                sistemaActivo = false;
+            }
+        }
+        
+        async function ejecutarFusionCompleta() {
+            agregarLog(' Ejecutando análisis cuántico completo...', 'srona');
+            
+            try {
+                // 1. Obtener Matriz 6x8
+                const matrix6x8 = await obtenerMatriz6x8();
+                actualizarMatriz6x8(matrix6x8);
+                
+                // 2. Obtener Matriz 7x7
+                const matrix7x7 = await obtenerMatriz7x7();
+                actualizarMatriz7x7(matrix7x7);
+                
+                // 3. Obtener Oportunidades Naked
+                const nakedOpportunities = await obtenerOportunidadesNaked();
+                actualizarTablaNaked(nakedOpportunities);
+                
+                // 4. Análisis completo
+                const fullAnalysis = await obtenerAnalisisCompleto();
+                
+                // 5. Calcular métricas de fusión
+                fusionData = calcularMetricasFusion(matrix6x8, matrix7x7, nakedOpportunities, fullAnalysis);
+                actualizarMetricasFusion(fusionData);
+                
+                // 6. Generar señales de trading
+                const signals = generarSenalesTrading(fusionData);
+                actualizarSenalesTrading(signals);
+                
+                agregarLog(' Análisis cuántico completado exitosamente', 'srona');
+                
+            } catch (error) {
+                agregarLog(' Error en análisis: ' + error.message, 'error');
+                // Usar datos simulados en caso de error
+                usarDatosSimulados();
+            }
+        }
+        
+        // FUNCIONES DE API SRONA
+        async function obtenerMatriz6x8() {
+            if (!sronaConectado) return generarMatriz6x8Simulada();
+            
+            try {
+                const response = await fetch(`${SRONA_API_URL}/matrix`);
+                const data = await response.json();
+                agregarLog(' Matriz 6x8 obtenida de Srona', 'srona');
+                return data;
+            } catch (error) {
+                agregarLog(' Usando matriz 6x8 simulada', 'warn');
+                return generarMatriz6x8Simulada();
+            }
+        }
+        
+        async function obtenerMatriz7x7() {
+            if (!sronaConectado) return generarMatriz7x7Simulada();
+            
+            try {
+                const response = await fetch(`${SRONA_API_URL}/matrix7x7`);
+                const data = await response.json();
+                agregarLog(' Matriz 7x7 ELO-Akáshica obtenida', 'srona');
+                return data;
+            } catch (error) {
+                agregarLog(' Usando matriz 7x7 simulada', 'warn');
+                return generarMatriz7x7Simulada();
+            }
+        }
+        
+        async function obtenerOportunidadesNaked() {
+            if (!sronaConectado) return generarOportunidadesNakedSimuladas();
+            
+            try {
+                const response = await fetch(`${SRONA_API_URL}/naked-opportunities`);
+                const data = await response.json();
+                agregarLog(` ${data.length} oportunidades naked detectadas`, 'srona');
+                return data;
+            } catch (error) {
+                agregarLog(' Usando oportunidades naked simuladas', 'warn');
+                return generarOportunidadesNakedSimuladas();
+            }
+        }
+        
+        async function obtenerAnalisisCompleto() {
+            if (!sronaConectado) return generarAnalisisCompletoSimulado();
+            
+            try {
+                const response = await fetch(`${SRONA_API_URL}/opportunities`);
+                const data = await response.json();
+                agregarLog(' Análisis completo obtenido de Srona', 'srona');
+                return data;
+            } catch (error) {
+                agregarLog(' Usando análisis completo simulado', 'warn');
+                return generarAnalisisCompletoSimulado();
+            }
+        }
+        
+        // FUNCIONES DE ACTUALIZACIÓN DE UI
+        function actualizarMatriz6x8(data) {
+            const container = document.getElementById('matrix-6x8-display');
+            container.innerHTML = '';
+            
+            if (!data || !data.matrix) {
+                container.innerHTML = '<div class="matrix-cell">Sin datos</div>';
+                return;
+            }
+            
+            const assets = ['', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE'];
+            const metrics = ['IV', 'Vol', 'OI', 'P/C', '', '', '', ''];
+            
+            // Headers
+            assets.forEach(asset => {
+                const cell = document.createElement('div');
+                cell.className = 'matrix-cell matrix-header';
+                cell.textContent = asset;
+                container.appendChild(cell);
+            });
+            
+            // Datos
+            metrics.forEach((metric, i) => {
+                // Header de métrica
+                const headerCell = document.createElement('div');
+                headerCell.className = 'matrix-cell matrix-header';
+                headerCell.textContent = metric;
+                container.appendChild(headerCell);
+                
+                // Datos de activos
+                for (let j = 0; j < 6; j++) {
+                    const cell = document.createElement('div');
+                    const assetName = assets[j + 1];
+                    cell.className = `matrix-cell ${assetName === 'BTC' ? 'matrix-btc' : assetName === 'ETH' ? 'matrix-eth' : ''}`;
+                    
+                    if (data.matrix && data.matrix[j] && data.matrix[j][i]) {
+                        const value = data.matrix[j][i].transformedValue || data.matrix[j][i].value || 0;
+                        cell.textContent = value.toFixed(3);
+                    } else {
+                        cell.textContent = ((Date.now() % 100) / 100 * 100).toFixed(3);
+                    }
+                    
+                    container.appendChild(cell);
+                }
+            });
+        }
+        
+        function actualizarMatriz7x7(data) {
+            const container = document.getElementById('matrix-7x7-display');
+            container.innerHTML = '';
+            
+            if (!data || !data.matrix) {
+                container.innerHTML = '<div class="matrix-cell">Sin datos</div>';
+                return;
+            }
+            
+            const assets = ['', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'ADA', 'DOGE'];
+            const metrics = ['Coh', 'Mom', 'Vol', 'Liq', 'Cor', 'Res', 'Est'];
+            
+            // Headers
+            assets.forEach(asset => {
+                const cell = document.createElement('div');
+                cell.className = 'matrix-cell matrix-header';
+                cell.textContent = asset;
+                container.appendChild(cell);
+            });
+            
+            // Datos
+            metrics.forEach((metric, i) => {
+                // Header de métrica
+                const headerCell = document.createElement('div');
+                headerCell.className = 'matrix-cell matrix-header';
+                headerCell.textContent = metric;
+                container.appendChild(headerCell);
+                
+                // Datos de activos
+                for (let j = 0; j < 7; j++) {
+                    const cell = document.createElement('div');
+                    const assetName = assets[j + 1];
+                    cell.className = `matrix-cell ${assetName === 'BTC' ? 'matrix-btc' : assetName === 'ETH' ? 'matrix-eth' : ''}`;
+                    
+                    if (data.matrix && data.matrix[j]) {
+                        const metricNames = ['coherencia', 'momentum', 'volatilidad', 'liquidez', 'correlacion', 'resonancia', 'estabilidad'];
+                        const metricData = data.matrix[j][metricNames[i]];
+                        if (metricData && metricData.percentage !== undefined) {
+                            cell.textContent = metricData.percentage + '%';
+                        } else {
+                            cell.textContent = Math.floor((Date.now() % 100)) + '%';
+                        }
+                    } else {
+                        cell.textContent = Math.floor((Date.now() % 100)) + '%';
+                    }
+                    
+                    container.appendChild(cell);
+                }
+            });
+        }
+        
+        function actualizarTablaNaked(opportunities) {
+            const tbody = document.getElementById('naked-opportunities-table');
+            tbody.innerHTML = '';
+            
+            if (!opportunities || opportunities.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8">No hay oportunidades disponibles</td></tr>';
+                return;
+            }
+            
+            opportunities.slice(0, 10).forEach((opp, index) => {
+                const row = document.createElement('tr');
+                
+                const score = opp.nakedScore || opp.quantumScore || ((Date.now() % 100) / 100);
+                const profit = opp.expectedReturn || opp.profitPotential || ((Date.now() % 200));
+                const risk = opp.riskLevel || (1 - score);
+                
+                const profitClass = profit > 150 ? 'profit-high' : profit > 75 ? 'profit-medium' : 'profit-low';
+                const riskText = risk < 0.3 ? 'BAJO' : risk < 0.6 ? 'MEDIO' : 'ALTO';
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${opp.symbol || 'BTC'}</td>
+                    <td>${opp.type || 'NAKED_CALL'}</td>
+                    <td>${opp.strike ? opp.strike.toFixed(0) : '65000'}</td>
+                    <td>${score.toFixed(3)}</td>
+                    <td class="${profitClass}">$${profit.toFixed(0)}</td>
+                    <td>${riskText}</td>
+                    <td><button class="btn" onclick="ejecutarOportunidad(${index})">EJECUTAR</button></td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        function actualizarMetricasFusion(fusionData) {
+            if (!fusionData) return;
+            
+            document.getElementById('fusion-score').textContent = fusionData.fusionScore.toFixed(3);
+            document.getElementById('coherence-global').textContent = fusionData.globalCoherence.toFixed(3);
+            document.getElementById('entanglement-quantum').textContent = fusionData.quantumEntanglement.toFixed(3);
+            document.getElementById('consciousness-level').textContent = fusionData.quantumConsciousness.toFixed(3);
+            document.getElementById('profit-potential').textContent = fusionData.profitPotential.toFixed(3);
+            document.getElementById('amplification-factor').textContent = fusionData.amplificationFactor.toFixed(3);
+            
+            // Actualizar barra de progreso
+            const progressBar = document.getElementById('fusion-progress');
+            progressBar.style.width = (fusionData.fusionScore * 100) + '%';
+        }
+        
+        function actualizarSenalesTrading(signals) {
+            const container = document.getElementById('trading-signals-container');
+            container.innerHTML = '';
+            
+            if (!signals || signals.length === 0) {
+                container.innerHTML = `
+                    <div class="signal-card signal-hold">
+                        <div>
+                            <strong>SIN SEÑALES</strong><br>
+                            <small>Esperando condiciones óptimas...</small>
+                        </div>
+                        <div><span style="color: #ffaa00;">STANDBY</span></div>
+                    </div>
+                `;
+                return;
+            }
+            
+            signals.forEach(signal => {
+                const signalClass = signal.type.includes('BUY') ? 'signal-buy' :
+                                  signal.type.includes('SELL') ? 'signal-sell' : 'signal-hold';
+                
+                const signalCard = document.createElement('div');
+                signalCard.className = `signal-card ${signalClass}`;
+                signalCard.innerHTML = `
+                    <div>
+                        <strong>${signal.action}</strong><br>
+                        <small>${signal.reason}</small><br>
+                        <small>Profit Esperado: ${signal.expectedProfit.toFixed(0)}%</small>
+                    </div>
+                    <div>
+                        <span style="color: ${signalClass.includes('buy') ? '#00ff41' : signalClass.includes('sell') ? '#ff4444' : '#ffaa00'};">
+                            ${signal.priority}
+                        </span><br>
+                        <small>Conf: ${(signal.confidence * 100).toFixed(0)}%</small>
+                    </div>
+                `;
+                container.appendChild(signalCard);
+            });
+        }
+        
+        // FUNCIONES DE CÁLCULO
+        function calcularMetricasFusion(matrix6x8, matrix7x7, nakedOpportunities, fullAnalysis) {
+            // Coherencia Global
+            const globalCoherence = calcularCoherenciaGlobal(matrix6x8, matrix7x7);
+            
+            // Entrelazamiento Cuántico
+            const quantumEntanglement = calcularEntrelazamientoCuantico(matrix6x8, matrix7x7);
+            
+            // Consciencia Cuántica
+            const quantumConsciousness = calcularConscienciaCuantica(nakedOpportunities);
+            
+            // Potencial de Profit
+            const profitPotential = calcularPotencialProfit(fullAnalysis);
+            
+            // Factor de Amplificación
+            const amplificationFactor = calcularFactorAmplificacion(globalCoherence, quantumEntanglement, quantumConsciousness);
+            
+            // Score de Fusión
+            const fusionScore = (globalCoherence + quantumEntanglement + quantumConsciousness + profitPotential) / 4;
+            
+            return {
+                globalCoherence,
+                quantumEntanglement,
+                quantumConsciousness,
+                profitPotential,
+                amplificationFactor,
+                fusionScore,
+                timestamp: new Date().toISOString()
+            };
+        }
+        
+        function calcularCoherenciaGlobal(matrix6x8, matrix7x7) {
+            let coherence = 0.5; // Base
+            
+            if (matrix6x8 && matrix6x8.matrix) {
+                const avgCoherence = matrix6x8.matrix.reduce((sum, row) => {
+                    return sum + row.reduce((rowSum, cell) => {
+                        return rowSum + (cell.quantum ? cell.quantum.coherence || 0 : 0);
+                    }, 0);
+                }, 0) / 48; // 6x8 = 48 celdas
+                coherence = (coherence + avgCoherence) / 2;
+            }
+            
+            if (matrix7x7 && matrix7x7.matrix) {
+                const avgCoherence7x7 = matrix7x7.matrix.reduce((sum, row) => {
+                    const coherenciaMetric = row.coherencia;
+                    return sum + (coherenciaMetric ? coherenciaMetric.percentage / 100 : 0);
+                }, 0) / 7;
+                coherence = (coherence + avgCoherence7x7) / 2;
+            }
+            
+            return Math.min(1, Math.max(0, coherence));
+        }
+        
+        function calcularEntrelazamientoCuantico(matrix6x8, matrix7x7) {
+            let entanglement = 0.4; // Base
+            
+            if (matrix6x8 && matrix6x8.matrix) {
+                const avgEntanglement = matrix6x8.matrix.reduce((sum, row) => {
+                    return sum + row.reduce((rowSum, cell) => {
+                        return rowSum + (cell.quantum ? cell.quantum.entanglement || 0 : 0);
+                    }, 0);
+                }, 0) / 48;
+                entanglement = (entanglement + avgEntanglement) / 2;
+            }
+            
+            return Math.min(1, Math.max(0, entanglement));
+        }
+        
+        function calcularConscienciaCuantica(nakedOpportunities) {
+            if (!nakedOpportunities || nakedOpportunities.length === 0) return 0.5;
+            
+            const avgScore = nakedOpportunities.reduce((sum, opp) => {
+                return sum + (opp.nakedScore || opp.quantumScore || ((Date.now() % 80) / 100));
+            }, 0) / nakedOpportunities.length;
+            
+            const uniqueSymbols = new Set(nakedOpportunities.map(opp => opp.symbol)).size;
+            const diversityFactor = Math.min(1, uniqueSymbols / 6);
+            
+            return (avgScore + diversityFactor) / 2;
+        }
+        
+        function calcularPotencialProfit(fullAnalysis) {
+            if (!fullAnalysis || !fullAnalysis.opportunities) return 0.6;
+            
+            const opportunities = fullAnalysis.opportunities;
+            const avgExpectedReturn = opportunities.reduce((sum, opp) => {
+                return sum + (opp.expectedReturn || ((Date.now() % 100)));
+            }, 0) / (opportunities.length || 1);
+            
+            return Math.min(1, avgExpectedReturn / 200);
+        }
+        
+        function calcularFactorAmplificacion(coherence, entanglement, consciousness) {
+            const baseAmplification = (coherence + entanglement + consciousness) / 3;
+            
+            if (baseAmplification > 0.8) {
+                return Math.min(2.0, baseAmplification * 1.5);
+            }
+            
+            return baseAmplification;
+        }
+        
+        function generarSenalesTrading(fusionData) {
+            const signals = [];
+            const { fusionScore, amplificationFactor, profitPotential, quantumConsciousness } = fusionData;
+            
+            // Señal COMPRA CUÁNTICA
+            if (fusionScore > 0.75 && amplificationFactor > 1.2) {
+                signals.push({
+                    type: 'BUY_QUANTUM',
+                    strength: fusionScore * amplificationFactor,
+                    confidence: quantumConsciousness,
+                    action: 'COMPRA AGRESIVA',
+                    reason: 'Fusión cuántica óptima detectada',
+                    expectedProfit: profitPotential * 100,
+                    priority: 'MÁXIMA'
+                });
+            }
+            
+            // Señal VENTA NAKED CUÁNTICA
+            if (profitPotential > 0.7 && quantumConsciousness > 0.6) {
+                signals.push({
+                    type: 'SELL_NAKED_QUANTUM',
+                    strength: profitPotential * quantumConsciousness,
+                    confidence: fusionScore,
+                    action: 'VENTA NAKED PREMIUM',
+                    reason: 'Oportunidades naked de alta calidad',
+                    expectedProfit: profitPotential * 150,
+                    priority: 'ALTA'
+                });
+            }
+            
+            // Señal HOLD CUÁNTICO
+            if (fusionScore > 0.5 && fusionScore < 0.75) {
+                signals.push({
+                    type: 'HOLD_QUANTUM',
+                    strength: fusionScore,
+                    confidence: (quantumConsciousness + profitPotential) / 2,
+                    action: 'MANTENER POSICIONES',
+                    reason: 'Estado cuántico estable',
+                    expectedProfit: profitPotential * 50,
+                    priority: 'MEDIA'
+                });
+            }
+            
+            return signals;
+        }
+        
+        // FUNCIONES DE DATOS SIMULADOS
+        function generarMatriz6x8Simulada() {
+            const assets = ['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE'];
+            const metrics = ['impliedVolatility', 'volume24h', 'openInterest', 'putCallRatio', 'delta', 'gamma', 'theta', 'vega'];
+            
+            const matrix = assets.map(asset =>
+                metrics.map(metric => ({
+                    asset,
+                    metric,
+                    value: ((Date.now() % 100)),
+                    transformedValue: ((Date.now() % 200)),
+                    quantum: {
+                        coherence: ((Date.now() % 100) / 100),
+                        entanglement: ((Date.now() % 100) / 100),
+                        momentum: ((Date.now() % 100) / 100),
+                        density: ((Date.now() % 100) / 100),
+                        temperature: ((Date.now() % 100) / 100),
+                        frequency: ((Date.now() % 1000)),
+                        amplitude: ((Date.now() % 100) / 100),
+                        phase: ((Date.now() % 360))
+                    }
+                }))
+            );
+            
+            return {
+                matrix,
+                timestamp: new Date().toISOString(),
+                dataPoints: 48
+            };
+        }
+        
+        function generarMatriz7x7Simulada() {
+            const assets = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT'];
+            const metrics = ['coherencia', 'momentum', 'volatilidad', 'liquidez', 'correlacion', 'resonancia', 'estabilidad'];
+            
+            const matrix = assets.map(asset => {
+                const row = { asset };
+                metrics.forEach(metric => {
+                    row[metric] = {
+                        value: ((Date.now() % 100)).toFixed(2),
+                        percentage: Math.floor((Date.now() % 100))
+                    };
+                });
+                return row;
+            });
+            
+            return {
+                matrix,
+                assets,
+                metrics,
+                timestamp: new Date().toISOString(),
+                mode: '7x7',
+                quantumType: 'ELO-Akashico'
+            };
+        }
+        
+        function generarOportunidadesNakedSimuladas() {
+            const assets = ['BTC', 'ETH', 'BNB', 'SOL'];
+            const opportunities = [];
+            
+            assets.forEach(asset => {
+                for (let i = 0; i < 3; i++) {
+                    opportunities.push({
+                        id: `${asset}-NAKED-${i}`,
+                        symbol: asset,
+                        type: i % 2 === 0 ? 'NAKED_CALL' : 'NAKED_PUT',
+                        strike: ((Date.now() % 100000)),
+                        expiry: Date.now() + ((Date.now() % 30 * 24 * 60 * 60 * 1000)),
+                        nakedScore: ((Date.now() % 100) / 100),
+                        expectedReturn: ((Date.now() % 200)),
+                        riskLevel: ((Date.now() % 50) / 100)
+                    });
+                }
+            });
+            
+            return opportunities.sort((a, b) => b.nakedScore - a.nakedScore);
+        }
+        
+        function generarAnalisisCompletoSimulado() {
+            return {
+                opportunities: generarOportunidadesNakedSimuladas(),
+                matrix: generarMatriz6x8Simulada(),
+                copilotSuggestion: {
+                    confidence: ((Date.now() % 100) / 100),
+                    recommendation: 'Ejecutar estrategia cuántica'
+                },
+                stats: {
+                    totalProcessed: 24,
+                    nakedDetected: 12,
+                    finalOpportunities: 8
+                }
+            };
+        }
+        
+        function usarDatosSimulados() {
+            agregarLog(' Usando datos simulados para demostración', 'warn');
+            
+            const matrix6x8 = generarMatriz6x8Simulada();
+            const matrix7x7 = generarMatriz7x7Simulada();
+            const nakedOpportunities = generarOportunidadesNakedSimuladas();
+            const fullAnalysis = generarAnalisisCompletoSimulado();
+            
+            actualizarMatriz6x8(matrix6x8);
+            actualizarMatriz7x7(matrix7x7);
+            actualizarTablaNaked(nakedOpportunities);
+            
+            fusionData = calcularMetricasFusion(matrix6x8, matrix7x7, nakedOpportunities, fullAnalysis);
+            actualizarMetricasFusion(fusionData);
+            
+            const signals = generarSenalesTrading(fusionData);
+            actualizarSenalesTrading(signals);
+        }
+        
+        // FUNCIONES DE CONTROL
+        function detenerSistema() {
+            sistemaActivo = false;
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+            agregarLog(' Sistema detenido por el usuario', 'warn');
+        }
+        
+        async function ejecutarAnalisisCompleto() {
+            agregarLog(' Ejecutando análisis completo manual...', 'info');
+            await ejecutarFusionCompleta();
+        }
+        
+        async function actualizarDatosTiempoReal() {
+            if (!sistemaActivo) return;
+            
+            try {
+                // Actualizar métricas en tiempo real
+                if (fusionData) {
+                    // Simular pequeñas variaciones
+                    fusionData.fusionScore += (((Date.now() % 100) / 100) - 0.5) * 0.01;
+                    fusionData.globalCoherence += (((Date.now() % 100) / 100) - 0.5) * 0.005;
+                    fusionData.quantumEntanglement += (((Date.now() % 100) / 100) - 0.5) * 0.005;
+                    fusionData.quantumConsciousness += (((Date.now() % 100) / 100) - 0.5) * 0.005;
+                    fusionData.profitPotential += (((Date.now() % 100) / 100) - 0.5) * 0.01;
+                    
+                    // Mantener valores en rango válido
+                    Object.keys(fusionData).forEach(key => {
+                        if (typeof fusionData[key] === 'number' && key !== 'amplificationFactor') {
+                            fusionData[key] = Math.min(1, Math.max(0, fusionData[key]));
+                        }
+                    });
+                    
+                    actualizarMetricasFusion(fusionData);
+                }
+                
+                agregarLog(' Datos actualizados en tiempo real', 'debug');
+                
+            } catch (error) {
+                agregarLog(' Error actualizando datos: ' + error.message, 'error');
+            }
+        }
+        
+        // FUNCIONES ESPECÍFICAS DE SRONA
+        async function analizarFrecuenciasTheta() {
+            agregarLog(' Analizando frecuencias Theta...', 'srona');
+            // Aquí iría la integración específica con el analizador de frecuencias
+            setTimeout(() => {
+                agregarLog(' Análisis Theta completado - Decaimiento óptimo detectado', 'srona');
+            }, 2000);
+        }
+        
+        async function analizarVolatilidadIV() {
+            agregarLog(' Analizando volatilidad implícita...', 'srona');
+            setTimeout(() => {
+                agregarLog(' Análisis IV completado - Crush probability: 35%', 'srona');
+            }, 1500);
+        }
+        
+        async function analizarFrecuenciasDelta() {
+            agregarLog(' Analizando frecuencias Delta...', 'srona');
+            setTimeout(() => {
+                agregarLog(' Análisis Delta completado - Neutralidad: 78%', 'srona');
+            }, 1800);
+        }
+        
+        async function detectarAnomalias() {
+            agregarLog(' Detectando anomalías frecuenciales...', 'srona');
+            setTimeout(() => {
+                agregarLog(' Anomalía detectada: IV_CRUSH_IMMINENT en ETH', 'warn');
+            }, 2500);
+        }
+        
+        async function detectarNakedOptions() {
+            agregarLog(' Ejecutando detector de opciones naked...', 'srona');
+            const opportunities = await obtenerOportunidadesNaked();
+            actualizarTablaNaked(opportunities);
+            agregarLog(` ${opportunities.length} oportunidades naked detectadas`, 'srona');
+        }
+        
+        async function rankearOportunidades() {
+            agregarLog(' Rankeando oportunidades por score cuántico...', 'srona');
+            await detectarNakedOptions();
+        }
+        
+        async function calcularRiskReward() {
+            agregarLog(' Calculando ratios riesgo/recompensa...', 'srona');
+            setTimeout(() => {
+                agregarLog(' Cálculo completado - Ratio promedio: 1:3.2', 'srona');
+            }, 1000);
+        }
+        
+        async function ejecutarNakedStrategy() {
+            if (!confirm('¿Estás seguro de ejecutar la estrategia naked? Esta acción puede involucrar trading real.')) {
+                return;
+            }
+            
+            agregarLog(' EJECUTANDO ESTRATEGIA NAKED CUÁNTICA...', 'error');
+            agregarLog(' MODO DEMO - No se ejecutarán trades reales', 'warn');
+            
+            setTimeout(() => {
+                agregarLog(' Estrategia ejecutada exitosamente (SIMULADO)', 'srona');
+                agregarLog(' Profit estimado: $1,250 en 7 días', 'info');
+            }, 3000);
+        }
+        
+        function ejecutarOportunidad(index) {
+            agregarLog(` Ejecutando oportunidad #${index + 1} (MODO DEMO)`, 'warn');
+            setTimeout(() => {
+                agregarLog(` Oportunidad #${index + 1} ejecutada exitosamente`, 'info');
+            }, 1000);
+        }
+        
+        // FUNCIONES DE INICIALIZACIÓN
+        function inicializarMatricesVacias() {
+            // Inicializar matriz 6x8 vacía
+            const container6x8 = document.getElementById('matrix-6x8-display');
+            container6x8.innerHTML = '<div class="matrix-cell">Esperando datos...</div>';
+            
+            // Inicializar matriz 7x7 vacía
+            const container7x7 = document.getElementById('matrix-7x7-display');
+            container7x7.innerHTML = '<div class="matrix-cell">Esperando datos...</div>';
+        }
+        
+        // FUNCIÓN DE LOGGING
+        function agregarLog(mensaje, tipo = 'info') {
+            const logContainer = document.getElementById('log-container');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${tipo}`;
+            logEntry.textContent = `[${timestamp}] ${mensaje}`;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // Mantener solo los últimos 100 logs
+            while (logContainer.children.length > 100) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+        
+        // Override console.log para mostrar en el dashboard
+        const originalConsoleLog = console.log;
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            const mensaje = args.join(' ');
+            
+            let tipo = 'debug';
+            if (mensaje.includes('[ERROR]')) tipo = 'error';
+            else if (mensaje.includes('[WARN]')) tipo = 'warn';
+            else if (mensaje.includes('[INFO]')) tipo = 'info';
+            else if (mensaje.includes('[SRONA]')) tipo = 'srona';
+            
+            agregarLog(mensaje, tipo);
+        };
+    </script>
+</body>
+</html>

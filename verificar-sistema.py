@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""
+VERIFICACIÓN RÁPIDA - SISTEMA QBTC BANDA 46
+Script para verificar el estado de todos los servicios
+"""
+
+import requests
+import time
+from datetime import datetime
+
+def print_banner():
+    """Imprime el banner del sistema."""
+    print("=" * 80)
+    print("[SEARCH] VERIFICACIÓN RÁPIDA - SISTEMA QBTC BANDA 46")
+    print("=" * 80)
+    print(f" Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("[ENDPOINTS] Banda: 46")
+    print(" Puertos: 4601-4606")
+    print("=" * 80)
+
+def check_service(name, url, endpoint=""):
+    """Verifica un servicio específico."""
+    try:
+        full_url = f"{url}{endpoint}"
+        response = requests.get(full_url, timeout=5)
+        
+        if response.status_code == 200:
+            print(f"[OK] {name} - {full_url} - FUNCIONANDO")
+            return True
+        else:
+            print(f"[ERROR] {name} - {full_url} - ERROR {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] {name} - {url} - NO RESPONDE: {e}")
+        return False
+
+def main():
+    """Función principal."""
+    print_banner()
+    
+    services = [
+        {
+            "name": "SRONA API",
+            "url": "http://localhost:4601",
+            "endpoint": "/health"
+        },
+        {
+            "name": "QBTC Core",
+            "url": "http://localhost:4602",
+            "endpoint": "/api/futures-data"
+        },
+        {
+            "name": "Frontend API",
+            "url": "http://localhost:4603",
+            "endpoint": "/health"
+        },
+        {
+            "name": "Vigo Futures",
+            "url": "http://localhost:4604",
+            "endpoint": "/health"
+        },
+        {
+            "name": "Dashboard QBTC",
+            "url": "http://localhost:4605",
+            "endpoint": "/"
+        },
+        {
+            "name": "Monitor de Gráficos",
+            "url": "http://localhost:4606",
+            "endpoint": "/"
+        }
+    ]
+    
+    print("[SEARCH] VERIFICANDO SERVICIOS")
+    print("-" * 50)
+    
+    working_services = 0
+    total_services = len(services)
+    
+    for service in services:
+        if check_service(service["name"], service["url"], service["endpoint"]):
+            working_services += 1
+        time.sleep(0.5)
+    
+    print("\n" + "=" * 80)
+    print("[DATA] RESUMEN DEL SISTEMA")
+    print("=" * 80)
+    
+    print(f"[OK] Servicios funcionando: {working_services}/{total_services}")
+    
+    if working_services == total_services:
+        print(" ¡SISTEMA COMPLETAMENTE FUNCIONAL!")
+        print("[START] Todos los servicios están respondiendo correctamente")
+    elif working_services > 0:
+        print("[WARNING] SISTEMA PARCIALMENTE FUNCIONAL")
+        print(f" {working_services} de {total_services} servicios funcionando")
+    else:
+        print("[ERROR] SISTEMA NO FUNCIONAL")
+        print(" Ningún servicio está respondiendo")
+    
+    print("\n[API] ACCESO A SERVICIOS:")
+    print(" SRONA API: http://localhost:4601")
+    print(" QBTC Core: http://localhost:4602")
+    print(" Frontend API: http://localhost:4603")
+    print(" Vigo Futures: http://localhost:4604")
+    print(" Dashboard QBTC: http://localhost:4605")
+    print(" Monitor de Gráficos: http://localhost:4606")
+    
+    print("\n[LIST] COMANDOS ÚTILES:")
+    print(" Verificar: python verificar-sistema.py")
+    print(" Detener: taskkill /F /IM python.exe & taskkill /F /IM node.exe")
+    print(" Reiniciar: python deploy-banda-46-simple.py")
+    
+    print("\n" + "=" * 80)
+
+if __name__ == "__main__":
+    main()

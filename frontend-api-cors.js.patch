@@ -1,0 +1,25 @@
+/**
+ * Parche para añadir soporte CORS al servidor API frontend
+ */
+
+// Buscar la función handleRequest y modificar para añadir headers CORS
+// Alrededor de la línea 200-250
+
+    async handleRequest(req, res) {
+        try {
+            // Añadir headers CORS
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control');
+            
+            // Manejar preflight OPTIONS
+            if (req.method === 'OPTIONS') {
+                res.writeHead(204);
+                res.end();
+                return;
+            }
+            
+            const parsedUrl = url.parse(req.url, true);
+            const pathname = parsedUrl.pathname;
+            
+            // Resto del código existente...

@@ -1,0 +1,368 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * Manual Liquidation Monitor
+ * 
+ * Este script monitorea las alertas de liquidación manual y proporciona
+ * herramientas para gestionar posiciones que requieren cierre manual.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+class ManualLiquidationMonitor {
+    constructor() {
+        this.alertsFile = './manual-liquidation-alerts.log';
+        this.processedAlerts = new Set();
+        this.activeAlerts = new Map();
+    }
+
+    /**
+     * Iniciar el monitor de alertas
+     */
+    start() {
+        console.log('[ALERT] Iniciando Monitor de Liquidación Manual...');
+        console.log('[LIST] Monitoreando alertas en:', this.alertsFile);
+        
+        // Cargar alertas existentes
+        this.loadExistingAlerts();
+        
+        // Monitorear nuevas alertas cada 10 segundos
+        setInterval(() => {
+            this.checkForNewAlerts();
+        }, 10000);
+        
+        // Mostrar resumen cada minuto
+        setInterval(() => {
+            this.showAlertsSummary();
+        }, 60000);
+        
+        console.log('[OK] Monitor iniciado correctamente');
+        console.log('');
+    }
+
+    /**
+     * Cargar alertas existentes del archivo de log
+     */
+    loadExistingAlerts() {
+        try {
+            if (!fs.existsSync(this.alertsFile)) {
+                console.log(' No se encontraron alertas previas');
+                return;
+            }
+
+            const content = fs.readFileSync(this.alertsFile, 'utf8');
+            const lines = content.trim().split('\n').filter(line => line.trim());
+            
+            for (const line of lines) {
+                try {
+                    const alert = JSON.parse(line);
+                    if (alert.type === 'MANUAL_LIQUIDATION_ALERT') {
+                        const alertId = this.generateAlertId(alert);
+                        this.processedAlerts.add(alertId);
+                        this.activeAlerts.set(alertId, alert);
+                    }
+                } catch (e) {
+                    // Ignorar líneas malformadas
+                }
+            }
+
+            console.log(`[DATA] Cargadas ${this.activeAlerts.size} alertas existentes`);
+        } catch (error) {
+            console.warn('[WARNING] Error cargando alertas existentes:', error.message);
+        }
+    }
+
+    /**
+     * Verificar nuevas alertas
+     */
+    checkForNewAlerts() {
+        try {
+            if (!fs.existsSync(this.alertsFile)) {
+                return;
+            }
+
+            const content = fs.readFileSync(this.alertsFile, 'utf8');
+            const lines = content.trim().split('\n').filter(line => line.trim());
+            
+            for (const line of lines) {
+                try {
+                    const alert = JSON.parse(line);
+                    if (alert.type === 'MANUAL_LIQUIDATION_ALERT') {
+                        const alertId = this.generateAlertId(alert);
+                        
+                        if (!this.processedAlerts.has(alertId)) {
+                            this.processNewAlert(alert);
+                            this.processedAlerts.add(alertId);
+                            this.activeAlerts.set(alertId, alert);
+                        }
+                    }
+                } catch (e) {
+                    // Ignorar líneas malformadas
+                }
+            }
+        } catch (error) {
+            console.warn('[WARNING] Error verificando nuevas alertas:', error.message);
+        }
+    }
+
+    /**
+     * Procesar nueva alerta
+     */
+    processNewAlert(alert) {
+        console.log('\n[ALERT] NUEVA ALERTA DE LIQUIDACIÓN MANUAL:');
+        console.log('=' .repeat(60));
+        console.log(`[TIME] Timestamp: ${alert.timestamp}`);
+        console.log(`[DATA] Posición: ${alert.position.symbol} ${alert.position.side} ${alert.position.quantity}`);
+        console.log(`[MONEY] Precio entrada: ${alert.position.entryPrice}`);
+        console.log(`[ENDPOINTS] Estrategia: ${alert.position.strategy}`);
+        console.log(`[UP] Score cuántico: ${(alert.position.quantumScore * 100).toFixed(1)}%`);
+        console.log('');
+        console.log(' ACCIÓN REQUERIDA:');
+        console.log('1. Abrir Binance App');
+        console.log('2. Ir a Futuros > Posiciones');
+        console.log('3. Localizar la posición y cerrarla manualmente');
+        console.log('4. Confirmar el cierre en la aplicación');
+        console.log('=' .repeat(60));
+        console.log('');
+        
+        // Reproducir sonido de alerta (si está disponible)
+        this.playAlertSound();
+    }
+
+    /**
+     * Generar ID único para la alerta
+     */
+    generateAlertId(alert) {
+        const position = alert.position;
+        return `${position.symbol}_${position.id}_${alert.timestamp}`;
+    }
+
+    /**
+     * Mostrar resumen de alertas activas
+     */
+    showAlertsSummary() {
+        if (this.activeAlerts.size === 0) {
+            return;
+        }
+
+        console.log('\n[LIST] RESUMEN DE ALERTAS ACTIVAS:');
+        console.log('-'.repeat(50));
+        
+        const alertsByReason = new Map();
+        const alertsBySymbol = new Map();
+        
+        for (const [alertId, alert] of this.activeAlerts) {
+            // Agrupar por motivo
+            const reason = this.extractReasonFromAlert(alert);
+            alertsByReason.set(reason, (alertsByReason.get(reason) || 0) + 1);
+            
+            // Agrupar por símbolo
+            const symbol = alert.position.symbol;
+            alertsBySymbol.set(symbol, (alertsBySymbol.get(symbol) || 0) + 1);
+        }
+        
+        console.log(`[DATA] Total alertas activas: ${this.activeAlerts.size}`);
+        console.log('');
+        
+        console.log('Por motivo:');
+        for (const [reason, count] of alertsByReason) {
+            console.log(`  ${this.getReasonEmoji(reason)} ${reason}: ${count}`);
+        }
+        
+        console.log('');
+        console.log('Por símbolo:');
+        for (const [symbol, count] of alertsBySymbol) {
+            console.log(`  [UP] ${symbol}: ${count}`);
+        }
+        
+        console.log('-'.repeat(50));
+        console.log('');
+    }
+
+    /**
+     * Extraer motivo de la alerta
+     */
+    extractReasonFromAlert(alert) {
+        const message = alert.alert || '';
+        if (message.includes('Take Profit')) return 'TAKE_PROFIT';
+        if (message.includes('Stop Loss')) return 'STOP_LOSS';
+        if (message.includes('Tiempo límite')) return 'TIME_LIMIT';
+        if (message.includes('expiración')) return 'NEAR_EXPIRY';
+        if (message.includes('Pérdida significativa')) return 'SIGNIFICANT_LOSS';
+        return 'UNKNOWN';
+    }
+
+    /**
+     * Obtener emoji para el motivo
+     */
+    getReasonEmoji(reason) {
+        const emojis = {
+            'TAKE_PROFIT': '[OK]',
+            'STOP_LOSS': '',
+            'TIME_LIMIT': '[TIME]',
+            'NEAR_EXPIRY': '',
+            'SIGNIFICANT_LOSS': '[DOWN]',
+            'UNKNOWN': ''
+        };
+        return emojis[reason] || '';
+    }
+
+    /**
+     * Reproducir sonido de alerta (placeholder)
+     */
+    playAlertSound() {
+        // En un entorno real, aquí se podría reproducir un sonido
+        // o enviar una notificación push
+        console.log(' [SONIDO DE ALERTA]');
+    }
+
+    /**
+     * Marcar alerta como resuelta
+     */
+    resolveAlert(alertId) {
+        if (this.activeAlerts.has(alertId)) {
+            this.activeAlerts.delete(alertId);
+            console.log(`[OK] Alerta ${alertId} marcada como resuelta`);
+        }
+    }
+
+    /**
+     * Listar todas las alertas activas
+     */
+    listActiveAlerts() {
+        console.log('\n[LIST] ALERTAS ACTIVAS DETALLADAS:');
+        console.log('=' .repeat(80));
+        
+        if (this.activeAlerts.size === 0) {
+            console.log('[OK] No hay alertas activas');
+            return;
+        }
+        
+        let index = 1;
+        for (const [alertId, alert] of this.activeAlerts) {
+            const position = alert.position;
+            const reason = this.extractReasonFromAlert(alert);
+            const emoji = this.getReasonEmoji(reason);
+            
+            console.log(`${index}. ${emoji} ${reason}`);
+            console.log(`   [DATA] Posición: ${position.symbol} ${position.side} ${position.quantity}`);
+            console.log(`   [MONEY] Precio: ${position.entryPrice}`);
+            console.log(`   [TIME] Timestamp: ${new Date(alert.timestamp).toLocaleString()}`);
+            console.log(`    ID: ${alertId}`);
+            console.log('');
+            index++;
+        }
+        
+        console.log('=' .repeat(80));
+    }
+
+    /**
+     * Limpiar alertas antiguas (más de 7 días)
+     */
+    cleanupOldAlerts() {
+        const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+        let cleaned = 0;
+        
+        for (const [alertId, alert] of this.activeAlerts) {
+            const alertTime = new Date(alert.timestamp).getTime();
+            if (alertTime < sevenDaysAgo) {
+                this.activeAlerts.delete(alertId);
+                cleaned++;
+            }
+        }
+        
+        if (cleaned > 0) {
+            console.log(` Limpiadas ${cleaned} alertas antiguas`);
+        }
+    }
+}
+
+// Funciones de utilidad para uso desde línea de comandos
+function showHelp() {
+    console.log(`
+[LIST] Manual Liquidation Monitor - Comandos disponibles:
+
+node manual-liquidation-monitor.js [comando]
+
+Comandos:
+  start     - Iniciar el monitor en tiempo real
+  list      - Listar todas las alertas activas
+  cleanup   - Limpiar alertas antiguas (>7 días)
+  help      - Mostrar esta ayuda
+
+Ejemplos:
+  node manual-liquidation-monitor.js start
+  node manual-liquidation-monitor.js list
+  node manual-liquidation-monitor.js cleanup
+`);
+}
+
+// Ejecución desde línea de comandos
+if (require.main === module) {
+    const command = process.argv[2] || 'start';
+    const monitor = new ManualLiquidationMonitor();
+    
+    switch (command.toLowerCase()) {
+        case 'start':
+            monitor.start();
+            break;
+        case 'list':
+            monitor.loadExistingAlerts();
+            monitor.listActiveAlerts();
+            break;
+        case 'cleanup':
+            monitor.loadExistingAlerts();
+            monitor.cleanupOldAlerts();
+            break;
+        case 'help':
+        default:
+            showHelp();
+            break;
+    }
+}
+
+module.exports = ManualLiquidationMonitor;

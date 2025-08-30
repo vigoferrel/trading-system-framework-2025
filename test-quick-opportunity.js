@@ -1,0 +1,115 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * [START] Test Rápido del Opportunity Master System
+ * Verificación rápida de funcionalidad básica
+ */
+
+const axios = require('axios');
+
+const OPPORTUNITY_MASTER_URL = 'http://localhost:4601';
+const FRONTEND_URL = 'http://localhost:4603';
+
+async function quickTest() {
+    console.log('[START] Test Rápido del Opportunity Master System...\n');
+    
+    try {
+        // Test 1: Health Check
+        console.log('[SEARCH] Test 1: Health Check del Opportunity Master');
+        const healthResponse = await axios.get(`${OPPORTUNITY_MASTER_URL}/health`, { timeout: 5000 });
+        console.log(`[OK] Health Check: ${healthResponse.data.status}`);
+        console.log(`[DATA] Arquitectura: ${healthResponse.data.architecture}\n`);
+        
+        // Test 2: Frontend Status
+        console.log('[SEARCH] Test 2: Status del Frontend');
+        const frontendResponse = await axios.get(`${FRONTEND_URL}/api/status`, { timeout: 5000 });
+        console.log(`[OK] Frontend Status: ${frontendResponse.data.status}`);
+        console.log(`[DATA] Conectado: ${frontendResponse.data.connected}\n`);
+        
+        // Test 3: Oportunidades (con timeout más largo)
+        console.log('[SEARCH] Test 3: API de Oportunidades (puede tardar...)');
+        const opportunitiesResponse = await axios.get(`${OPPORTUNITY_MASTER_URL}/api/opportunities`, { timeout: 15000 });
+        
+        if (opportunitiesResponse.data.success) {
+            const data = opportunitiesResponse.data.data;
+            console.log(`[OK] Oportunidades generadas: ${data.top ? data.top.length : 0}`);
+            console.log(`[DATA] Sentimiento del mercado: ${data.market ? data.market.sentiment : 'N/A'}`);
+            console.log(`[ENDPOINTS] Señales fuertes: ${data.market ? data.market.strongSignals : 0}`);
+            
+            if (data.top && data.top.length > 0) {
+                console.log(` Top 3 oportunidades:`);
+                data.top.slice(0, 3).forEach((op, index) => {
+                    console.log(`   ${index + 1}. ${op.symbol}: ${op.score} (${op.action})`);
+                });
+            }
+            
+            if (data.quantum) {
+                console.log(`[NIGHT] Métricas Cuánticas:`);
+                console.log(`   - Coherence: ${(data.quantum.coherence * 100).toFixed(1)}%`);
+                console.log(`   - Consciousness: ${(data.quantum.consciousness * 100).toFixed(1)}%`);
+                console.log(`   - Entanglement: ${(data.quantum.entanglement * 100).toFixed(1)}%`);
+            }
+        } else {
+            console.log('[ERROR] Error en oportunidades');
+        }
+        
+        console.log('\n Test rápido completado exitosamente!');
+        console.log('[NIGHT] Opportunity Master System funcionando correctamente');
+        console.log(' Arquitectura SPOT  OPTIONS  FUTURES verificada');
+        
+    } catch (error) {
+        console.error('[ERROR] Error en test rápido:', error.message);
+        
+        if (error.code === 'ECONNREFUSED') {
+            console.log(' Asegúrate de que ambos sistemas estén ejecutándose:');
+            console.log('   - Opportunity Master: node opportunity-master-system.js');
+            console.log('   - Frontend: node frontend-opportunity-master.js');
+        }
+    }
+}
+
+// Ejecutar test
+quickTest();

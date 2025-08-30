@@ -1,0 +1,268 @@
+QUANTUM TRADING SYSTEM TEST RESULTS
+========================================
+Test Start Time: 2025-08-10T18:20:21.252Z
+Test Duration: 300000ms
+Test Symbols: BTC, ETH, BNB, SOL, XRP, DOGE
+Real Trading: false
+Test Iterations: 100
+
+
+SCENARIO: Quantum Coherence Test
+Description: Validates the quantum coherence of the system across all symbols
+Status: FAILED
+Timestamp: 2025-08-10T18:20:21.257Z
+Metrics: {
+  "averageCoherence": 0.4444884009198653,
+  "coherenceThreshold": 0.6,
+  "measurements": 6
+}
+
+SCENARIO: Buy/Sell Logic Test
+Description: Tests the logic of buy and sell operations with quantum signals
+Status: PASSED
+Timestamp: 2025-08-10T18:20:33.727Z
+Metrics: {
+  "buySuccessRate": 0.65,
+  "sellSuccessRate": 0.35,
+  "overallSuccessRate": 1,
+  "successThreshold": 0.8,
+  "totalOperations": 20
+}
+
+SCENARIO: Stop Loss Mechanism Test
+Description: Validates stop loss triggers and effectiveness
+Status: PASSED
+Timestamp: 2025-08-10T18:20:33.729Z
+Metrics: {
+  "stopLossTriggerRate": 1,
+  "effectivenessThreshold": 0.9,
+  "totalPositions": 10,
+  "stopLossTriggered": 10
+}
+
+SCENARIO: Take Profit Mechanism Test
+Description: Validates take profit triggers and effectiveness
+Status: PASSED
+Timestamp: 2025-08-10T18:20:33.730Z
+Metrics: {
+  "takeProfitTriggerRate": 1,
+  "effectivenessThreshold": 0.9,
+  "totalPositions": 10,
+  "takeProfitTriggered": 10
+}
+
+SCENARIO: Quantum Signal Quality Test
+Description: Tests the quality and reliability of quantum trading signals
+Status: FAILED
+Timestamp: 2025-08-10T18:20:38.693Z
+Metrics: {
+  "signalQualityRate": 0,
+  "avgSignalQuality": 0.4616491695897879,
+  "qualityThreshold": 0.7,
+  "totalSignals": 120,
+  "highQualitySignals": 0
+}
+
+SCENARIO: Risk Management Test
+Description: Validates risk management mechanisms and position sizing
+Status: FAILED
+Timestamp: 2025-08-10T18:20:38.695Z
+Metrics: {
+  "riskManagementRate": 0,
+  "avgRiskScore": 0.1343080032731356,
+  "riskThreshold": 0.9,
+  "totalPositions": 15,
+  "riskManagedPositions": 0
+}
+
+SCENARIO: Market Adaptation Test
+Description: Tests system adaptation to changing market conditions
+Status: PASSED
+Timestamp: 2025-08-10T18:20:58.069Z
+Metrics: {
+  "avgAdaptationScore": 0.9,
+  "adaptationThreshold": 0.7,
+  "totalScenarios": 5
+}
+
+SCENARIO: Quantum Efficiency Test
+Description: Measures quantum efficiency and computational advantage
+Status: PASSED
+Timestamp: 2025-08-10T18:20:58.080Z
+Metrics: {
+  "avgQuantumEfficiency": 2.1315972429282746,
+  "avgExecutionTime": 1.75,
+  "efficiencyThreshold": 0.75,
+  "algorithmCount": 4
+}
+
+SCENARIO: System Performance Test
+Description: Comprehensive performance testing under load
+Status: FAILED
+Timestamp: 2025-08-10T18:21:28.544Z
+Metrics: {
+  "operationsCompleted": 10,
+  "operationsPerSecond": 0.3282886313646959,
+  "errorRate": 0,
+  "performanceScore": 0.6241030118948853,
+  "performanceThreshold": 0.8,
+  "testDuration": 30461
+}
+
+SCENARIO: Quantum Signal Quality Test
+Description: Tests the quality and reliability of quantum trading signals
+Status: FAILED
+Timestamp: 2025-08-10T18:21:50.805Z
+Metrics: {
+  "signalQualityRate": 0,
+  "avgSignalQuality": 0.45957867624910714,
+  "qualityThreshold": 0.7,
+  "totalSignals": 120,
+  "highQualitySignals": 0
+}
+
+SCENARIO: Risk Management Test
+Description: Validates risk management mechanisms and position sizing
+Status: FAILED
+Timestamp: 2025-08-10T18:21:50.807Z
+Metrics: {
+  "riskManagementRate": 0,
+  "avgRiskScore": 0.12400528903256326,
+  "riskThreshold": 0.9,
+  "totalPositions": 15,
+  "riskManagedPositions": 0
+}
+
+SCENARIO: Market Adaptation Test
+Description: Tests system adaptation to changing market conditions
+Status: PASSED
+Timestamp: 2025-08-10T18:22:09.506Z
+Metrics: {
+  "avgAdaptationScore": 0.9,
+  "adaptationThreshold": 0.7,
+  "totalScenarios": 5
+}
+
+SCENARIO: Quantum Efficiency Test
+Description: Measures quantum efficiency and computational advantage
+Status: PASSED
+Timestamp: 2025-08-10T18:22:09.519Z
+Metrics: {
+  "avgQuantumEfficiency": 2.131572242928274,
+  "avgExecutionTime": 2.5,
+  "efficiencyThreshold": 0.75,
+  "algorithmCount": 4
+}
+
+SCENARIO: System Performance Test
+Description: Comprehensive performance testing under load
+Status: FAILED
+Timestamp: 2025-08-10T18:22:41.103Z
+Metrics: {
+  "operationsCompleted": 15,
+  "operationsPerSecond": 0.4749691270067446,
+  "errorRate": 0,
+  "performanceScore": 0.5627561730102966,
+  "performanceThreshold": 0.8,
+  "testDuration": 31581
+}
+
+SCENARIO: Optimized Strategy Test
+Description: Evaluates the optimized "do more with less" strategy
+Status: FAILED
+Timestamp: 2025-08-10T18:25:59.245Z
+Metrics: {
+  "winRate": 1,
+  "totalProfit": 641.6745833608431,
+  "avgProfitPerTrade": 10.694576389347386,
+  "efficiencyScore": 0.5359031568107188,
+  "strategyThreshold": 0.75,
+  "totalTrades": 60,
+  "successfulTrades": 60
+}
+
+COMPREHENSIVE TEST REPORT
+========================
+
+Test Summary:
+- Total Tests: 10
+- Passed Tests: 5
+- Failed Tests: 5
+- Success Rate: 50.00%
+- Test Duration: -1754849938.05 seconds
+
+System Metrics:
+- Average Coherence: 0.4445
+- Average Signal Quality: 0.4616
+- Average Win Rate: 100.00%
+- Total Profit: 641.67
+- Overall Success Rate: 50.00%
+
+Trading Operations:
+- Buy Orders: 13
+- Sell Orders: 7
+- Stop Loss Triggered: 10
+- Take Profit Triggered: 10
+- Failed Orders: 0
+
+System Health:
+- Memory Usage: 7.83MB
+- CPU Usage: 52.86%
+- Quantum Efficiency: 2.1316
+
+CONCLUSION:
+⚠️ The quantum trading system shows areas for improvement in specific test scenarios.
+
+RECOMMENDATIONS:
+- Improve quantum coherence by optimizing entanglement factors
+- Enhance signal quality through advanced quantum algorithms
+
+SCENARIO: Optimized Strategy Test
+Description: Evaluates the optimized "do more with less" strategy
+Status: FAILED
+Timestamp: 2025-08-10T18:27:09.569Z
+Metrics: {
+  "winRate": 1,
+  "totalProfit": 822.4977745556886,
+  "avgProfitPerTrade": 13.708296242594809,
+  "efficiencyScore": 0.5456943208086494,
+  "strategyThreshold": 0.75,
+  "totalTrades": 60,
+  "successfulTrades": 60
+}
+
+COMPREHENSIVE TEST REPORT
+========================
+
+Test Summary:
+- Total Tests: 10
+- Passed Tests: 5
+- Failed Tests: 5
+- Success Rate: 50.00%
+- Test Duration: -1754850021.25 seconds
+
+System Metrics:
+- Average Coherence: 0.4445
+- Average Signal Quality: 0.4596
+- Average Win Rate: 100.00%
+- Total Profit: 822.50
+- Overall Success Rate: 50.00%
+
+Trading Operations:
+- Buy Orders: 13
+- Sell Orders: 7
+- Stop Loss Triggered: 10
+- Take Profit Triggered: 10
+- Failed Orders: 0
+
+System Health:
+- Memory Usage: 8.04MB
+- CPU Usage: 78.84%
+- Quantum Efficiency: 2.1316
+
+CONCLUSION:
+⚠️ The quantum trading system shows areas for improvement in specific test scenarios.
+
+RECOMMENDATIONS:
+- Improve quantum coherence by optimizing entanglement factors
+- Enhance signal quality through advanced quantum algorithms

@@ -1,0 +1,85 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * Script de prueba para verificar endpoints de quantum factors
+ */
+
+const fetch = require('node-fetch');
+
+async function testQuantumFactors() {
+    console.log('[TEST] Probando endpoints de quantum factors...\n');
+    
+    try {
+        // Probar endpoint de quantum-factors
+        console.log('1. Probando /api/quantum-factors?symbol=BTCUSDT');
+        const response1 = await fetch('http://localhost:4603/api/quantum-factors?symbol=BTCUSDT');
+        const data1 = await response1.json();
+        console.log('Status:', response1.status);
+        console.log('Response:', JSON.stringify(data1, null, 2));
+        console.log('');
+        
+        // Probar endpoint de quantum-state
+        console.log('2. Probando /api/quantum-state');
+        const response2 = await fetch('http://localhost:4603/api/quantum-state');
+        const data2 = await response2.json();
+        console.log('Status:', response2.status);
+        console.log('Response:', JSON.stringify(data2, null, 2));
+        console.log('');
+        
+        // Probar endpoint de quantum-matrix
+        console.log('3. Probando /api/quantum-matrix');
+        const response3 = await fetch('http://localhost:4603/api/quantum-matrix');
+        const data3 = await response3.json();
+        console.log('Status:', response3.status);
+        console.log('Response:', JSON.stringify(data3, null, 2));
+        console.log('');
+        
+    } catch (error) {
+        console.error('[ERROR] Error en pruebas:', error.message);
+    }
+}
+
+testQuantumFactors();

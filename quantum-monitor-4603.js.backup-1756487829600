@@ -1,0 +1,556 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * QBTC Quantum Monitor Terminal - Puerto 4603
+ * Sistema de monitoreo avanzado para coherencia cuántica y métricas del sistema
+ */
+
+const express = require('express');
+const cors = require('cors');
+const WebSocket = require('ws');
+const fs = require('fs').promises;
+const path = require('path');
+
+class QuantumMonitorSystem {
+    constructor() {
+        this.app = express();
+        this.port = process.env.PORT || 4603;
+        this.wsServer = null;
+        this.clients = new Set();
+        
+        // Métricas del sistema
+        this.systemMetrics = {
+            quantumCoherence: 0.55,
+            consciousness: 0.45,
+            quantumScore: 0.21,
+            tradingSignals: 0,
+            activePositions: 0,
+            totalEquity: 130.02,
+            unrealizedPnL: -313.98,
+            lastUpdate: Date.now()
+        };
+        
+        // Historial de métricas
+        this.metricsHistory = [];
+        this.maxHistorySize = 1000;
+        
+        // Estado de servicios
+        this.serviceStatus = {
+            'quantum-core-4601': { status: 'active', lastPing: Date.now() },
+            'frontend-api-4602': { status: 'active', lastPing: Date.now() },
+            'leonardo-4604': { status: 'active', lastPing: Date.now() },
+            'websocket-integration': { status: 'pending', lastPing: 0 }
+        };
+        
+        this.initializeServer();
+        this.startMonitoring();
+    }
+
+    /**
+     * Inicializar servidor Express y WebSocket
+     */
+    initializeServer() {
+        // Middleware
+        this.app.use(cors({
+            origin: ['http://localhost:4601', 'http://localhost:4602', 'http://localhost:4604'],
+            credentials: true
+        }));
+        this.app.use(express.json());
+        this.app.use(express.static('public'));
+
+        // Rutas API
+        this.setupRoutes();
+        
+        // Iniciar servidor HTTP
+        const server = this.app.listen(this.port, () => {
+            console.log(`🔮 Quantum Monitor System running on port ${this.port}`);
+        });
+        
+        // Iniciar WebSocket Server
+        this.wsServer = new WebSocket.Server({ server });
+        this.setupWebSocketServer();
+    }
+
+    /**
+     * Configurar rutas API
+     */
+    setupRoutes() {
+        // Estado general del sistema
+        this.app.get('/api/system-status', (req, res) => {
+            res.json({
+                status: 'operational',
+                metrics: this.systemMetrics,
+                services: this.serviceStatus,
+                coherenceTarget: 0.941,
+                coherenceStatus: this.systemMetrics.quantumCoherence >= 0.941 ? 'optimal' : 'suboptimal',
+                timestamp: Date.now()
+            });
+        });
+
+        // Métricas históricas
+        this.app.get('/api/metrics-history', (req, res) => {
+            const limit = parseInt(req.query.limit) || 100;
+            const history = this.metricsHistory.slice(-limit);
+            res.json({
+                history,
+                totalRecords: this.metricsHistory.length,
+                timestamp: Date.now()
+            });
+        });
+
+        // Coherencia cuántica detallada
+        this.app.get('/api/quantum-coherence', (req, res) => {
+            const coherenceData = this.calculateDetailedCoherence();
+            res.json(coherenceData);
+        });
+
+        // Estado de servicios
+        this.app.get('/api/services', (req, res) => {
+            res.json({
+                services: this.serviceStatus,
+                totalServices: Object.keys(this.serviceStatus).length,
+                activeServices: Object.values(this.serviceStatus).filter(s => s.status === 'active').length,
+                timestamp: Date.now()
+            });
+        });
+
+        // Endpoint para recibir métricas de otros servicios
+        this.app.post('/api/metrics', (req, res) => {
+            this.updateMetrics(req.body);
+            res.json({ status: 'received', timestamp: Date.now() });
+        });
+
+        // Ping endpoint para health checks
+        this.app.post('/api/ping/:service', (req, res) => {
+            const serviceName = req.params.service;
+            if (this.serviceStatus[serviceName]) {
+                this.serviceStatus[serviceName].lastPing = Date.now();
+                this.serviceStatus[serviceName].status = 'active';
+            }
+            res.json({ status: 'pong', service: serviceName });
+        });
+
+        // Dashboard HTML
+        this.app.get('/', (req, res) => {
+            res.send(this.generateDashboardHTML());
+        });
+    }
+
+    /**
+     * Configurar servidor WebSocket
+     */
+    setupWebSocketServer() {
+        this.wsServer.on('connection', (ws) => {
+            console.log('📡 New WebSocket client connected to monitor');
+            this.clients.add(ws);
+            
+            // Enviar estado inicial
+            ws.send(JSON.stringify({
+                type: 'initial_state',
+                data: {
+                    metrics: this.systemMetrics,
+                    services: this.serviceStatus
+                }
+            }));
+            
+            ws.on('close', () => {
+                this.clients.delete(ws);
+                console.log('📡 WebSocket client disconnected from monitor');
+            });
+            
+            ws.on('error', (error) => {
+                console.error('WebSocket error:', error);
+                this.clients.delete(ws);
+            });
+        });
+    }
+
+    /**
+     * Iniciar monitoreo del sistema
+     */
+    startMonitoring() {
+        // Monitoreo cada 5 segundos
+        setInterval(() => {
+            this.collectSystemMetrics();
+            this.checkServiceHealth();
+            this.broadcastMetrics();
+        }, 5000);
+        
+        // Limpieza de historial cada hora
+        setInterval(() => {
+            this.cleanupHistory();
+        }, 3600000);
+        
+        console.log('🔍 Quantum monitoring system started');
+    }
+
+    /**
+     * Recopilar métricas del sistema
+     */
+    async collectSystemMetrics() {
+        try {
+            // Simular recopilación de métricas reales
+            // En producción, esto se conectaría a los otros servicios
+            
+            // Actualizar coherencia cuántica basada en servicios activos
+            const activeServices = Object.values(this.serviceStatus).filter(s => s.status === 'active').length;
+            const totalServices = Object.keys(this.serviceStatus).length;
+            const serviceRatio = activeServices / totalServices;
+            
+            // Calcular coherencia cuántica mejorada
+            this.systemMetrics.quantumCoherence = Math.min(serviceRatio * 0.75 + ((Date.now() % 20) / 100), 0.941);
+            this.systemMetrics.consciousness = Math.min(this.systemMetrics.quantumCoherence * 0.8, 0.8);
+            this.systemMetrics.quantumScore = this.systemMetrics.quantumCoherence * this.systemMetrics.consciousness;
+            
+            // Actualizar timestamp
+            this.systemMetrics.lastUpdate = Date.now();
+            
+            // Agregar al historial
+            this.metricsHistory.push({
+                ...this.systemMetrics,
+                timestamp: Date.now()
+            });
+            
+        } catch (error) {
+            console.error('Error collecting system metrics:', error);
+        }
+    }
+
+    /**
+     * Verificar salud de servicios
+     */
+    checkServiceHealth() {
+        const now = Date.now();
+        const timeout = 30000; // 30 segundos
+        
+        for (const [serviceName, service] of Object.entries(this.serviceStatus)) {
+            if (now - service.lastPing > timeout) {
+                service.status = 'inactive';
+            }
+        }
+    }
+
+    /**
+     * Transmitir métricas a clientes WebSocket
+     */
+    broadcastMetrics() {
+        if (this.clients.size === 0) return;
+        
+        const message = JSON.stringify({
+            type: 'metrics_update',
+            data: {
+                metrics: this.systemMetrics,
+                services: this.serviceStatus,
+                timestamp: Date.now()
+            }
+        });
+        
+        this.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(message);
+            }
+        });
+    }
+
+    /**
+     * Actualizar métricas desde servicios externos
+     */
+    updateMetrics(newMetrics) {
+        Object.assign(this.systemMetrics, newMetrics);
+        this.systemMetrics.lastUpdate = Date.now();
+    }
+
+    /**
+     * Calcular coherencia cuántica detallada
+     */
+    calculateDetailedCoherence() {
+        const activeServices = Object.values(this.serviceStatus).filter(s => s.status === 'active').length;
+        const totalServices = Object.keys(this.serviceStatus).length;
+        
+        return {
+            overall: this.systemMetrics.quantumCoherence,
+            target: 0.941,
+            percentage: (this.systemMetrics.quantumCoherence * 100).toFixed(2),
+            status: this.systemMetrics.quantumCoherence >= 0.941 ? 'INFINITE_PROFIT_PLANE' : 'OPTIMIZATION_NEEDED',
+            factors: {
+                serviceHealth: (activeServices / totalServices * 100).toFixed(1),
+                dataFlow: Math.min(this.systemMetrics.tradingSignals * 10, 100).toFixed(1),
+                systemStability: (this.systemMetrics.consciousness * 100).toFixed(1)
+            },
+            recommendations: this.generateCoherenceRecommendations()
+        };
+    }
+
+    /**
+     * Generar recomendaciones para mejorar coherencia
+     */
+    generateCoherenceRecommendations() {
+        const recommendations = [];
+        
+        if (this.systemMetrics.quantumCoherence < 0.941) {
+            recommendations.push('Activate all 4 terminal services for optimal coherence');
+        }
+        
+        const inactiveServices = Object.entries(this.serviceStatus)
+            .filter(([_, service]) => service.status !== 'active')
+            .map(([name, _]) => name);
+            
+        if (inactiveServices.length > 0) {
+            recommendations.push(`Restart inactive services: ${inactiveServices.join(', ')}`);
+        }
+        
+        if (this.systemMetrics.tradingSignals === 0) {
+            recommendations.push('Increase trading signal generation frequency');
+        }
+        
+        return recommendations;
+    }
+
+    /**
+     * Limpiar historial antiguo
+     */
+    cleanupHistory() {
+        if (this.metricsHistory.length > this.maxHistorySize) {
+            this.metricsHistory = this.metricsHistory.slice(-this.maxHistorySize);
+            console.log(`🧹 Cleaned up metrics history, kept last ${this.maxHistorySize} records`);
+        }
+    }
+
+    /**
+     * Generar HTML del dashboard
+     */
+    generateDashboardHTML() {
+        return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QBTC Quantum Monitor - Port 4603</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: #00ff88;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ffff;
+        }
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        .status-active {
+            color: #00ff88;
+        }
+        .status-inactive {
+            color: #ff4444;
+        }
+        .coherence-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .coherence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ffaa00, #00ff88);
+            transition: width 0.5s ease;
+        }
+        #realtime-data {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 QBTC Quantum Monitor System</h1>
+            <h2>Terminal 4603 - Real-time System Monitoring</h2>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Quantum Coherence</div>
+                <div class="metric-value" id="coherence">55.0%</div>
+                <div class="coherence-bar">
+                    <div class="coherence-fill" id="coherence-bar" style="width: 55%"></div>
+                </div>
+                <div class="metric-label">Target: 94.1% for Infinite Profit Plane</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">System Consciousness</div>
+                <div class="metric-value" id="consciousness">45.0%</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Total Equity</div>
+                <div class="metric-value" id="equity">$130.02</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Active Services</div>
+                <div class="metric-value" id="services">3/4</div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <h3>Service Status</h3>
+            <div id="service-status">
+                <div>🟢 quantum-core-4601: <span class="status-active">ACTIVE</span></div>
+                <div>🟢 frontend-api-4602: <span class="status-active">ACTIVE</span></div>
+                <div>🔴 monitor-4603: <span class="status-inactive">STARTING</span></div>
+                <div>🟢 leonardo-4604: <span class="status-active">ACTIVE</span></div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <h3>Real-time System Log</h3>
+            <div id="realtime-data">
+                <div>🚀 Quantum Monitor System initialized...</div>
+                <div>📡 WebSocket server started on port 4603</div>
+                <div>🔍 Monitoring system metrics every 5 seconds</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection for real-time updates
+        const ws = new WebSocket('ws://localhost:4603');
+        
+        ws.onopen = function() {
+            addLog('🔗 Connected to Quantum Monitor WebSocket');
+        };
+        
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if (data.type === 'metrics_update') {
+                updateMetrics(data.data);
+            }
+        };
+        
+        function updateMetrics(data) {
+            const coherence = (data.metrics.quantumCoherence * 100).toFixed(1);
+            const consciousness = (data.metrics.consciousness * 100).toFixed(1);
+            
+            document.getElementById('coherence').textContent = coherence + '%';
+            document.getElementById('coherence-bar').style.width = coherence + '%';
+            document.getElementById('consciousness').textContent = consciousness + '%';
+            document.getElementById('equity').textContent = '$' + data.metrics.totalEquity.toFixed(2);
+            
+            const activeServices = Object.values(data.services).filter(s => s.status === 'active').length;
+            document.getElementById('services').textContent = activeServices + '/4';
+            
+            addLog('📊 Metrics updated - Coherence: ' + coherence + '%');
+        }
+        
+        function addLog(message) {
+            const logDiv = document.getElementById('realtime-data');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += '<div>[' + timestamp + '] ' + message + '</div>';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // Update every 5 seconds
+        setInterval(() => {
+            fetch('/api/system-status')
+                .then(response => response.json())
+                .then(data => {
+                    updateMetrics(data);
+                })
+                .catch(error => {
+                    addLog('❌ Error fetching system status: ' + error.message);
+                });
+        }, 5000);
+    </script>
+</body>
+</html>
+        `;
+    }
+}
+
+// Inicializar el sistema de monitoreo
+const monitor = new QuantumMonitorSystem();
+
+// Manejar cierre graceful
+process.on('SIGINT', () => {
+    console.log('\n🛑 Shutting down Quantum Monitor System...');
+    process.exit(0);
+});
+
+module.exports = QuantumMonitorSystem;

@@ -1,0 +1,14 @@
+/**
+ * Arreglo para el error de sintaxis en frontend-api.js
+ */
+
+// El problema es que los métodos se insertaron después de module.exports
+// Debemos mover module.exports al final del archivo
+
+// Buscar:
+module.exports = QuantumFrontendAPI;
+// Quantum Options Methods
+
+// Reemplazar con:
+// Quantum Options Methods
+module.exports = QuantumFrontendAPI;

@@ -1,0 +1,153 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/* eslint-disable no-console */
+// Diagnóstico de conexión a Binance Futures (UM) y Options (EAPI)
+// - Muestra IP pública actual
+// - Llama endpoints firmados /fapi/v2/account y /eapi/v1/account
+// - Imprime statusCode y cuerpo crudo de respuesta (o error)
+
+const https = require('https');
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
+
+const ENV_PATH = path.resolve(__dirname, '..', '.env');
+dotenv.config({ path: ENV_PATH });
+
+const API_KEY = process.env.BINANCE_API_KEY || '';
+const API_SECRET = process.env.BINANCE_API_SECRET || '';
+
+function httpGetRaw(url, headers = {}, timeoutMs = 12000) {
+  return new Promise((resolve) => {
+    const u = new URL(url);
+    const req = https.request(
+      {
+        hostname: u.hostname,
+        path: u.pathname + u.search,
+        method: 'GET',
+        headers,
+      },
+      (res) => {
+        let data = '';
+        res.on('data', (c) => (data += c));
+        res.on('end', () => {
+          resolve({ ok: true, status: res.statusCode, body: data });
+        });
+      }
+    );
+    req.on('timeout', () => {
+      req.destroy(new Error('timeout'));
+    });
+    req.on('error', (err) => {
+      resolve({ ok: false, status: 0, body: String(err && err.message ? err.message : err) });
+    });
+    req.setTimeout(timeoutMs);
+    req.end();
+  });
+}
+
+async function getPublicIP() {
+  try {
+    const r = await httpGetRaw('https://api.ipify.org');
+    if (r.ok) return r.body.trim();
+  } catch {}
+  return '';
+}
+
+async function getServerTime(base, ep) {
+  const r = await httpGetRaw(base + ep);
+  try {
+    const j = JSON.parse(r.body || '{}');
+    return j.serverTime || Date.now();
+  } catch (_) {
+    return Date.now();
+  }
+}
+
+function sign(qs, secret) {
+  return crypto.createHmac('sha256', secret).update(qs).digest('hex');
+}
+
+async function signedGet(base, timeEp, ep) {
+  const ts = await getServerTime(base, timeEp);
+  const qs = `timestamp=${ts}&recvWindow=60000`;
+  const sig = sign(qs, API_SECRET);
+  const url = `${base}${ep}?${qs}&signature=${sig}`;
+  return httpGetRaw(url, { 'X-MBX-APIKEY': API_KEY });
+}
+
+async function main() {
+  if (!API_KEY || !API_SECRET) {
+    console.error('[ERROR] Faltan BINANCE_API_KEY o BINANCE_API_SECRET en bot-opciones/.env');
+    process.exit(1);
+  }
+  const publicIp = await getPublicIP();
+  const futures = await signedGet('https://fapi.binance.com', '/fapi/v1/time', '/fapi/v2/account');
+  const options = await signedGet('https://eapi.binance.com', '/eapi/v1/time', '/eapi/v1/account');
+
+  const out = {
+    publicIp,
+    futures,
+    options,
+  };
+
+  // Persistir a logs para consulta
+  try {
+    const logsDir = path.resolve(__dirname, '..', 'logs');
+    if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
+    fs.writeFileSync(path.join(logsDir, 'diagnose-binance.json'), JSON.stringify(out, null, 2), 'utf8');
+  } catch {}
+
+  console.log(JSON.stringify(out, null, 2));
+}
+
+main().catch((e) => {
+  console.error('Error diagnóstico:', e.message);
+  process.exit(1);
+});
+
+

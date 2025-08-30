@@ -1,0 +1,406 @@
+METRICS {"timestamp":"2025-08-04T21:35:09.362Z","metrics":{"analysisTime":{"total":31},"predictions":{},"accuracy":{}}}
+METRICS {"timestamp":"2025-08-04T21:44:40.504Z","metrics":{"analysisTime":{"total":44},"predictions":{},"accuracy":{}}}
+🔄 INICIANDO MONITOR SRONA EN SEGUNDO PLANO
+==================================================
+📝 Guardando logs en ./logs/srona_monitor.log
+
+⏰ [2025-08-04T22:38:24.415Z] Iniciando ciclo de análisis...
+🚀 INICIANDO ANÁLISIS MULTI-SÍMBOLO SRONA WHALE INTEGRATOR
+=====================================================
+
+🎯 INICIANDO ANÁLISIS DE BTCUSDT
+==================================================
+
+⚠️ ANALIZANDO MOVIMIENTOS DE BTCUSDT...
+
+🐋 WHALE SIGNIFICATIVO EN BTCUSDT:
+   Operación: SELL por $4.80M
+   Impacto en precio: 0.48%
+   Wallet: 0xf3b3312ea864f
+
+🐋 WHALE SIGNIFICATIVO EN BTCUSDT:
+   Operación: BUY por $7.20M
+   Impacto en precio: 0.72%
+   Wallet: 0x451a397ec4273
+
+🐋 WHALE SIGNIFICATIVO EN BTCUSDT:
+   Operación: BUY por $9.00M
+   Impacto en precio: 0.90%
+   Wallet: 0x37e66bf930253
+
+🔍 PATRÓN DE ALTA ACTIVIDAD DETECTADO:
+   Ventana: 2025-08-04T22:38:24.433Z
+   Volumen Total: $21.00M
+   Ratio Compra/Venta: 0.77
+
+📊 ANÁLISIS DE TENDENCIA BTCUSDT (30min):
+   Volumen Total: $21.80M
+   Presión Compradora: 17334000.00
+   Presión Vendedora: 4464000.00
+   ⚡ PRESIÓN DOMINANTE: COMPRA 🚀
+   💪 Fuerza de la señal: 12870000.00
+
+🔬 Ejecutando análisis SRONA de BTCUSDT...
+
+📊 ANÁLISIS SRONA COMPLETADO
+
+🌌 MÉTRICAS GRAVITACIONALES:
+   Campo Gravitacional: 5.405625854214262e+34
+   Resonancia Orbital: 0.013224312497812122
+   Velocidad de Escape: 4.0542193713548903e+33
+   Estabilidad Orbital: 0
+   Potencial de Breakout: 1
+
+🎯 RECOMENDACIÓN GRAVITACIONAL:
+   Acción: [object Object]
+   Confianza: undefined%
+   Razones:
+      - Campo gravitacional fuerte (5.405625854214262e+34)
+      - Resonancia orbital alta (0.026448624995624243)
+      - Potencial de breakout (1)
+=====================================
+
+📋 RESUMEN DEL ANÁLISIS:
+   Símbolo: BTCUSDT
+   Precio actual: $45000
+   Cambio 24h: -1.947866985144695%
+   Volumen 24h: $1753.78M
+
+🎯 RECOMENDACIÓN FINAL:
+   Símbolo: BTCUSDT
+   Acción: HOLD
+   Confianza: NaN%
+   Fuerza cuántica: 100%
+
+✅ Análisis de BTCUSDT completado
+
+🎯 INICIANDO ANÁLISIS DE ETHUSDT
+==================================================
+
+⚠️ ANALIZANDO MOVIMIENTOS DE ETHUSDT...
+
+🐋 WHALE SIGNIFICATIVO EN ETHUSDT:
+   Operación: SELL por $1.92M
+   Impacto en precio: 0.19%
+   Wallet: 0xdd53e98f3f0c2
+
+🐋 WHALE SIGNIFICATIVO EN ETHUSDT:
+   Operación: BUY por $2.88M
+   Impacto en precio: 0.29%
+   Wallet: 0x6957ea1e005b6
+
+🐋 WHALE SIGNIFICATIVO EN ETHUSDT:
+   Operación: BUY por $3.60M
+   Impacto en precio: 0.36%
+   Wallet: 0x87bdcd66d5643
+
+🔍 PATRÓN DE ALTA ACTIVIDAD DETECTADO:
+   Ventana: 2025-08-04T22:38:24.474Z
+   Volumen Total: $8.40M
+   Ratio Compra/Venta: 0.77
+
+📊 ANÁLISIS DE TENDENCIA ETHUSDT (30min):
+   Volumen Total: $8.72M
+   Presión Compradora: 6933600.00
+   Presión Vendedora: 1785600.00
+   ⚡ PRESIÓN DOMINANTE: COMPRA 🚀
+   💪 Fuerza de la señal: 5148000.00
+
+🔬 Ejecutando análisis SRONA de ETHUSDT...
+
+📊 ANÁLISIS SRONA COMPLETADO
+
+🌌 MÉTRICAS GRAVITACIONALES:
+   Campo Gravitacional: 3.203100860066654e+33
+   Resonancia Orbital: 0.002195294623863499
+   Velocidad de Escape: 1.9218605160399923e+32
+   Estabilidad Orbital: 0
+   Potencial de Breakout: 1
+
+🎯 RECOMENDACIÓN GRAVITACIONAL:
+   Acción: [object Object]
+   Confianza: undefined%
+   Razones:
+      - Campo gravitacional fuerte (3.203100860066654e+33)
+      - Resonancia orbital alta (0.004390589247726998)
+      - Potencial de breakout (1)
+=====================================
+
+📋 RESUMEN DEL ANÁLISIS:
+   Símbolo: ETHUSDT
+   Precio actual: $2800
+   Cambio 24h: 0.34425219553977193%
+   Volumen 24h: $2660.07M
+
+🎯 RECOMENDACIÓN FINAL:
+   Símbolo: ETHUSDT
+   Acción: HOLD
+   Confianza: NaN%
+   Fuerza cuántica: 100%
+
+✅ Análisis de ETHUSDT completado
+
+🎯 INICIANDO ANÁLISIS DE BNBUSDT
+==================================================
+
+⚠️ ANALIZANDO MOVIMIENTOS DE BNBUSDT...
+
+🐋 WHALE SIGNIFICATIVO EN BNBUSDT:
+   Operación: SELL por $0.96M
+   Impacto en precio: 0.10%
+   Wallet: 0x436c3575cdb19
+
+🐋 WHALE SIGNIFICATIVO EN BNBUSDT:
+   Operación: BUY por $1.44M
+   Impacto en precio: 0.14%
+   Wallet: 0xc70734a268fc4
+
+🐋 WHALE SIGNIFICATIVO EN BNBUSDT:
+   Operación: BUY por $1.80M
+   Impacto en precio: 0.18%
+   Wallet: 0x4b77cf3c43726
+
+🔍 PATRÓN DE ALTA ACTIVIDAD DETECTADO:
+   Ventana: 2025-08-04T22:38:24.856Z
+   Volumen Total: $4.20M
+   Ratio Compra/Venta: 0.77
+
+📊 ANÁLISIS DE TENDENCIA BNBUSDT (30min):
+   Volumen Total: $4.36M
+   Presión Compradora: 3466800.00
+   Presión Vendedora: 892800.00
+   ⚡ PRESIÓN DOMINANTE: COMPRA 🚀
+   💪 Fuerza de la señal: 2574000.00
+
+🔬 Ejecutando análisis SRONA de BNBUSDT...
+
+📊 ANÁLISIS SRONA COMPLETADO
+
+🌌 MÉTRICAS GRAVITACIONALES:
+   Campo Gravitacional: 1.0303856493148607e+33
+   Resonancia Orbital: 0.0008608249198228373
+   Velocidad de Escape: 5.151928246574304e+31
+   Estabilidad Orbital: 0
+   Potencial de Breakout: 1
+
+🎯 RECOMENDACIÓN GRAVITACIONAL:
+   Acción: [object Object]
+   Confianza: undefined%
+   Razones:
+      - Campo gravitacional fuerte (1.0303856493148607e+33)
+      - Resonancia orbital alta (0.0017216498396456746)
+      - Potencial de breakout (1)
+=====================================
+
+📋 RESUMEN DEL ANÁLISIS:
+   Símbolo: BNBUSDT
+   Precio actual: $300
+   Cambio 24h: -0.5777548655283633%
+   Volumen 24h: $1846.89M
+
+🎯 RECOMENDACIÓN FINAL:
+   Símbolo: BNBUSDT
+   Acción: HOLD
+   Confianza: NaN%
+   Fuerza cuántica: 100%
+
+✅ Análisis de BNBUSDT completado
+
+🎯 INICIANDO ANÁLISIS DE SOLUSDT
+==================================================
+
+⚠️ ANALIZANDO MOVIMIENTOS DE SOLUSDT...
+
+🐋 WHALE SIGNIFICATIVO EN SOLUSDT:
+   Operación: SELL por $0.77M
+   Impacto en precio: 0.08%
+   Wallet: 0xff5e5d256f71c
+
+🐋 WHALE SIGNIFICATIVO EN SOLUSDT:
+   Operación: BUY por $1.15M
+   Impacto en precio: 0.12%
+   Wallet: 0x97aa559088316
+
+🐋 WHALE SIGNIFICATIVO EN SOLUSDT:
+   Operación: BUY por $1.44M
+   Impacto en precio: 0.14%
+   Wallet: 0x1953e3b328c52
+
+🔍 PATRÓN DE ALTA ACTIVIDAD DETECTADO:
+   Ventana: 2025-08-04T22:38:24.883Z
+   Volumen Total: $3.36M
+   Ratio Compra/Venta: 0.77
+
+📊 ANÁLISIS DE TENDENCIA SOLUSDT (30min):
+   Volumen Total: $3.49M
+   Presión Compradora: 2773440.00
+   Presión Vendedora: 714240.00
+   ⚡ PRESIÓN DOMINANTE: COMPRA 🚀
+   💪 Fuerza de la señal: 2059200.00
+
+🔬 Ejecutando análisis SRONA de SOLUSDT...
+
+📊 ANÁLISIS SRONA COMPLETADO
+
+🌌 MÉTRICAS GRAVITACIONALES:
+   Campo Gravitacional: 2.126221337801145e+32
+   Resonancia Orbital: 0.0002665038367126299
+   Velocidad de Escape: 1.9135992040210305e+31
+   Estabilidad Orbital: 0
+   Potencial de Breakout: 1
+
+🎯 RECOMENDACIÓN GRAVITACIONAL:
+   Acción: [object Object]
+   Confianza: undefined%
+   Razones:
+      - Campo gravitacional fuerte (2.126221337801145e+32)
+      - Resonancia orbital alta (0.0005330076734252598)
+      - Potencial de breakout (1)
+=====================================
+
+📋 RESUMEN DEL ANÁLISIS:
+   Símbolo: SOLUSDT
+   Precio actual: $95
+   Cambio 24h: -1.023910800527788%
+   Volumen 24h: $2465.01M
+
+🎯 RECOMENDACIÓN FINAL:
+   Símbolo: SOLUSDT
+   Acción: HOLD
+   Confianza: NaN%
+   Fuerza cuántica: 100%
+
+✅ Análisis de SOLUSDT completado
+
+🎯 INICIANDO ANÁLISIS DE XRPUSDT
+==================================================
+
+⚠️ ANALIZANDO MOVIMIENTOS DE XRPUSDT...
+
+🐋 WHALE SIGNIFICATIVO EN XRPUSDT:
+   Operación: SELL por $0.48M
+   Impacto en precio: 0.05%
+   Wallet: 0x406166e3367f3
+
+🐋 WHALE SIGNIFICATIVO EN XRPUSDT:
+   Operación: BUY por $0.72M
+   Impacto en precio: 0.07%
+   Wallet: 0xd95361809f6ff
+
+🐋 WHALE SIGNIFICATIVO EN XRPUSDT:
+   Operación: BUY por $0.90M
+   Impacto en precio: 0.09%
+   Wallet: 0x411df118d4721
+
+🔍 PATRÓN DE ALTA ACTIVIDAD DETECTADO:
+   Ventana: 2025-08-04T22:38:24.917Z
+   Volumen Total: $2.10M
+   Ratio Compra/Venta: 0.77
+
+📊 ANÁLISIS DE TENDENCIA XRPUSDT (30min):
+   Volumen Total: $2.18M
+   Presión Compradora: 1733400.00
+   Presión Vendedora: 446400.00
+   ⚡ PRESIÓN DOMINANTE: COMPRA 🚀
+   💪 Fuerza de la señal: 1287000.00
+
+🔬 Ejecutando análisis SRONA de XRPUSDT...
+
+📊 ANÁLISIS SRONA COMPLETADO
+
+🌌 MÉTRICAS GRAVITACIONALES:
+   Campo Gravitacional: 6.781283386620135e+29
+   Resonancia Orbital: 2.799898719262096e-7
+   Velocidad de Escape: 4.746898370634095e+28
+   Estabilidad Orbital: 0
+   Potencial de Breakout: 1
+
+🎯 RECOMENDACIÓN GRAVITACIONAL:
+   Acción: [object Object]
+   Confianza: undefined%
+   Razones:
+      - Campo gravitacional fuerte (6.781283386620135e+29)
+      - Resonancia orbital alta (5.599797438524192e-7)
+      - Potencial de breakout (1)
+=====================================
+
+📋 RESUMEN DEL ANÁLISIS:
+   Símbolo: XRPUSDT
+   Precio actual: $0.75
+   Cambio 24h: 1.392222438355443%
+   Volumen 24h: $2043.54M
+
+🎯 RECOMENDACIÓN FINAL:
+   Símbolo: XRPUSDT
+   Acción: HOLD
+   Confianza: NaN%
+   Fuerza cuántica: 100%
+
+✅ Análisis de XRPUSDT completado
+
+🎯 INICIANDO ANÁLISIS DE DOGEUSDT
+==================================================
+
+⚠️ ANALIZANDO MOVIMIENTOS DE DOGEUSDT...
+
+🐋 WHALE SIGNIFICATIVO EN DOGEUSDT:
+   Operación: SELL por $0.48M
+   Impacto en precio: 0.05%
+   Wallet: 0x092551e31ec6c
+
+🐋 WHALE SIGNIFICATIVO EN DOGEUSDT:
+   Operación: BUY por $0.72M
+   Impacto en precio: 0.07%
+   Wallet: 0x506b7869b5a8c
+
+🐋 WHALE SIGNIFICATIVO EN DOGEUSDT:
+   Operación: BUY por $0.90M
+   Impacto en precio: 0.09%
+   Wallet: 0xfbbd192da547f
+
+🔍 PATRÓN DE ALTA ACTIVIDAD DETECTADO:
+   Ventana: 2025-08-04T22:38:24.961Z
+   Volumen Total: $2.10M
+   Ratio Compra/Venta: 0.77
+
+📊 ANÁLISIS DE TENDENCIA DOGEUSDT (30min):
+   Volumen Total: $2.18M
+   Presión Compradora: 1733400.00
+   Presión Vendedora: 446400.00
+   ⚡ PRESIÓN DOMINANTE: COMPRA 🚀
+   💪 Fuerza de la señal: 1287000.00
+
+🔬 Ejecutando análisis SRONA de DOGEUSDT...
+
+📊 ANÁLISIS SRONA COMPLETADO
+
+🌌 MÉTRICAS GRAVITACIONALES:
+   Campo Gravitacional: 4.444416259393187e+29
+   Resonancia Orbital: 5.723721204920877e-7
+   Velocidad de Escape: 4.444416259393187e+28
+   Estabilidad Orbital: 0
+   Potencial de Breakout: 1
+
+🎯 RECOMENDACIÓN GRAVITACIONAL:
+   Acción: [object Object]
+   Confianza: undefined%
+   Razones:
+      - Campo gravitacional fuerte (4.444416259393187e+29)
+      - Resonancia orbital alta (0.0000011447442409841754)
+      - Potencial de breakout (1)
+=====================================
+
+📋 RESUMEN DEL ANÁLISIS:
+   Símbolo: DOGEUSDT
+   Precio actual: $0.085
+   Cambio 24h: 1.230215734996725%
+   Volumen 24h: $2667.42M
+
+🎯 RECOMENDACIÓN FINAL:
+   Símbolo: DOGEUSDT
+   Acción: HOLD
+   Confianza: NaN%
+   Fuerza cuántica: 100%
+
+✅ Análisis de DOGEUSDT completado
+

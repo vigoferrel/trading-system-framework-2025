@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+"""
+DESPLIEGUE BANDA 46 FUNCIONAL QBTC
+Script para desplegar todos los servicios de la Banda 46 con dashboard funcional.
+"""
+
+import subprocess
+import time
+import requests
+import os
+import sys
+from datetime import datetime
+
+def check_port(port):
+    """Verifica si un puerto está disponible."""
+    try:
+        import socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex(('localhost', port))
+        sock.close()
+        return result == 0
+    except:
+        return False
+
+def wait_for_service(url, timeout=30):
+    """Espera a que un servicio esté disponible."""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            response = requests.get(url, timeout=2)
+            if response.status_code == 200:
+                return True
+        except:
+            pass
+        time.sleep(1)
+    return False
+
+def main():
+    print("=" * 60)
+    print("DESPLIEGUE BANDA 46 FUNCIONAL QBTC")
+    print("=" * 60)
+    print(f"Iniciando despliegue: {datetime.now()}")
+    print("=" * 60)
+    
+    # Verificar que los puertos estén libres
+    ports = [4601, 4602, 4603, 4604, 4605, 4606]
+    for port in ports:
+        if check_port(port):
+            print(f"⚠️  Puerto {port} ya está en uso")
+            return
+    
+    print("✅ Todos los puertos están disponibles")
+    
+    # Iniciar servicios en orden
+    services = [
+        {
+            "name": "SRONA API",
+            "script": "srona-api-server.py",
+            "port": 4601,
+            "url": "http://localhost:4601/health"
+        },
+        {
+            "name": "QBTC Core",
+            "script": "core-system-organized.js",
+            "port": 4602,
+            "url": "http://localhost:4602/api/futures-data"
+        },
+        {
+            "name": "Frontend API",
+            "script": "frontend-api-server.py",
+            "port": 4603,
+            "url": "http://localhost:4603/health"
+        },
+        {
+            "name": "Vigo Futures",
+            "script": "vigo-futures-server.py",
+            "port": 4604,
+            "url": "http://localhost:4604/health"
+        },
+        {
+            "name": "Dashboard Funcional",
+            "script": "dashboard-http-funcional.py",
+            "port": 4605,
+            "url": "http://localhost:4605/api/health"
+        },
+        {
+            "name": "Visualizador Neuronal",
+            "script": "monitor-recomendaciones-neural.py",
+            "port": 4606,
+            "url": "http://localhost:4606/api/health"
+        },
+        {
+            "name": "LLM Neural Orchestrator",
+            "script": "llm-neural-server.js",
+            "port": 4607,
+            "url": "http://localhost:4607/health"
+        }
+    ]
+    
+    processes = []
+    
+    for service in services:
+        print(f"\n🚀 Iniciando {service['name']}...")
+        
+        try:
+            if service['script'].endswith('.js'):
+                # Servicio Node.js
+                process = subprocess.Popen(
+                    ['node', service['script']],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    creationflags=subprocess.CREATE_NEW_CONSOLE
+                )
+            else:
+                # Servicio Python
+                process = subprocess.Popen(
+                    ['python', service['script']],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    creationflags=subprocess.CREATE_NEW_CONSOLE
+                )
+            
+            processes.append((service['name'], process))
+            print(f"✅ {service['name']} iniciado (PID: {process.pid})")
+            
+            # Esperar un poco para que el servicio se inicie
+            time.sleep(2)
+            
+            # Verificar que el servicio esté funcionando
+            if wait_for_service(service['url']):
+                print(f"✅ {service['name']} está respondiendo")
+            else:
+                print(f"⚠️  {service['name']} no responde, pero continúa...")
+                
+        except Exception as e:
+            print(f"❌ Error iniciando {service['name']}: {e}")
+    
+    print("\n" + "=" * 60)
+    print("🎯 DESPLIEGUE COMPLETADO")
+    print("=" * 60)
+    print("Servicios desplegados:")
+    print("- SRONA API: http://localhost:4601")
+    print("- QBTC Core: http://localhost:4602")
+    print("- Frontend API: http://localhost:4603")
+    print("- Vigo Futures: http://localhost:4604")
+    print("- Dashboard: http://localhost:4605")
+    print("- Visualizador Neuronal: http://localhost:4606")
+    print("- LLM Neural Orchestrator: http://localhost:4607")
+    print("\n📊 Dashboard principal: http://localhost:4605")
+    print("🧠 Visualizador neuronal: http://localhost:4606")
+    print("🧠 Cerebro maestro LLM: http://localhost:4607")
+    print("=" * 60)
+    
+    # Mantener el script ejecutándose
+    try:
+        while True:
+            time.sleep(10)
+            print(f"⏰ Sistema funcionando: {datetime.now().strftime('%H:%M:%S')}")
+    except KeyboardInterrupt:
+        print("\n🛑 Detención solicitada por el usuario")
+        print("Cerrando servicios...")
+        
+        for name, process in processes:
+            try:
+                process.terminate()
+                print(f"✅ {name} cerrado")
+            except:
+                pass
+
+if __name__ == "__main__":
+    main()

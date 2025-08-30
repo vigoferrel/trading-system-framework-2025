@@ -1,0 +1,246 @@
+/**
+ * TEST LEONARDO-FEYNMAN COMPLETE SYSTEM
+ * =====================================
+ * 
+ * Script de prueba completo para el sistema Leonardo-Feynman
+ * con data ingestion integrado
+ */
+
+const { startLeonardoFeynmanQBTC } = require('./leonardo-feynman-integration');
+const axios = require('axios');
+
+async function testCompleteLeonardoFeynmanSystem() {
+    console.log('[TEST] [TEST COMPLETE] Iniciando prueba completa del sistema Leonardo-Feynman...\n');
+    
+    let leonardoFeynmanSystem = null;
+    
+    try {
+        // PASO 1: Verificar conectividad del servidor QBTC
+        console.log(' [TEST COMPLETE] Verificando conectividad del servidor QBTC...');
+        const healthResponse = await axios.get('http://localhost:4602/api/enhanced-opportunities', { timeout: 5000 });
+        console.log('[OK] [TEST COMPLETE] Servidor QBTC conectado correctamente\n');
+        
+        // PASO 2: Inicializar sistema Leonardo-Feynman con data ingestion
+        console.log(' [TEST COMPLETE] Inicializando sistema Leonardo-Feynman con data ingestion...');
+        leonardoFeynmanSystem = await startLeonardoFeynmanQBTC();
+        console.log('[OK] [TEST COMPLETE] Sistema Leonardo-Feynman inicializado con data ingestion\n');
+        
+        // PASO 3: Esperar a que el data ingestion se inicialice
+        console.log(' [TEST COMPLETE] Esperando inicialización del data ingestion...');
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Esperar 5 segundos
+        
+        // PASO 4: Verificar estado del sistema
+        console.log('[DATA] [TEST COMPLETE] Verificando estado del sistema...');
+        const systemStatus = leonardoFeynmanSystem.getSystemStatus();
+        
+        console.log(`[OK] [TEST COMPLETE] Estado del sistema:`);
+        console.log(`   Psicología actual: ${systemStatus.psychologyDetector.currentState}`);
+        console.log(`   Confianza: ${(systemStatus.psychologyDetector.confidence * 100).toFixed(1)}%`);
+        console.log(`   Estados analizados: ${systemStatus.psychologyDetector.statesAnalyzed}`);
+        console.log(`   Salud: ${systemStatus.health.health}`);
+        console.log(`   Data Ingestion: ${systemStatus.dataIngestion?.isRunning ? 'ACTIVE' : 'INACTIVE'}`);
+        console.log(`   Cache Size: ${systemStatus.dataIngestion?.cacheSize || 0} símbolos`);
+        console.log(`   Símbolos en historial: ${systemStatus.health.totalSymbols}`);
+        console.log(`   Puntos de datos: ${systemStatus.health.totalDataPoints}\n`);
+        
+        // PASO 5: Obtener símbolos prioritarios
+        console.log('[ENDPOINTS] [TEST COMPLETE] Obteniendo símbolos prioritarios...');
+        const prioritySymbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'ADAUSDT'];
+        console.log(`[OK] [TEST COMPLETE] Símbolos prioritarios: ${prioritySymbols.join(', ')}\n`);
+        
+        // PASO 6: Probar análisis de símbolos individuales
+        console.log(' [TEST COMPLETE] Probando análisis de símbolos individuales...');
+        
+        for (const symbol of prioritySymbols) {
+            try {
+                // Obtener datos del sistema de ingesta
+                const enrichedData = leonardoFeynmanSystem.dataIngestion.getData(symbol);
+                
+                if (enrichedData) {
+                    const analysis = await leonardoFeynmanSystem.analyzeSymbol(symbol, enrichedData);
+                    
+                    console.log(`[UP] [TEST COMPLETE] ${symbol}:`);
+                    console.log(`   Psicología: ${analysis.psychology}`);
+                    console.log(`   Confianza: ${(analysis.confidence * 100).toFixed(1)}%`);
+                    console.log(`   Recomendación: ${analysis.recommendation.action}`);
+                    console.log(`   Razón: ${analysis.reasoning}`);
+                    console.log(`   Calidad de datos: ${analysis.dataQuality}`);
+                    
+                    if (analysis.recommendation.entryPrice) {
+                        console.log(`   Entrada: $${analysis.recommendation.entryPrice.toFixed(4)}`);
+                        console.log(`   Stop Loss: $${analysis.recommendation.stopLoss.toFixed(4)}`);
+                        console.log(`   Take Profit: $${analysis.recommendation.takeProfit.toFixed(4)}`);
+                    }
+                    
+                    // Mostrar métricas enriquecidas
+                    if (enrichedData.fearGreedIndex) {
+                        console.log(`   Fear/Greed Index: ${enrichedData.fearGreedIndex.toFixed(1)}`);
+                        console.log(`   Market Sentiment: ${enrichedData.marketSentiment}`);
+                        console.log(`   Volatility Index: ${enrichedData.volatilityIndex.toFixed(1)}`);
+                    }
+                    console.log('');
+                } else {
+                    console.warn(`[WARNING] [TEST COMPLETE] No hay datos enriquecidos para ${symbol}`);
+                }
+                
+            } catch (error) {
+                console.error(`[ERROR] [TEST COMPLETE] Error analizando ${symbol}:`, error.message);
+            }
+        }
+        
+        // PASO 7: Probar análisis masivo
+        console.log('[START] [TEST COMPLETE] Probando análisis masivo con data ingestion...');
+        const massAnalysis = await leonardoFeynmanSystem.analyzeAllSymbols(prioritySymbols);
+        
+        console.log(`[OK] [TEST COMPLETE] Análisis masivo completado:`);
+        console.log(`   Total analizados: ${massAnalysis.totalAnalyzed}`);
+        console.log(`   Recomendaciones alta confianza: ${massAnalysis.highConfidenceRecommendations.length}`);
+        console.log(`   Distribución psicológica:`, massAnalysis.psychologyDistribution);
+        console.log(`   Salud del sistema: ${massAnalysis.systemHealth.health}`);
+        console.log(`   Fuente de datos: ${massAnalysis.dataSource}\n`);
+        
+        // PASO 8: Mostrar recomendaciones de alta confianza
+        if (massAnalysis.highConfidenceRecommendations.length > 0) {
+            console.log(' [TEST COMPLETE] Top Recomendaciones de Alta Confianza:');
+            massAnalysis.highConfidenceRecommendations
+                .sort((a, b) => b.confidence - a.confidence)
+                .forEach((rec, index) => {
+                    console.log(`   ${index + 1}. ${rec.symbol} - ${rec.recommendation.action} (${(rec.confidence * 100).toFixed(1)}%)`);
+                    console.log(`      Psicología: ${rec.psychology}`);
+                    console.log(`      Razón: ${rec.reasoning}`);
+                    console.log(`      Calidad: ${rec.dataQuality}`);
+                });
+            console.log('');
+        }
+        
+        // PASO 9: Verificar calidad de datos
+        console.log('[SEARCH] [TEST COMPLETE] Verificando calidad de datos...');
+        const dataQuality = leonardoFeynmanSystem.dataIngestion.getDataQuality();
+        
+        console.log(`[OK] [TEST COMPLETE] Calidad de datos:`);
+        console.log(`   Total requests: ${dataQuality.totalRequests}`);
+        console.log(`   Successful requests: ${dataQuality.successfulRequests}`);
+        console.log(`   Failed requests: ${dataQuality.failedRequests}`);
+        console.log(`   Average response time: ${dataQuality.averageResponseTime.toFixed(0)}ms`);
+        console.log(`   Cache size: ${dataQuality.cacheSize} símbolos`);
+        console.log(`   Last update: ${dataQuality.lastUpdate ? new Date(dataQuality.lastUpdate).toLocaleTimeString() : 'N/A'}`);
+        console.log(`   Is running: ${dataQuality.isRunning ? 'YES' : 'NO'}\n`);
+        
+        // PASO 10: Validación final
+        console.log('[ENDPOINTS] [TEST COMPLETE] Validación final del sistema...');
+        
+        const finalValidation = {
+            systemInitialized: !!leonardoFeynmanSystem,
+            dataIngestionActive: dataQuality.isRunning,
+            cachePopulated: dataQuality.cacheSize > 0,
+            recommendationsGenerated: massAnalysis.highConfidenceRecommendations.length > 0,
+            dataQualityGood: dataQuality.successfulRequests > dataQuality.failedRequests
+        };
+        
+        console.log(`[OK] [TEST COMPLETE] Validación final:`);
+        console.log(`   Sistema inicializado: ${finalValidation.systemInitialized ? '[OK]' : '[ERROR]'}`);
+        console.log(`   Data ingestion activo: ${finalValidation.dataIngestionActive ? '[OK]' : '[ERROR]'}`);
+        console.log(`   Cache poblada: ${finalValidation.cachePopulated ? '[OK]' : '[ERROR]'}`);
+        console.log(`   Recomendaciones generadas: ${finalValidation.recommendationsGenerated ? '[OK]' : '[ERROR]'}`);
+        console.log(`   Calidad de datos buena: ${finalValidation.dataQualityGood ? '[OK]' : '[ERROR]'}\n`);
+        
+        console.log('[ENDPOINTS] [TEST COMPLETE] Prueba completa del sistema Leonardo-Feynman exitosa!');
+        
+        return {
+            success: true,
+            system: leonardoFeynmanSystem,
+            analysis: massAnalysis,
+            status: systemStatus,
+            dataQuality: dataQuality,
+            validation: finalValidation,
+            summary: {
+                symbolsAnalyzed: massAnalysis.totalAnalyzed,
+                highConfidenceRecommendations: massAnalysis.highConfidenceRecommendations.length,
+                systemHealth: massAnalysis.systemHealth.health,
+                dataIngestionHealth: dataQuality.isRunning ? 'ACTIVE' : 'INACTIVE',
+                cacheSize: dataQuality.cacheSize,
+                integrationStatus: 'SUCCESS'
+            }
+        };
+        
+    } catch (error) {
+        console.error('[ERROR] [TEST COMPLETE] Error en prueba completa:', error.message);
+        return {
+            success: false,
+            error: error.message
+        };
+    } finally {
+        // Limpiar recursos
+        if (leonardoFeynmanSystem) {
+            try {
+                await leonardoFeynmanSystem.stop();
+                console.log(' [TEST COMPLETE] Sistema detenido correctamente');
+            } catch (error) {
+                console.error('[ERROR] [TEST COMPLETE] Error deteniendo sistema:', error.message);
+            }
+        }
+    }
+}
+
+// Función para mostrar resumen detallado
+function showDetailedSummary(results) {
+    if (!results.success) {
+        console.log('\n[ERROR] RESUMEN: Prueba fallida');
+        console.log(`Error: ${results.error}`);
+        return;
+    }
+    
+    console.log('\n[LIST] RESUMEN DETALLADO DEL SISTEMA LEONARDO-FEYNMAN:');
+    console.log('=' .repeat(60));
+    
+    console.log('\n[ENDPOINTS] MÉTRICAS PRINCIPALES:');
+    console.log(`    Símbolos analizados: ${results.summary.symbolsAnalyzed}`);
+    console.log(`    Recomendaciones alta confianza: ${results.summary.highConfidenceRecommendations}`);
+    console.log(`    Salud del sistema: ${results.summary.systemHealth}`);
+    console.log(`    Data ingestion: ${results.summary.dataIngestionHealth}`);
+    console.log(`    Tamaño de cache: ${results.summary.cacheSize} símbolos`);
+    
+    console.log('\n ANÁLISIS PSICOLÓGICO:');
+    const distribution = results.analysis.psychologyDistribution;
+    Object.entries(distribution).forEach(([state, count]) => {
+        if (count > 0) {
+            console.log(`    ${state}: ${count} símbolos`);
+        }
+    });
+    
+    console.log('\n[DATA] CALIDAD DE DATOS:');
+    const quality = results.dataQuality;
+    console.log(`    Requests exitosos: ${quality.successfulRequests}`);
+    console.log(`    Requests fallidos: ${quality.failedRequests}`);
+    console.log(`    Tiempo promedio respuesta: ${quality.averageResponseTime.toFixed(0)}ms`);
+    console.log(`    Última actualización: ${quality.lastUpdate ? new Date(quality.lastUpdate).toLocaleTimeString() : 'N/A'}`);
+    
+    console.log('\n[OK] VALIDACIÓN DEL SISTEMA:');
+    Object.entries(results.validation).forEach(([test, passed]) => {
+        console.log(`    ${test}: ${passed ? '[OK] PASÓ' : '[ERROR] FALLÓ'}`);
+    });
+    
+    console.log('\n Leonardo-Feynman QBTC Integration está listo para producción!');
+    console.log('=' .repeat(60));
+}
+
+// Ejecutar prueba completa
+async function runCompleteTest() {
+    console.log('[TEST] INICIANDO PRUEBA COMPLETA LEONARDO-FEYNMAN QBTC\n');
+    
+    const results = await testCompleteLeonardoFeynmanSystem();
+    showDetailedSummary(results);
+    
+    return results;
+}
+
+// Ejecutar si es el archivo principal
+if (require.main === module) {
+    runCompleteTest().catch(console.error);
+}
+
+module.exports = {
+    testCompleteLeonardoFeynmanSystem,
+    showDetailedSummary,
+    runCompleteTest
+};

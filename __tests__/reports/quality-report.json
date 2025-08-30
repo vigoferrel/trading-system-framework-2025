@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-08-30T16:57:17.055Z",
+  "overallScore": 85,
+  "overallStatus": "good",
+  "metrics": {
+    "testReliability": {
+      "score": 100,
+      "status": "excellent",
+      "description": "28/28 tests passing"
+    },
+    "codeCoverage": {
+      "score": 96.49,
+      "status": "excellent",
+      "description": "96.49% code coverage"
+    },
+    "performance": {
+      "score": 60,
+      "status": "needs-improvement",
+      "description": "Performance benchmarks: undefinedms"
+    }
+  },
+  "recommendations": [
+    {
+      "category": "performance",
+      "priority": "medium",
+      "message": "Optimize performance benchmarks",
+      "action": "Profile and optimize slow operations"
+    }
+  ]
+}

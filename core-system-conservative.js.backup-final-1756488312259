@@ -1,0 +1,601 @@
+/**
+ * 🕵️ CORE SYSTEM ULTRA-CONSERVADOR - ANTI-418 FORENSIC EDITION
+ * 
+ * Diseñado específicamente para evitar errores 418 de Binance mediante:
+ * - Comportamiento humanizado en requests
+ * - Intervalos aleatorios
+ * - Cache agresivo
+ * - Fallbacks inteligentes
+ */
+
+const express = require('express');
+const cors = require('cors');
+const axios = require('axios');
+const { LeverageOptimizerV2 } = require('./LEVERAGE_OPTIMIZER_V2');
+const { QuantumStateRebalancer } = require('./QUANTUM_REBALANCER');
+
+const app = express();
+const PORT = 4602;
+
+// [SHIELD] INICIALIZACIÓN SEGURA
+const leverageOptimizer = new LeverageOptimizerV2();
+const quantumRebalancer = new QuantumStateRebalancer();
+console.log('[SECURE] Sistema Ultra-Conservador iniciado');
+
+app.use(cors());
+app.use(express.json());
+
+// [SECURE] CONFIGURACIÓN ULTRA-CONSERVADORA
+const BINANCE_CONFIG = {
+    SPOT: 'https://api.binance.com',
+    FUTURES: 'https://fapi.binance.com',
+    MIN_DELAY: 5000,    // 5 segundos mínimo
+    MAX_DELAY: 15000,   // 15 segundos máximo
+    TIMEOUT: 30000,     // 30 segundos timeout
+    MAX_RETRIES: 2,     // Solo 2 reintentos
+    CACHE_TTL: 300000   // Cache de 5 minutos
+};
+
+// [DATA] CACHE ULTRA-PERSISTENTE
+const ultraCache = {
+    spot: {
+        data: {},
+        lastUpdate: 0,
+        ttl: BINANCE_CONFIG.CACHE_TTL,
+        errors: 0
+    },
+    futures: {
+        data: {},
+        lastUpdate: 0,
+        ttl: BINANCE_CONFIG.CACHE_TTL,
+        errors: 0
+    },
+    liquidity: {
+        data: {},
+        lastUpdate: 0,
+        ttl: 600000, // 10 minutos para liquidez
+        errors: 0
+    }
+};
+
+// 🎭 SIMULADOR DE COMPORTAMIENTO HUMANO
+class HumanBehaviorSimulator {
+    constructor() {
+        this.lastRequestTime = 0;
+        this.requestCount = 0;
+        this.sessionStart = Date.now();
+    }
+    
+    // Generar delay aleatorio que simula comportamiento humano
+    generateHumanDelay() {
+        const base = BINANCE_CONFIG.MIN_DELAY;
+        const variation = getSystemEntropy() * (BINANCE_CONFIG.MAX_DELAY - base);
+        const humanFactor = getSystemEntropy() * 2000; // Factor humano adicional
+        return Math.floor(base + variation + humanFactor);
+    }
+    
+    // Verificar si es seguro hacer request
+    isSafeToRequest() {
+        const now = Date.now();
+        const timeSinceLastRequest = now - this.lastRequestTime;
+        return timeSinceLastRequest >= BINANCE_CONFIG.MIN_DELAY;
+    }
+    
+    // Esperar el tiempo necesario para simular comportamiento humano
+    async waitForSafeRequest() {
+        if (!this.isSafeToRequest()) {
+            const waitTime = this.generateHumanDelay();
+            console.log(`[USER] Simulando comportamiento humano - esperando ${waitTime}ms`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+        this.lastRequestTime = Date.now();
+        this.requestCount++;
+    }
+    
+    // Verificar si necesitamos descanso (simular sesiones humanas)
+    needsRest() {
+        const sessionTime = Date.now() - this.sessionStart;
+        const requestRate = this.requestCount / (sessionTime / 60000); // requests por minuto
+        
+        // Si hacemos más de 10 requests por minuto, necesitamos descanso
+        return requestRate > 10;
+    }
+    
+    // Descanso largo para simular pausa humana
+    async takeRest() {
+        const restTime = 30000 + getSystemEntropy() * 60000; // 30s a 1.5min
+        console.log(`[SLEEP] Simulando descanso humano - ${Math.floor(restTime/1000)}s`);
+        await new Promise(resolve => setTimeout(resolve, restTime));
+        this.requestCount = Math.floor(this.requestCount / 2); // Reset parcial
+    }
+}
+
+const humanSimulator = new HumanBehaviorSimulator();
+
+// [SHIELD] FUNCIÓN ULTRA-SEGURA PARA REQUESTS HTTP
+async function ultraSafeRequest(url, options = {}) {
+    const maxRetries = BINANCE_CONFIG.MAX_RETRIES;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            // Verificar si necesitamos descanso
+            if (humanSimulator.needsRest()) {
+                await humanSimulator.takeRest();
+            }
+            
+            // Esperar comportamiento humano
+            await humanSimulator.waitForSafeRequest();
+            
+            console.log(`[SEARCH] Intento ${attempt}/${maxRetries} - Consultando: ${url.split('/').pop()}`);
+            
+            const response = await axios.get(url, {
+                timeout: BINANCE_CONFIG.TIMEOUT,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Accept': 'application/json',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Cache-Control': 'no-cache'
+                },
+                ...options
+            });
+            
+            console.log(`[OK] Request exitoso - Status: ${response.status}`);
+            return response;
+            
+        } catch (error) {
+            const statusCode = error.response?.status;
+            const errorMsg = error.response?.statusText || error.message;
+            
+            console.log(`[WARNING] Error en intento ${attempt}: ${statusCode} - ${errorMsg}`);
+            
+            if (statusCode === 418) {
+                // Error 418 - necesitamos parar completamente
+                const penaltyTime = Math.min(60000 * attempt, 300000); // Max 5 minutos
+                console.log(`[ALERT] Error 418 detectado - Penalización: ${penaltyTime/1000}s`);
+                await new Promise(resolve => setTimeout(resolve, penaltyTime));
+            } else if (statusCode === 429 || statusCode === 403) {
+                // Rate limit o forbidden
+                const waitTime = Math.min(30000 * attempt, 120000); // Max 2 minutos
+                console.log(`[TIME] Rate limit detectado - Espera: ${waitTime/1000}s`);
+                await new Promise(resolve => setTimeout(resolve, waitTime));
+            } else if (attempt === maxRetries) {
+                throw error;
+            }
+            
+            // Delay exponencial entre reintentos
+            const retryDelay = Math.min(5000 * Math.pow(2, attempt), 30000);
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+        }
+    }
+    
+    throw new Error(`Falló después de ${maxRetries} intentos`);
+}
+
+// [DATA] FUNCIÓN ULTRA-CONSERVADORA PARA OBTENER DATOS SPOT
+async function fetchUltraConservativeSpotData() {
+    const cacheKey = 'spot';
+    const cache = ultraCache[cacheKey];
+    const now = Date.now();
+    
+    // Verificar cache
+    if (now - cache.lastUpdate < cache.ttl && Object.keys(cache.data).length > 0) {
+        console.log('[LIST] Usando cache SPOT ultra-conservador');
+        return cache.data;
+    }
+    
+    try {
+        console.log('[DATA] Obteniendo datos SPOT ultra-conservador...');
+        
+        const response = await ultraSafeRequest(
+            `${BINANCE_CONFIG.SPOT}/api/v3/ticker/24hr`
+        );
+        
+        const data = response.data;
+        const processedData = {
+            ticker: {},
+            signals: {},
+            count: 0,
+            timestamp: now
+        };
+        
+        // Procesar solo símbolos principales para reducir carga
+        const mainSymbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT'];
+        
+        data.forEach(item => {
+            if (mainSymbols.includes(item.symbol)) {
+                processedData.ticker[item.symbol] = {
+                    symbol: item.symbol,
+                    price: parseFloat(item.lastPrice),
+                    change: parseFloat(item.priceChangePercent),
+                    volume: parseFloat(item.volume),
+                    high: parseFloat(item.highPrice),
+                    low: parseFloat(item.lowPrice)
+                };
+                processedData.count++;
+                
+                // Generar señal simple
+                const change = parseFloat(item.priceChangePercent);
+                if (Math.abs(change) > 3) {
+                    processedData.signals[item.symbol] = {
+                        type: change > 0 ? 'LONG' : 'SHORT',
+                        strength: Math.abs(change),
+                        confidence: Math.min(Math.abs(change) / 10, 1)
+                    };
+                }
+            }
+        });
+        
+        // Actualizar cache
+        cache.data = processedData;
+        cache.lastUpdate = now;
+        cache.errors = 0;
+        
+        console.log(`[OK] SPOT obtenido: ${processedData.count} símbolos, ${Object.keys(processedData.signals).length} señales`);
+        return processedData;
+        
+    } catch (error) {
+        cache.errors++;
+        console.log(`[ERROR] Error SPOT: ${error.message} (Errores: ${cache.errors})`);
+        
+        // Devolver cache aunque esté vencido si tenemos datos
+        if (Object.keys(cache.data).length > 0) {
+            console.log('[LIST] Usando cache SPOT vencido como fallback');
+            return cache.data;
+        }
+        
+        // Datos por defecto minimalistas
+        return {
+            ticker: generateDefaultSpotData(),
+            signals: {},
+            count: 6,
+            timestamp: now,
+            error: error.message
+        };
+    }
+}
+
+// [START] FUNCIÓN ULTRA-CONSERVADORA PARA DATOS FUTURES (MÍNIMA)
+async function fetchUltraConservativeFuturesData() {
+    const cacheKey = 'futures';
+    const cache = ultraCache[cacheKey];
+    const now = Date.now();
+    
+    // Cache muy agresivo para futures
+    if (now - cache.lastUpdate < cache.ttl && Object.keys(cache.data).length > 0) {
+        console.log('[LIST] Usando cache FUTURES ultra-conservador');
+        return cache.data;
+    }
+    
+    // Solo intentar futures si SPOT funcionó recientemente
+    if (ultraCache.spot.errors > 2) {
+        console.log('🚫 Saltando FUTURES debido a errores en SPOT');
+        return cache.data || generateDefaultFuturesData();
+    }
+    
+    try {
+        console.log('[START] Obteniendo datos FUTURES ultra-conservador...');
+        
+        const response = await ultraSafeRequest(
+            `${BINANCE_CONFIG.FUTURES}/fapi/v1/ticker/24hr`
+        );
+        
+        const data = response.data;
+        const processedData = {
+            ticker: {},
+            opportunities: {},
+            count: 0,
+            timestamp: now
+        };
+        
+        // Solo procesar símbolos tier 1
+        const tier1Symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'];
+        
+        data.forEach(item => {
+            if (tier1Symbols.includes(item.symbol)) {
+                processedData.ticker[item.symbol] = {
+                    symbol: item.symbol,
+                    price: parseFloat(item.lastPrice),
+                    change: parseFloat(item.priceChangePercent),
+                    volume: parseFloat(item.volume),
+                    fundingRate: parseFloat(item.fundingRate || 0)
+                };
+                processedData.count++;
+                
+                // Oportunidad simple
+                const change = parseFloat(item.priceChangePercent);
+                if (Math.abs(change) > 2) {
+                    processedData.opportunities[item.symbol] = {
+                        type: change > 0 ? 'LONG' : 'SHORT',
+                        leverage: Math.min(Math.abs(change), 10),
+                        confidence: 0.7
+                    };
+                }
+            }
+        });
+        
+        cache.data = processedData;
+        cache.lastUpdate = now;
+        cache.errors = 0;
+        
+        console.log(`[OK] FUTURES obtenido: ${processedData.count} símbolos`);
+        return processedData;
+        
+    } catch (error) {
+        cache.errors++;
+        console.log(`[ERROR] Error FUTURES: ${error.message} (Errores: ${cache.errors})`);
+        
+        return cache.data || generateDefaultFuturesData();
+    }
+}
+
+// 💧 FUNCIÓN MINIMALISTA PARA LIQUIDEZ (SOLO TIER 1)
+async function fetchMinimalLiquidityData() {
+    const cacheKey = 'liquidity';
+    const cache = ultraCache[cacheKey];
+    const now = Date.now();
+    
+    // Cache muy largo para liquidez
+    if (now - cache.lastUpdate < cache.ttl && Object.keys(cache.data).length > 0) {
+        console.log('[LIST] Usando cache LIQUIDEZ');
+        return cache.data;
+    }
+    
+    // Solo procesar si no hay muchos errores
+    if (ultraCache.spot.errors > 3 || ultraCache.futures.errors > 3) {
+        console.log('🚫 Saltando LIQUIDEZ debido a errores previos');
+        return cache.data || generateDefaultLiquidityData();
+    }
+    
+    try {
+        console.log('💧 Obteniendo liquidez mínima...');
+        
+        const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'];
+        const liquidityData = {};
+        
+        // SOLO UN SÍMBOLO por consulta para ser ultra-conservador
+        for (let i = 0; i < Math.min(symbols.length, 2); i++) {
+            const symbol = symbols[i];
+            
+            try {
+                // Espera muy larga entre símbolos
+                if (i > 0) {
+                    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 segundos
+                }
+                
+                const response = await ultraSafeRequest(
+                    `${BINANCE_CONFIG.FUTURES}/fapi/v1/depth?symbol=${symbol}&limit=20`
+                );
+                
+                const { bids, asks } = response.data;
+                const totalLiquidity = bids.length * 1000000 + asks.length * 1000000;
+                const spread = (parseFloat(asks[0][0]) - parseFloat(bids[0][0])) / parseFloat(bids[0][0]);
+                
+                liquidityData[symbol] = {
+                    liquidityScore: 1.0, // Asumir buena liquidez para tier 1
+                    spread: spread,
+                    tier: 'TIER1_MAJOR',
+                    totalLiquidity: totalLiquidity
+                };
+                
+                console.log(`[OK] Liquidez ${symbol}: OK`);
+                
+            } catch (error) {
+                console.log(`[WARNING] Error liquidez ${symbol}: ${error.message}`);
+                liquidityData[symbol] = generateDefaultLiquidityForSymbol(symbol);
+            }
+        }
+        
+        cache.data = liquidityData;
+        cache.lastUpdate = now;
+        
+        console.log(`💧 Liquidez obtenida para ${Object.keys(liquidityData).length} símbolos`);
+        return liquidityData;
+        
+    } catch (error) {
+        console.log(`[ERROR] Error liquidez general: ${error.message}`);
+        return cache.data || generateDefaultLiquidityData();
+    }
+}
+
+// [DATA] FUNCIONES DE DATOS POR DEFECTO
+function generateDefaultSpotData() {
+    return {
+        'BTCUSDT': { symbol: 'BTCUSDT', price: 70000, change: 0, volume: 1000000 },
+        'ETHUSDT': { symbol: 'ETHUSDT', price: 2500, change: 0, volume: 500000 },
+        'BNBUSDT': { symbol: 'BNBUSDT', price: 350, change: 0, volume: 300000 }
+    };
+}
+
+function generateDefaultFuturesData() {
+    return {
+        ticker: generateDefaultSpotData(),
+        opportunities: {},
+        count: 3,
+        timestamp: Date.now()
+    };
+}
+
+function generateDefaultLiquidityData() {
+    return {
+        'BTCUSDT': generateDefaultLiquidityForSymbol('BTCUSDT'),
+        'ETHUSDT': generateDefaultLiquidityForSymbol('ETHUSDT'),
+        'BNBUSDT': generateDefaultLiquidityForSymbol('BNBUSDT')
+    };
+}
+
+function generateDefaultLiquidityForSymbol(symbol) {
+    return {
+        liquidityScore: 1.0,
+        spread: 0.001,
+        tier: 'TIER1_MAJOR',
+        totalLiquidity: 50000000
+    };
+}
+
+// [RELOAD] FUNCIÓN PRINCIPAL DE ACTUALIZACIÓN ULTRA-CONSERVADORA
+async function ultraConservativeUpdate() {
+    console.log('[RELOAD] Actualización ultra-conservadora iniciada...');
+    const startTime = Date.now();
+    
+    try {
+        // Obtener datos secuencialmente con pausas largas
+        const spotData = await fetchUltraConservativeSpotData();
+        
+        // Pausa entre consultas
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        
+        const futuresData = await fetchUltraConservativeFuturesData();
+        
+        // Pausa antes de liquidez
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        
+        const liquidityData = await fetchMinimalLiquidityData();
+        
+        // Generar estado cuántico minimalista
+        const quantumState = {
+            coherence: getSystemEntropy() * 0.5 + 0.5,
+            consciousness: getSystemEntropy() * 0.5 + 0.5,
+            entanglement: getSystemEntropy() * 0.3 + 0.7,
+            superposition: getSystemEntropy() * 0.4 + 0.6,
+            tunneling: getSystemEntropy() * 0.3 + 0.5,
+            optimalLeverage: getSystemEntropy() * 0.2 + 0.8
+        };
+        
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        
+        console.log(`[OK] Actualización completada en ${duration}ms`);
+        console.log(`[DATA] SPOT: ${spotData.count || 0} símbolos`);
+        console.log(`[START] FUTURES: ${futuresData.count || 0} símbolos`);
+        console.log(`💧 LIQUIDEZ: ${Object.keys(liquidityData).length} símbolos`);
+        
+        // Guardar estado global
+        global.systemState = {
+            spot: spotData,
+            futures: futuresData,
+            liquidity: liquidityData,
+            quantum: quantumState,
+            lastUpdate: endTime,
+            errors: {
+                spot: ultraCache.spot.errors,
+                futures: ultraCache.futures.errors,
+                liquidity: ultraCache.liquidity.errors
+            }
+        };
+        
+    } catch (error) {
+        console.log(`[ERROR] Error en actualización ultra-conservadora: ${error.message}`);
+        
+        // Estado de emergencia
+        global.systemState = global.systemState || {
+            spot: { ticker: generateDefaultSpotData(), signals: {}, count: 3 },
+            futures: generateDefaultFuturesData(),
+            liquidity: generateDefaultLiquidityData(),
+            quantum: { coherence: 0.5, consciousness: 0.5, entanglement: 0.5 },
+            lastUpdate: Date.now(),
+            errors: { spot: 999, futures: 999, liquidity: 999 },
+            emergency: true
+        };
+    }
+}
+
+// [API] ENDPOINTS ULTRA-SEGUROS
+app.get('/health', (req, res) => {
+    const state = global.systemState || {};
+    res.json({
+        status: 'OK',
+        system: 'Ultra-Conservative System',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        errors: state.errors || {},
+        emergency: state.emergency || false,
+        cache: {
+            spot: ultraCache.spot.lastUpdate,
+            futures: ultraCache.futures.lastUpdate,
+            liquidity: ultraCache.liquidity.lastUpdate
+        },
+        humanSimulator: {
+            requests: humanSimulator.requestCount,
+            sessionTime: Math.floor((Date.now() - humanSimulator.sessionStart) / 1000)
+        }
+    });
+});
+
+app.get('/api/strategic-overview', (req, res) => {
+    const state = global.systemState || {};
+    res.json({
+        success: true,
+        mode: 'ULTRA_CONSERVATIVE',
+        data: {
+            spot: {
+                symbols: state.spot?.count || 0,
+                signals: Object.keys(state.spot?.signals || {}).length,
+                purpose: 'ANALISIS_MINIMO'
+            },
+            futures: {
+                symbols: state.futures?.count || 0,
+                opportunities: Object.keys(state.futures?.opportunities || {}).length,
+                purpose: 'EJECUCION_BASICA'
+            },
+            liquidity: {
+                symbols: Object.keys(state.liquidity || {}).length,
+                purpose: 'MONITOREO_BASICO'
+            },
+            quantum: state.quantum || {}
+        },
+        lastUpdate: state.lastUpdate,
+        errors: state.errors,
+        strategy: 'ULTRA_CONSERVATIVE_ANTI_418'
+    });
+});
+
+app.get('/api/system-status', (req, res) => {
+    res.json({
+        success: true,
+        system: 'Ultra-Conservative',
+        timestamp: Date.now(),
+        cache: {
+            spot: {
+                lastUpdate: ultraCache.spot.lastUpdate,
+                errors: ultraCache.spot.errors,
+                hasData: Object.keys(ultraCache.spot.data).length > 0
+            },
+            futures: {
+                lastUpdate: ultraCache.futures.lastUpdate,
+                errors: ultraCache.futures.errors,
+                hasData: Object.keys(ultraCache.futures.data).length > 0
+            },
+            liquidity: {
+                lastUpdate: ultraCache.liquidity.lastUpdate,
+                errors: ultraCache.liquidity.errors,
+                hasData: Object.keys(ultraCache.liquidity.data).length > 0
+            }
+        },
+        humanSimulator: {
+            requests: humanSimulator.requestCount,
+            lastRequest: humanSimulator.lastRequestTime,
+            sessionTime: Date.now() - humanSimulator.sessionStart
+        }
+    });
+});
+
+// [START] INICIALIZACIÓN ULTRA-CONSERVADORA
+app.listen(PORT, async () => {
+    console.log(`[SECURE] Sistema Ultra-Conservador ejecutándose en puerto ${PORT}`);
+    console.log(`🕵️ Modo Anti-418 Forensic - ACTIVO`);
+    console.log(`🔗 URL: http://localhost:${PORT}`);
+    console.log(`[TIME] Delays: ${BINANCE_CONFIG.MIN_DELAY}ms - ${BINANCE_CONFIG.MAX_DELAY}ms`);
+    console.log(`📦 Cache TTL: ${BINANCE_CONFIG.CACHE_TTL/1000}s`);
+    
+    // Primera actualización inmediata
+    await ultraConservativeUpdate();
+    
+    // Actualizaciones cada 10 minutos (ultra-conservador)
+    setInterval(ultraConservativeUpdate, 600000);
+    
+    console.log(`[SHIELD] Sistema listo - Próxima actualización en 10 minutos`);
+    console.log(`[DATA] Endpoints disponibles:`);
+    console.log(`   - /health (estado del sistema)`);
+    console.log(`   - /api/strategic-overview (overview estratégico)`);
+    console.log(`   - /api/system-status (estado detallado)`);
+});

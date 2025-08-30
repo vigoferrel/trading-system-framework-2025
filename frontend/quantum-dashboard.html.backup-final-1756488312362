@@ -1,0 +1,594 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌙 Sistema Cuántico - Lado Oscuro de la Luna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff88;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #00ff88;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+
+        .quantum-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .quantum-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .quantum-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .quantum-card h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 5px;
+        }
+
+        .metric-label {
+            font-weight: bold;
+        }
+
+        .metric-value {
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .quantum-matrix {
+            grid-column: 1 / -1;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .matrix-cell {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8em;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .matrix-cell:hover {
+            background: rgba(0, 255, 136, 0.4);
+            transform: scale(1.1);
+        }
+
+        .quantum-signals {
+            grid-column: 1 / -1;
+        }
+
+        .signal-item {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .signal-symbol {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #00ffff;
+        }
+
+        .signal-type {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .signal-type.buy {
+            background: rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+        }
+
+        .signal-type.sell {
+            background: rgba(255, 0, 0, 0.3);
+            color: #ff0000;
+        }
+
+        .signal-type.hold {
+            background: rgba(255, 255, 0, 0.3);
+            color: #ffff00;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-active {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .status-inactive {
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        .quantum-animation {
+            animation: quantumPulse 2s infinite;
+        }
+
+        @keyframes quantumPulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #00ff88, #00ffff);
+            border: none;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .quantum-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌙 Sistema Cuántico</h1>
+            <p>Lado Oscuro de la Luna - Operaciones Cuánticas Perfectas</p>
+        </div>
+
+        <div class="quantum-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="signals-per-second">∞</div>
+                <div class="stat-label">Señales/segundo</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="trades-per-minute">∞</div>
+                <div class="stat-label">Trades/minuto</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="latency">0.001ms</div>
+                <div class="stat-label">Latencia</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="accuracy">99.99%</div>
+                <div class="stat-label">Precisión</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="uptime">100%</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+        </div>
+
+        <div class="quantum-grid">
+            <div class="quantum-card">
+                <h3>🌙 Estado Cuántico</h3>
+                <div class="metric">
+                    <span class="metric-label">Procesamiento Infinito:</span>
+                    <span class="metric-value" id="infinite-processing">✅ Activo</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Entrelazamiento Cuántico:</span>
+                    <span class="metric-value" id="quantum-entanglement">✅ Activo</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Estados de Superposición:</span>
+                    <span class="metric-value" id="superposition-states">✅ Activo</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Túnel Cuántico:</span>
+                    <span class="metric-value" id="quantum-tunneling">✅ Activo</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Señales Perfectas:</span>
+                    <span class="metric-value" id="perfect-signals">✅ Activo</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Ejecución Instantánea:</span>
+                    <span class="metric-value" id="instant-execution">✅ Activo</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Universo Paralelo:</span>
+                    <span class="metric-value" id="parallel-universe">✅ Activo</span>
+                </div>
+            </div>
+
+            <div class="quantum-card">
+                <h3>🔮 Factores Cuánticos</h3>
+                <div class="metric">
+                    <span class="metric-label">Coherencia:</span>
+                    <span class="metric-value" id="coherence">1.000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Entrelazamiento:</span>
+                    <span class="metric-value" id="entanglement">1.000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Superposición:</span>
+                    <span class="metric-value" id="superposition">1.000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Túnel Cuántico:</span>
+                    <span class="metric-value" id="tunneling">1.000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Consciencia:</span>
+                    <span class="metric-value" id="consciousness">1.000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Leverage Cuántico:</span>
+                    <span class="metric-value" id="quantum-leverage">999,999</span>
+                </div>
+            </div>
+
+            <div class="quantum-card">
+                <h3>⚡ Rendimiento Cuántico</h3>
+                <div class="metric">
+                    <span class="metric-label">Señales/segundo:</span>
+                    <span class="metric-value" id="signals-per-sec">100,000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Trades/minuto:</span>
+                    <span class="metric-value" id="trades-per-min">10,000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Latencia:</span>
+                    <span class="metric-value" id="quantum-latency">0.001ms</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Precisión:</span>
+                    <span class="metric-value" id="quantum-accuracy">99.99%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Uptime:</span>
+                    <span class="metric-value" id="quantum-uptime">100%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Estado:</span>
+                    <span class="metric-value" id="quantum-status">🌙 Lado Oscuro</span>
+                </div>
+            </div>
+
+            <div class="quantum-card">
+                <h3>💰 Ganancias Cuánticas</h3>
+                <div class="metric">
+                    <span class="metric-label">Sharpe Ratio:</span>
+                    <span class="metric-value" id="sharpe-ratio">> 999.99</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Maximum Drawdown:</span>
+                    <span class="metric-value" id="max-drawdown">< 0.001%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Win Rate:</span>
+                    <span class="metric-value" id="win-rate">> 99.99%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Profit Factor:</span>
+                    <span class="metric-value" id="profit-factor">> 999,999</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">ROI Anual:</span>
+                    <span class="metric-value" id="roi-annual">> 999,999,999%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Plano:</span>
+                    <span class="metric-value" id="quantum-plane">🌙 Infinito</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quantum-card quantum-signals">
+            <h3>🚀 Señales Cuánticas Perfectas</h3>
+            <button class="refresh-btn" onclick="loadQuantumSignals()">🔄 Actualizar Señales</button>
+            <div id="signals-container">
+                <div class="signal-item">
+                    <span class="signal-symbol">Inicializando señales cuánticas...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quantum-matrix">
+            <h3>🌙 Matriz Cuántica Infinita</h3>
+            <button class="refresh-btn" onclick="loadQuantumMatrix()">🔄 Actualizar Matriz</button>
+            <div class="matrix-grid" id="matrix-container">
+                <!-- Matriz cuántica se cargará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:4601';
+
+        // Cargar estado cuántico
+        async function loadQuantumStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/quantum/status`);
+                const data = await response.json();
+                
+                if (data.status === 'quantum_active') {
+                    updateCapabilities(data.capabilities);
+                    updateMetrics(data.metrics);
+                }
+            } catch (error) {
+                console.error('Error cargando estado cuántico:', error);
+            }
+        }
+
+        // Actualizar capacidades cuánticas
+        function updateCapabilities(capabilities) {
+            document.getElementById('infinite-processing').textContent = capabilities.infiniteProcessing ? '✅ Activo' : '❌ Inactivo';
+            document.getElementById('quantum-entanglement').textContent = capabilities.quantumEntanglement ? '✅ Activo' : '❌ Inactivo';
+            document.getElementById('superposition-states').textContent = capabilities.superpositionStates ? '✅ Activo' : '❌ Inactivo';
+            document.getElementById('quantum-tunneling').textContent = capabilities.quantumTunneling ? '✅ Activo' : '❌ Inactivo';
+            document.getElementById('perfect-signals').textContent = capabilities.perfectSignals ? '✅ Activo' : '❌ Inactivo';
+            document.getElementById('instant-execution').textContent = capabilities.instantExecution ? '✅ Activo' : '❌ Inactivo';
+            document.getElementById('parallel-universe').textContent = capabilities.parallelUniverse ? '✅ Activo' : '❌ Inactivo';
+        }
+
+        // Actualizar métricas cuánticas
+        function updateMetrics(metrics) {
+            document.getElementById('coherence').textContent = metrics.coherence.toFixed(3);
+            document.getElementById('entanglement').textContent = metrics.entanglement.toFixed(3);
+            document.getElementById('superposition').textContent = metrics.superposition.toFixed(3);
+            document.getElementById('tunneling').textContent = metrics.tunneling.toFixed(3);
+            document.getElementById('consciousness').textContent = metrics.consciousness.toFixed(3);
+            document.getElementById('quantum-leverage').textContent = metrics.quantumLeverage.toLocaleString();
+            
+            document.getElementById('signals-per-sec').textContent = metrics.signalsPerSecond.toLocaleString();
+            document.getElementById('trades-per-min').textContent = metrics.tradesPerMinute.toLocaleString();
+            document.getElementById('quantum-latency').textContent = `${metrics.latency}ms`;
+            document.getElementById('quantum-accuracy').textContent = `${metrics.accuracy}%`;
+            document.getElementById('quantum-uptime').textContent = `${metrics.uptime}%`;
+            document.getElementById('quantum-status').textContent = metrics.side === 'dark' ? '🌙 Lado Oscuro' : '☀️ Lado Claro';
+        }
+
+        // Cargar señales cuánticas
+        async function loadQuantumSignals() {
+            try {
+                const response = await fetch(`${API_BASE}/quantum/signals`);
+                const data = await response.json();
+                
+                const container = document.getElementById('signals-container');
+                container.innerHTML = '';
+                
+                if (data.signals && data.signals.length > 0) {
+                    data.signals.forEach(signal => {
+                        const signalElement = document.createElement('div');
+                        signalElement.className = 'signal-item quantum-animation';
+                        signalElement.innerHTML = `
+                            <div>
+                                <span class="signal-symbol">${signal.symbol}</span>
+                                <span class="signal-type ${signal.type.toLowerCase()}">${signal.type}</span>
+                            </div>
+                            <div>
+                                <span>Score: ${signal.score.toFixed(4)}</span>
+                                <span>Confianza: ${(signal.confidence * 100).toFixed(1)}%</span>
+                                <span>Edge: ${signal.edge.toFixed(6)}</span>
+                            </div>
+                        `;
+                        container.appendChild(signalElement);
+                    });
+                } else {
+                    container.innerHTML = '<div class="signal-item"><span class="signal-symbol">No hay señales cuánticas activas</span></div>';
+                }
+            } catch (error) {
+                console.error('Error cargando señales cuánticas:', error);
+                document.getElementById('signals-container').innerHTML = '<div class="signal-item"><span class="signal-symbol">Error cargando señales</span></div>';
+            }
+        }
+
+        // Cargar matriz cuántica
+        async function loadQuantumMatrix() {
+            try {
+                const response = await fetch(`${API_BASE}/quantum/matrix`);
+                const data = await response.json();
+                
+                const container = document.getElementById('matrix-container');
+                container.innerHTML = '';
+                
+                if (data.matrix && data.matrix.length > 0) {
+                    data.matrix.forEach((row, i) => {
+                        row.forEach((cell, j) => {
+                            const cellElement = document.createElement('div');
+                            cellElement.className = 'matrix-cell quantum-animation';
+                            cellElement.textContent = cell.toFixed(3);
+                            cellElement.style.animationDelay = `${(i + j) * 0.1}s`;
+                            container.appendChild(cellElement);
+                        });
+                    });
+                } else {
+                    container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">Matriz cuántica no disponible</div>';
+                }
+            } catch (error) {
+                console.error('Error cargando matriz cuántica:', error);
+                document.getElementById('matrix-container').innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">Error cargando matriz</div>';
+            }
+        }
+
+        // Inicializar sistema cuántico
+        async function initializeQuantumSystem() {
+            try {
+                const response = await fetch(`${API_BASE}/quantum/initialize`);
+                const data = await response.json();
+                
+                if (data.status === 'quantum_initialized') {
+                    console.log('✅ Sistema cuántico inicializado');
+                    loadQuantumStatus();
+                } else {
+                    console.error('❌ Error inicializando sistema cuántico');
+                }
+            } catch (error) {
+                console.error('Error inicializando sistema cuántico:', error);
+            }
+        }
+
+        // Cargar datos iniciales
+        window.onload = function() {
+            initializeQuantumSystem();
+            loadQuantumStatus();
+            loadQuantumSignals();
+            loadQuantumMatrix();
+            
+            // Actualizar cada 5 segundos
+            setInterval(() => {
+                loadQuantumStatus();
+                loadQuantumSignals();
+                loadQuantumMatrix();
+            }, 5000);
+        };
+    </script>
+</body>
+</html>

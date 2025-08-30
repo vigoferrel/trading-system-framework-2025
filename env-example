@@ -1,0 +1,33 @@
+# Ejemplo de archivo .env para el sistema Quantum Trading
+# Copiar este archivo a .env y ajustar los valores según sea necesario
+
+# Configuración de entorno
+NODE_ENV=production
+
+# Configuración de puertos
+CORE_PORT=4601
+FRONTEND_PORT=4602
+MONITOR_PORT=8082
+
+# API Keys de Binance (reemplazar con tus propias claves)
+BINANCE_API_KEY=your_api_key_here
+BINANCE_API_SECRET=your_api_secret_here
+BINANCE_TESTNET=false
+
+# Configuración de logging
+LOG_LEVEL=info
+LOG_FILE=logs/system.log
+
+# Configuración de seguridad
+JWT_SECRET=change_this_to_a_secure_random_string
+
+# Configuración de alertas
+ALERT_EMAIL=admin@example.com
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/webhook/url
+
+# Configuración de rendimiento
+FAST_PERFORMANCE=true
+VIGO_FUTURES_ENABLED=false
+
+# Configuración de memoria
+NODE_OPTIONS=--max-old-space-size=2048

@@ -1,0 +1,2594 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * Options Data Fetcher con Griegos
+ * 
+ * Sistema para obtener datos de opciones reales de Binance y realizar
+ * ingeniería inversa utilizando los griegos para optimizar los parámetros
+ * del sistema cuántico de Feynman
+ */
+
+// Cargar .env local para credenciales y capitales
+const path = require('path');
+try { require('dotenv').config({ path: path.join(__dirname, '.env') }); } catch {}
+const crypto = require('crypto');
+const https = require('https');
+const fs = require('fs');
+
+class OptionsDataFetcher {
+    constructor() {
+        this.apiKey = process.env.BINANCE_API_KEY || '';
+        this.apiSecret = process.env.BINANCE_API_SECRET || '';
+        this.baseURL = 'api.binance.com';
+        this.dataCache = {};
+        this.cacheFile = path.join(__dirname, 'options-data-cache.json');
+        this.symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT'];
+        this.rateLimitDelay = 100; // 100ms entre peticiones para evitar rate limits
+        this.lastRequestTime = 0;
+        this.feeModel = {
+            // Comisión como fracción del precio de la prima (por lado)
+            commissionRate: 0.0003, // 3 bps por operación
+            // Fracción de la horquilla usada como deslizamiento adicional
+            slippageFractionOfSpread: 0.2
+        };
+
+        // Umbrales de selección para reducir falsos positivos
+        this.selectionThresholds = {
+            minQuantumEfficiency: 0.65,
+            minPathProbability: 0.6,
+            superpositionMin: 0.25,
+            superpositionMax: 0.78,
+            minLiquidityScore: 0.35,
+            maxSpreadBps: 500,
+            minNetReturn: 0.0025 // 0.25%
+        };
+
+        // Config Z-Plane (inspirado en SRONA_Z_Plane_Utility_Maximization.py)
+        this.zPlaneConfig = {
+            alphaReturn: 1.0,    // 
+            betaRisk: 0.5,       // 
+            gammaUtility: 2.6,   // 
+            phi: 1.618,          //  (áureo)
+            zUtilityWeight: 0.25  // multiplicador suave
+        };
+
+        // Configuración del ensamble cuántico estocástico
+        this.ensembleSamples = 1024;
+
+        // Modo agresivo OTM y límites de multiplicadores (control de riesgo)
+        this.quantumPortfolioConfig = {
+            aggressiveQuantumMode: true,
+            otmAggressiveness: 2.1, // más peso OTM
+            maxLeverageCap: 80,
+            maxMultiplierPerLeg: 40,
+            maxPortfolioLegs: 2, // strangle por defecto
+            topPortfolios: 25,
+            enableStrangles: false // despriorizar strangles por foco en naked
+        };
+
+        // Capital opcional para dimensionamiento (contratos mínimos)
+        this.capitalConfig = {
+            capitalPerTradeUSD: parseFloat(process.env.CAPITAL_PER_TRADE_USD || '0'),
+            portfolioCapitalUSD: parseFloat(process.env.PORTFOLIO_CAPITAL_USD || '0')
+        };
+
+        // Configuración del objetivo de portafolio: 'profit' o 'leverage'
+        this.portfolioConfig = {
+            objective: (process.env.PORTFOLIO_OBJECTIVE || 'profit').toLowerCase(),
+            leverageFloor: 0 // opcional: exigir apalancamiento mínimo agregado
+        };
+        
+        // Constantes fundamentales para cálculos de griegos
+        this.greeksConstants = {
+            z: { real: 9, imag: 16 }, // Constante cuántica z = 9 + 16i
+            lambda: Math.log(7919), // Longitud de onda cuántica
+            quantumAdjustment: 0.1 // Factor de ajuste cuántico
+        };
+
+        // Configuración gravitacional (inspirada en SRONA_Options_Gravitational_Model.py)
+        this.gravitationalConfig = {
+            Gq: 0.35, // constante gravitacional cuántica (adimensional, afinada)
+            masses: {
+                BTCUSDT: 800,
+                ETHUSDT: 650,
+                BNBUSDT: 350,
+                SOLUSDT: 400,
+                XRPUSDT: 250,
+                DOGEUSDT: 600
+            },
+            // Peso de cada componente en la distancia efectiva r
+            distanceWeights: { moneyness: 0.6, illiquidity: 0.3, spread: 0.1 },
+            // Límite del boost agregado por gravedad al score
+            maxBoost: 0.12
+        };
+
+        // Configuración de tiempo fractal inspirado en SRONA (log7919)
+        this.fractalTimeConfig = {
+            LOG_7919: Math.log(7919),
+            FRACTAL_DIMENSION_BASE: 1.618,
+            NEVER_EXECUTE_THRESHOLD: 0.85,
+            SUPERPOSITION_PRESERVATION_TARGET: 0.95,
+            TIME_BONUS_PER_DAY: 0.0005, // 5 bps por día de extensión (fracción)
+            MAX_TIME_EXTENSION_DAYS: 90,
+            MIN_TIME_EXTENSION_DAYS: 7
+        };
+
+        // Profundidad de mercado básica por símbolo
+        this.marketDepth = {
+            orderBooks: new Map(),
+            depthMetrics: new Map()
+        };
+
+        // Ajustes por símbolo (leverage y TP) derivados de superficies IV
+        this.symbolAdjustments = {};
+
+        // Meta mercado (funding/momentum/vol) estilo Hook Wheel
+        this.marketMeta = {
+            fundingSlope: new Map(),
+            klineMetrics: new Map()
+        };
+        
+        // Cargar caché si existe
+        this.loadCache();
+    }
+
+    /**
+     * Cargar caché desde archivo
+     */
+    loadCache() {
+        try {
+            if (fs.existsSync(this.cacheFile)) {
+                const cacheData = fs.readFileSync(this.cacheFile, 'utf8');
+                this.dataCache = JSON.parse(cacheData);
+                console.log('[OK] Caché de datos de opciones cargado');
+            }
+        } catch (error) {
+            console.log('[WARNING] No se pudo cargar la caché, se creará una nueva');
+            this.dataCache = {};
+        }
+    }
+
+    /**
+     * Guardar caché a archivo
+     */
+    saveCache() {
+        try {
+            fs.writeFileSync(this.cacheFile, JSON.stringify(this.dataCache, null, 2));
+            console.log('[OK] Caché de datos de opciones guardado');
+        } catch (error) {
+            console.error('[ERROR] Error al guardar caché:', error);
+        }
+    }
+
+    /**
+     * Esperar si es necesario para respetar rate limits
+     */
+    async respectRateLimit() {
+        const now = Date.now();
+        const timeSinceLastRequest = now - this.lastRequestTime;
+        
+        if (timeSinceLastRequest < this.rateLimitDelay) {
+            const delay = this.rateLimitDelay - timeSinceLastRequest;
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+        
+        this.lastRequestTime = Date.now();
+    }
+
+    /**
+     * Generar firma HMAC SHA256 para peticiones a Binance
+     */
+    generateSignature(queryString) {
+        return crypto.createHmac('sha256', this.apiSecret)
+                    .update(queryString)
+                    .digest('hex');
+    }
+
+    /**
+     * Realizar petición a API de Binance
+     * signed: sólo para endpoints privados
+     */
+    async makeRequest(endpoint, params = {}, method = 'GET', signed = false) {
+        await this.respectRateLimit();
+        
+        return new Promise((resolve, reject) => {
+            // Construir query string
+            const queryString = Object.keys(params)
+                .map(key => `${key}=${encodeURIComponent(params[key])}`)
+                .join('&');
+            
+            // Añadir timestamp y firma para peticiones privadas
+            let finalQueryString = queryString;
+            if (signed) {
+            const timestamp = Date.now();
+                const signedQueryString = `${queryString}${queryString ? '&' : ''}timestamp=${timestamp}`;
+            const signature = this.generateSignature(signedQueryString);
+                finalQueryString = `${signedQueryString}&signature=${signature}`;
+            }
+            
+            // Configurar petición
+            const options = {
+                hostname: this.baseURL,
+                port: 443,
+                path: `/api/v3${endpoint}?${finalQueryString}`,
+                method: method,
+                headers: {
+                    'X-MBX-APIKEY': this.apiKey,
+                    'Content-Type': 'application/json'
+                }
+            };
+            
+            // Realizar petición
+            const req = https.request(options, (res) => {
+                let data = '';
+                
+                res.on('data', (chunk) => {
+                    data += chunk;
+                });
+                
+                res.on('end', () => {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        resolve(jsonData);
+                    } catch (error) {
+                        reject(new Error(`Error parsing JSON: ${error.message}`));
+                    }
+                });
+            });
+            
+            req.on('error', (error) => {
+                reject(error);
+            });
+            
+            req.end();
+        });
+    }
+
+    async signedEapiGet(epath) {
+        // Firma HMAC con hora de servidor y base URL desde .env
+        const apiKey = process.env.BINANCE_API_KEY || '';
+        const apiSecret = process.env.BINANCE_API_SECRET || '';
+        if (!apiKey || !apiSecret) return null;
+        const https = require('https');
+        const crypto = require('crypto');
+        const optBase = process.env.BINANCE_OPTIONS_BASE_URL || 'https://eapi.binance.com/eapi/v1';
+        let origin = 'https://eapi.binance.com';
+        let prefix = '/eapi/v1';
+        try {
+            const u = new URL(optBase);
+            origin = u.origin;
+            prefix = u.pathname.endsWith('/') ? u.pathname.slice(0, -1) : u.pathname;
+            if (!prefix) prefix = '/eapi/v1';
+        } catch {}
+        // Algunas regiones de Binance devuelven HTML de error si el path no es exacto.
+        // Aseguramos usar el path exacto de EAPI.
+        const timeUrl = `${origin}${prefix}/time`;
+        const srvTs = await new Promise((resolve) => {
+            const rq = https.request(timeUrl, { method: 'GET' }, (rs) => {
+                let d = '';
+                rs.on('data', (c) => d += c);
+                rs.on('end', () => {
+                    try { const j = JSON.parse(d||'{}'); resolve(j.serverTime || Date.now()); } catch { resolve(Date.now()); }
+                });
+            });
+            rq.on('error', () => resolve(Date.now()));
+            rq.end();
+        });
+        const query = `timestamp=${srvTs}&recvWindow=60000`;
+        const sig = crypto.createHmac('sha256', apiSecret).update(query).digest('hex');
+        // Permitir epath absoluto (ej. "/eapi/v1/account") o relativo ("/account")
+        const pathPart = epath.startsWith('/eapi/') ? epath : `${prefix}${epath.startsWith('/') ? epath : '/'+epath}`;
+        const url = `${origin}${pathPart}?${query}&signature=${sig}`;
+        return new Promise((resolve) => {
+            const headers = {
+                'X-MBX-APIKEY': apiKey,
+                'User-Agent': 'QuantumBot/1.0 (+Windows; NodeJS)'
+            };
+            const req = https.request(url, { method: 'GET', headers }, (res) => {
+                let data = '';
+                res.on('data', (c) => data += c);
+                res.on('end', () => {
+                    try { resolve(JSON.parse(data || '{}')); } catch { resolve(null); }
+                });
+            });
+            req.on('error', () => resolve(null));
+            req.end();
+        });
+    }
+
+    async fetchOptionsStatusEAPI() {
+        try {
+            const acct = await this.signedEapiGet('/eapi/v1/account');
+            const bal = await this.signedEapiGet('/eapi/v1/balance');
+            const pos = await this.signedEapiGet('/eapi/v1/position');
+            let availableUSDT = 0;
+            let equity = 0;
+            if (acct) {
+                if (typeof acct.availableBalance !== 'undefined') availableUSDT = parseFloat(acct.availableBalance) || 0;
+                if (typeof acct.totalAvailableBalance !== 'undefined') availableUSDT = parseFloat(acct.totalAvailableBalance) || availableUSDT;
+                if (typeof acct.equity !== 'undefined') equity = parseFloat(acct.equity) || 0;
+                // Formato alterno: acct.asset: [{ asset:'USDT', available:'151', equity:'...' }]
+                if (Array.isArray(acct.asset)) {
+                    const usdtRow = acct.asset.find(x => (x.asset || '').toUpperCase() === 'USDT') || acct.asset[0];
+                    if (usdtRow) {
+                        const availFields = [usdtRow.available, usdtRow.marginBalance, usdtRow.equity];
+                        for (const v of availFields) {
+                            const num = parseFloat(v);
+                            if (!Number.isNaN(num) && num > 0) {
+                                // available: saldo utilizable; equity: valor de cuenta
+                                availableUSDT = Math.max(availableUSDT, num);
+                                if ((usdtRow.equity !== undefined)) {
+                                    const eqNum = parseFloat(usdtRow.equity);
+                                    if (!Number.isNaN(eqNum)) equity = Math.max(equity, eqNum);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ((!availableUSDT || availableUSDT <= 0) && Array.isArray(bal)) {
+                const usdt = bal.find(x => (x.asset || x.currency || '').toUpperCase() === 'USDT') || bal[0];
+                if (usdt) {
+                    const fields = ['availableBalance', 'balance', 'cashBalance', 'equity', 'total'];
+                    for (const f of fields) {
+                        if (typeof usdt[f] !== 'undefined') {
+                            const val = parseFloat(usdt[f]);
+                            if (!Number.isNaN(val) && val > 0) { availableUSDT = Math.max(availableUSDT, val); }
+                        }
+                    }
+                }
+            }
+            return { availableUSDT, equity, positions: Array.isArray(pos) ? pos : [] };
+        } catch { return null; }
+    }
+
+    /**
+     * Obtener información de opciones para un símbolo
+     */
+    async getOptionsInfo(symbol) {
+        try {
+            // Verificar caché primero
+            const cacheKey = `options_${symbol}`;
+            const now = Date.now();
+            
+            if (this.dataCache[cacheKey] && 
+                (now - this.dataCache[cacheKey].timestamp) < 5 * 60 * 1000) { // 5 minutos de caché
+                console.log(`[DATA] Usando datos en caché para ${symbol}`);
+                return this.dataCache[cacheKey].data;
+            }
+            
+            console.log(`[RELOAD] Obteniendo datos de opciones para ${symbol}...`);
+            
+            // Obtener precio actual del símbolo
+            const tickerParams = { symbol: symbol };
+            const tickerData = await this.makeRequest('/ticker/price', tickerParams, 'GET', false);
+            const currentPrice = parseFloat(tickerData.price);
+            
+            // Obtener información de opciones (simulado ya que Binance no tiene API pública para opciones)
+            // En un entorno real, esto se conectaría a la API de opciones de Binance
+            const optionsData = await this.simulateOptionsData(symbol, currentPrice);
+            
+            // Guardar en caché
+            this.dataCache[cacheKey] = {
+                timestamp: now,
+                data: optionsData
+            };
+            
+            // Guardar caché periódicamente
+            this.saveCache();
+            
+            return optionsData;
+            
+        } catch (error) {
+            console.error(`[ERROR] Error obteniendo datos de opciones para ${symbol}:`, error.message);
+            
+            // Si hay error, intentar usar caché aunque esté desactualizada
+            const cacheKey = `options_${symbol}`;
+            if (this.dataCache[cacheKey]) {
+                console.log(`[WARNING] Usando caché desactualizada para ${symbol}`);
+                return this.dataCache[cacheKey].data;
+            }
+            
+            // Si no hay caché, devolver datos simulados
+            console.log(`[WARNING] Generando datos simulados para ${symbol}`);
+            return this.simulateOptionsData(symbol, 50000); // Precio por defecto
+        }
+    }
+
+    /**
+     * Simular datos de opciones (para demostración)
+     * En un entorno real, esto se reemplazaría con la API real de opciones
+     */
+    async simulateOptionsData(symbol, currentPrice) {
+        // Generar strikes alrededor del precio actual
+        const strikes = [];
+        const strikeRange = currentPrice * 0.2; // 20% alrededor del precio actual
+        const strikeCount = 10;
+        const strikeStep = strikeRange / strikeCount;
+        
+        for (let i = 0; i < strikeCount; i++) {
+            const strike = currentPrice - strikeRange/2 + (i * strikeStep);
+            strikes.push(Math.round(strike));
+        }
+        
+        // Generar fechas de expiración
+        const expirations = [];
+        const now = new Date();
+        
+        // Añadir expiraciones semanales y mensuales
+        for (let i = 1; i <= 4; i++) {
+            const weeklyExpiry = new Date(now);
+            weeklyExpiry.setDate(now.getDate() + (i * 7));
+            expirations.push(weeklyExpiry.toISOString().split('T')[0]);
+        }
+        
+        for (let i = 1; i <= 3; i++) {
+            const monthlyExpiry = new Date(now);
+            monthlyExpiry.setMonth(now.getMonth() + i);
+            monthlyExpiry.setDate(1); // Primer día del mes
+            expirations.push(monthlyExpiry.toISOString().split('T')[0]);
+        }
+        
+        // Generar datos de opciones para cada combinación de strike y expiración
+        const optionsData = {
+            symbol: symbol,
+            currentPrice: currentPrice,
+            timestamp: Date.now(),
+            calls: [],
+            puts: []
+        };
+        
+        for (const strike of strikes) {
+            for (const expiration of expirations) {
+                // Calcular días hasta expiración
+                const expiryDate = new Date(expiration);
+                const daysToExpiry = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+                
+                // Generar datos de call
+                const callData = this.generateOptionData('CALL', symbol, strike, currentPrice, daysToExpiry);
+                optionsData.calls.push(callData);
+                
+                // Generar datos de put
+                const putData = this.generateOptionData('PUT', symbol, strike, currentPrice, daysToExpiry);
+                optionsData.puts.push(putData);
+            }
+        }
+        
+        return optionsData;
+    }
+
+    /**
+     * Generar datos de una opción específica con cálculo de griegos
+     */
+    generateOptionData(type, symbol, strike, currentPrice, daysToExpiry) {
+        // Calcular moneyness
+        const moneyness = currentPrice / strike;
+        
+        // Determinar si está in the money, at the money, o out of the money
+        let moneyStatus;
+        if (type === 'CALL') {
+            moneyStatus = moneyness > 1.05 ? 'ITM' : (moneyness < 0.95 ? 'OTM' : 'ATM');
+        } else {
+            moneyStatus = moneyness < 0.95 ? 'ITM' : (moneyness > 1.05 ? 'OTM' : 'ATM');
+        }
+        
+        // Calcular parámetros base
+        const riskFreeRate = 0.02; // 2% tasa libre de riesgo
+        const timeToExpiry = Math.max(1e-6, daysToExpiry / 365);
+
+        // Paso 1: generar una horquilla preliminar desde un mid teórico con vol inicial (estimativa)
+        const volInit = 0.45; // punto de partida
+        const d1init = (Math.log(currentPrice / strike) + (riskFreeRate + 0.5 * volInit * volInit) * timeToExpiry) / (volInit * Math.sqrt(timeToExpiry));
+        const d2init = d1init - volInit * Math.sqrt(timeToExpiry);
+        const priceInit = type === 'CALL'
+            ? Math.max(currentPrice * this.normalCDF(d1init) - strike * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(d2init), 0.01)
+            : Math.max(strike * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(-d2init) - currentPrice * this.normalCDF(-d1init), 0.01);
+
+        // Generar horquilla a partir del mid preliminar
+        const prelimQuote = this.computeOptionQuote(priceInit, 0.6, daysToExpiry, moneyness, 0.5, symbol);
+
+        // Paso 2: ingeniería inversa  obtener vol implícita desde el ASK (precio de entrada real)
+        const marketAsk = prelimQuote.ask;
+        const volIV = Math.max(0.01, Math.min(5, this.impliedVol(type, currentPrice, strike, timeToExpiry, riskFreeRate, marketAsk)));
+
+        // Recalcular d1/d2 y precio teórico con la vol implícita
+        const d1 = (Math.log(currentPrice / strike) + (riskFreeRate + 0.5 * volIV * volIV) * timeToExpiry) / (volIV * Math.sqrt(timeToExpiry));
+        const d2 = d1 - volIV * Math.sqrt(timeToExpiry);
+        const optionPrice = type === 'CALL'
+            ? Math.max(currentPrice * this.normalCDF(d1) - strike * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(d2), 0.01)
+            : Math.max(strike * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(-d2) - currentPrice * this.normalCDF(-d1), 0.01);
+
+        // Griegos con vol IV
+        const delta = type === 'CALL' ? this.normalCDF(d1) : this.normalCDF(d1) - 1;
+        const gamma = this.normalPDF(d1) / (currentPrice * volIV * Math.sqrt(timeToExpiry));
+        const theta = (-(currentPrice * this.normalPDF(d1) * volIV) / (2 * Math.sqrt(timeToExpiry))
+                     + (type === 'CALL' ? - riskFreeRate * strike * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(d2)
+                                        :   riskFreeRate * strike * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(-d2))) / 365;
+        const vega = currentPrice * this.normalPDF(d1) * Math.sqrt(timeToExpiry) / 100;
+        const rho = (type === 'CALL' ? strike * timeToExpiry * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(d2)
+                                     : -strike * timeToExpiry * Math.exp(-riskFreeRate * timeToExpiry) * this.normalCDF(-d2)) / 100;
+        
+        // Aplicar ajuste cuántico a los griegos
+        const quantumAdjustedGreeks = this.applyQuantumAdjustment({
+            delta, gamma, theta, vega, rho
+        }, type, moneyness);
+
+        // Cotización simulada (bid/ask) con spread dependiente de liquidez/tenor/volatilidad
+        // Primero calcular métricas SRONA-like necesarias
+        // Probabilidad de expirar ITM (aprox Black-Scholes)
+        const probabilityITM = type === 'CALL' ? this.normalCDF(d2) : this.normalCDF(-d2);
+
+        // Métricas SRONA/Matrix (aprox)
+        const liquidityScore = this.calculateLiquidityScore(vega, daysToExpiry);
+        const probabilityOfProfit = Math.max(0, Math.min(1, probabilityITM));
+        const riskRewardRatio = this.calculateRiskRewardRatio(optionPrice, currentPrice, strike, type, volIV, timeToExpiry);
+        const riskLevel = this.estimateRiskLevel(theta, gamma, volIV);
+        const timeToMaxProfit = this.estimateTimeToMaxProfit(type, moneyness, daysToExpiry);
+
+        // Generar horquilla definitiva basada en la vol IV y precio teórico
+        const quote = this.computeOptionQuote(optionPrice, liquidityScore, daysToExpiry, moneyness, volIV, symbol);
+        
+        // Factores cuánticos SRONA-like
+        const quantumFactors = this.calculateOptionQuantumFactors({
+            delta, gamma, theta, vega, rho,
+            moneyness, volatility: volIV, daysToExpiry,
+            liquidityScore, probabilityOfProfit, riskRewardRatio, riskLevel, timeToMaxProfit
+        });
+        
+        return {
+            symbol: symbol,
+            type: type,
+            strike: strike,
+            expiration: new Date(Date.now() + daysToExpiry * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            daysToExpiry: daysToExpiry,
+            currentPrice: currentPrice,
+            optionPrice: optionPrice, // teórico con vol IV
+            midPrice: quote.mid,
+            bid: quote.bid,
+            ask: quote.ask,
+            spreadBps: quote.spreadBps,
+            moneyness: moneyness,
+            moneyStatus: moneyStatus,
+            volatility: volIV,
+            riskFreeRate: riskFreeRate,
+            d1, d2,
+            entryPremium: quote.ask,
+            // Griegos clásicos
+            delta: delta,
+            gamma: gamma,
+            theta: theta,
+            vega: vega,
+            rho: rho,
+            // Griegos ajustados cuánticamente
+            quantumDelta: quantumAdjustedGreeks.delta,
+            quantumGamma: quantumAdjustedGreeks.gamma,
+            quantumTheta: quantumAdjustedGreeks.theta,
+            quantumVega: quantumAdjustedGreeks.vega,
+            quantumRho: quantumAdjustedGreeks.rho,
+            // Métricas cuánticas adicionales
+            quantumEfficiency: this.calculateQuantumEfficiency(quantumAdjustedGreeks, moneyStatus),
+            pathProbability: this.calculatePathProbability(moneyness, daysToExpiry),
+            superpositionIndex: this.calculateSuperpositionIndex(moneyness, volIV),
+            // Métricas SRONA-like para Matrix 6x8
+            liquidityScore,
+            probabilityOfProfit,
+            riskRewardRatio,
+            riskLevel,
+            timeToMaxProfit,
+            // Factores cuánticos SRONA
+            quantumFactors
+        };
+    }
+
+    /**
+     * Modelo Black-Scholes para opciones CALL
+     */
+    blackScholesCall(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        const callPrice = S * this.normalCDF(d1) - K * Math.exp(-r * T) * this.normalCDF(d2);
+        return Math.max(callPrice, 0.01); // Precio mínimo de 0.01
+    }
+
+    /**
+     * Modelo Black-Scholes para opciones PUT
+     */
+    blackScholesPut(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        const putPrice = K * Math.exp(-r * T) * this.normalCDF(-d2) - S * this.normalCDF(-d1);
+        return Math.max(putPrice, 0.01); // Precio mínimo de 0.01
+    }
+
+    /**
+     * Función de distribución normal acumulada
+     */
+    normalCDF(x) {
+        const a1 = 0.254829592;
+        const a2 = -0.284496736;
+        const a3 = 1.421413741;
+        const a4 = -1.453152027;
+        const a5 = 1.061405429;
+        const p = 0.3275911;
+        
+        const sign = x < 0 ? -1 : 1;
+        x = Math.abs(x) / Math.sqrt(2.0);
+        
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        
+        return 0.5 * (1.0 + sign * y);
+    }
+
+    /**
+     * Delta para opciones CALL
+     */
+    callDelta(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        return this.normalCDF(d1);
+    }
+
+    /**
+     * Delta para opciones PUT
+     */
+    putDelta(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        return this.normalCDF(d1) - 1;
+    }
+
+    /**
+     * Gamma (misma para CALL y PUT)
+     */
+    gamma(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        return this.normalPDF(d1) / (S * sigma * Math.sqrt(T));
+    }
+
+    /**
+     * Theta para opciones CALL
+     */
+    callTheta(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        const theta = -(S * this.normalPDF(d1) * sigma) / (2 * Math.sqrt(T)) 
+                     - r * K * Math.exp(-r * T) * this.normalCDF(d2);
+        
+        return theta / 365; // Convertir a theta diario
+    }
+
+    /**
+     * Theta para opciones PUT
+     */
+    putTheta(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        const theta = -(S * this.normalPDF(d1) * sigma) / (2 * Math.sqrt(T)) 
+                     + r * K * Math.exp(-r * T) * this.normalCDF(-d2);
+        
+        return theta / 365; // Convertir a theta diario
+    }
+
+    /**
+     * Vega (misma para CALL y PUT)
+     */
+    vega(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        return S * this.normalPDF(d1) * Math.sqrt(T) / 100;
+    }
+
+    /**
+     * Rho para opciones CALL
+     */
+    callRho(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        return K * T * Math.exp(-r * T) * this.normalCDF(d2) / 100;
+    }
+
+    /**
+     * Rho para opciones PUT
+     */
+    putRho(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        return -K * T * Math.exp(-r * T) * this.normalCDF(-d2) / 100;
+    }
+
+    /**
+     * Función de densidad normal
+     */
+    normalPDF(x) {
+        return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+    }
+
+    /**
+     * Volatilidad implícita por Newton-Raphson (ingeniería inversa de prima)
+     */
+    impliedVol(type, S, K, T, r, price) {
+        const MAX_ITERS = 100;
+        const TOL = 1e-8;
+        let sigma = 0.5; // inicial
+        sigma = Math.max(0.01, Math.min(5, sigma));
+        for (let i = 0; i < MAX_ITERS; i++) {
+            const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+            const d2 = d1 - sigma * Math.sqrt(T);
+            const Nd1 = this.normalCDF(d1);
+            const Nd2 = this.normalCDF(d2);
+            const npd1 = this.normalPDF(d1);
+            const priceGuess = type === 'CALL'
+                ? S * Nd1 - K * Math.exp(-r * T) * Nd2
+                : K * Math.exp(-r * T) * this.normalCDF(-d2) - S * this.normalCDF(-d1);
+            const diff = priceGuess - price;
+            if (Math.abs(diff) < TOL) break;
+            // Vega por unidad de sigma (no %)
+            const vega = S * npd1 * Math.sqrt(Math.max(T, 1e-12));
+            if (vega <= 1e-12) break;
+            sigma = Math.max(0.01, Math.min(5, sigma - diff / vega));
+        }
+        return sigma;
+    }
+
+    /**
+     * Ingeniería inversa por opción: IV desde ask/bid y paridad simple
+     */
+    inverseEngineerOptionFields(opt) {
+        try {
+            const S = opt.currentPrice;
+            const K = opt.strike;
+            const T = Math.max(1e-6, (opt.daysToExpiry || 1) / 365);
+            const r = opt.riskFreeRate || 0.02;
+            const type = (opt.type || '').toUpperCase();
+            const ask = Math.max(1e-6, opt.ask || opt.optionPrice || 0);
+            const bid = Math.max(1e-6, opt.bid || opt.optionPrice || 0);
+            const ivAsk = this.impliedVol(type, S, K, T, r, ask);
+            const ivBid = this.impliedVol(type, S, K, T, r, bid);
+            const mid = (ask + bid) / 2;
+            const ivMid = this.impliedVol(type, S, K, T, r, mid);
+            // Paridad put-call aproximada (q0)
+            let parity = null;
+            if (type === 'CALL' && opt.putMatching) {
+                const P = Math.max(1e-6, opt.putMatching.bid || opt.putMatching.optionPrice || 0);
+                parity = (mid - P) - (S - K * Math.exp(-r * T));
+            }
+            return { ivAsk, ivBid, ivMid, parity };
+        } catch (e) {
+            return { ivAsk: opt.volatility || 0, ivBid: opt.volatility || 0, ivMid: opt.volatility || 0, parity: null };
+        }
+    }
+
+    /**
+     * Construye superficies de volatilidad por símbolo (strike x expiry) usando ivAsk
+     */
+    buildVolatilitySurfaces(allOptionsData) {
+        const surfaces = {};
+        for (const [symbol, data] of Object.entries(allOptionsData)) {
+            const expiries = new Set();
+            const strikes = new Set();
+            const grid = {};
+            // Crear mapa rápido de puts por strike/exp
+            const putMap = new Map();
+            for (const p of data.puts) {
+                putMap.set(`${p.strike}|${p.expiration}`, p);
+            }
+            const inject = (opt) => {
+                const key = `${opt.strike}|${opt.expiration}`;
+                if (putMap.has(key)) opt.putMatching = putMap.get(key);
+                const inv = this.inverseEngineerOptionFields(opt);
+                opt.ivAsk = inv.ivAsk; opt.ivBid = inv.ivBid; opt.ivMid = inv.ivMid; opt.parity = inv.parity;
+                expiries.add(opt.expiration);
+                strikes.add(opt.strike);
+                if (!grid[opt.expiration]) grid[opt.expiration] = {};
+                grid[opt.expiration][opt.strike] = inv.ivAsk;
+            };
+            data.calls.forEach(inject);
+            data.puts.forEach(inject);
+            // Ordenar y calcular métricas rápidas
+            const exps = Array.from(expiries).sort();
+            const ks = Array.from(strikes).sort((a,b)=>a-b);
+            const atmIdx = Math.floor(ks.length/2);
+            const ivTerm = exps.map(exp => {
+                const row = grid[exp] || {};
+                const atmK = ks[atmIdx];
+                const iv = row[atmK] ?? null;
+                return { exp, ivATM: iv };
+            });
+            const skewSmile = exps.map(exp => {
+                const row = grid[exp] || {};
+                const left = row[ks[0]] ?? null;
+                const right = row[ks[ks.length-1]] ?? null;
+                const atm = row[ks[atmIdx]] ?? null;
+                return { exp, left, atm, right, skewLR: (right && left) ? (right - left) : null };
+            });
+            surfaces[symbol] = { expiries: exps, strikes: ks, grid, ivTerm, skewSmile };
+        }
+        return surfaces;
+    }
+
+    /**
+     * Derivar ajustes de leverage y TP por símbolo a partir de IV term y skew
+     */
+    deriveSymbolAdjustmentsFromSurfaces(surfaces) {
+        const adj = {};
+        for (const [sym, s] of Object.entries(surfaces)) {
+            // Promedio de ivATM y skewLR magnitud
+            const ivAtmVals = (s.ivTerm || []).map(x => x.ivATM).filter(x => typeof x === 'number');
+            const avgIvAtm = ivAtmVals.length ? ivAtmVals.reduce((a,b)=>a+b,0)/ivAtmVals.length : 0.5;
+            const skewVals = (s.skewSmile || []).map(x => Math.abs(x.skewLR || 0)).filter(x => typeof x === 'number');
+            const avgSkew = skewVals.length ? skewVals.reduce((a,b)=>a+b,0)/skewVals.length : 0;
+            // Leverage base desde LOG7919 reponderado por IV (más IV  más convexidad puntal)
+            const levBoost = Math.min(1.5, 0.8 + avgIvAtm * 0.8 + avgSkew * 2.0);
+            const tpBoost = Math.min(1.3, 0.9 + avgSkew * 1.5);
+            adj[sym] = { levBoost, tpBoost, avgIvAtm, avgSkew };
+        }
+        this.symbolAdjustments = adj;
+        return adj;
+    }
+
+    /**
+     * Inversa CDF normal (ppf) usando aproximación de Peter John Acklam
+     */
+    normalPPF(p) {
+        if (p <= 0 || p >= 1) {
+            throw new Error('p debe estar en (0,1)');
+        }
+        const a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02,
+                   1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+        const b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02,
+                   6.680131188771972e+01, -1.328068155288572e+01];
+        const c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00,
+                   -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+        const d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00,
+                   3.754408661907416e+00];
+        const plow = 0.02425;
+        const phigh = 1 - plow;
+        let q, r;
+        if (p < plow) {
+            q = Math.sqrt(-2 * Math.log(p));
+            return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+                   ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+        }
+        if (phigh < p) {
+            q = Math.sqrt(-2 * Math.log(1 - p));
+            return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+                    ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+        }
+        q = p - 0.5;
+        r = q * q;
+        return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
+               (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+    }
+
+    /**
+     * CVaR paramétrico (Normal) siguiendo srona "signals/cvar.py"
+     */
+    cvarParametric(meanReturn, stdDev, alpha = 0.05) {
+        const z = this.normalPPF(alpha);
+        const pdfAtZ = this.normalPDF(z);
+        // CVaR = (alpha^-1) * pdf(ppf(alpha)) * stdDev - meanReturn
+        return (pdfAtZ / alpha) * stdDev - meanReturn;
+    }
+
+    varParametric(meanReturn, stdDev, alpha = 0.05) {
+        const z = this.normalPPF(alpha);
+        // VaR (pérdida) = - (mean + z*std)
+        return -(meanReturn + z * stdDev);
+    }
+
+    /**
+     * Métricas SRONA-like auxiliares
+     */
+    calculateLiquidityScore(vega, daysToExpiry) {
+        const tenorFactor = Math.min(1, Math.max(0.2, daysToExpiry / 60));
+        const vegaScore = Math.min(1, Math.abs(vega) * 50);
+        return Math.min(1, 0.6 * vegaScore + 0.4 * tenorFactor);
+    }
+
+    /**
+     * Movimiento esperado (Expected Move) bajo vol implícita
+     */
+    expectedMove(underlyingPrice, vol, T) {
+        return underlyingPrice * vol * Math.sqrt(Math.max(T, 1e-6));
+    }
+
+    /**
+     * Naked Cheapness: cuán barata está la prima vs el movimiento esperado
+     */
+    calculateNakedCheapness(option) {
+        const T = Math.max(1e-6, option.daysToExpiry / 365);
+        const em = this.expectedMove(option.currentPrice, option.volatility, T);
+        const ask = option.ask || option.optionPrice || 0;
+        if (em <= 0 || ask <= 0) return 0;
+        const cheap = Math.max(0, (em - ask) / em);
+        return Math.min(1, cheap);
+    }
+
+    /**
+     * Theta premium yield: carry relativo de theta sobre prima
+     */
+    thetaPremiumYield(option) {
+        const ask = option.ask || option.optionPrice || 1e-6;
+        return Math.min(1, Math.max(0, Math.abs(option.theta) * 365 / ask));
+    }
+
+    /**
+     * Movimiento esperado (Expected Move) bajo vol implícita
+     */
+    expectedMove(underlyingPrice, vol, T) {
+        return underlyingPrice * vol * Math.sqrt(Math.max(T, 1e-6));
+    }
+
+    /**
+     * Naked Cheapness: cuán barata está la prima vs el movimiento esperado
+     */
+    calculateNakedCheapness(option) {
+        const T = Math.max(1e-6, option.daysToExpiry / 365);
+        const em = this.expectedMove(option.currentPrice, option.volatility, T);
+        const ask = option.ask || option.optionPrice || 0;
+        if (em <= 0 || ask <= 0) return 0;
+        const cheap = Math.max(0, (em - ask) / em);
+        return Math.min(1, cheap);
+    }
+
+    /**
+     * Theta premium yield: carry relativo de theta sobre prima
+     */
+    thetaPremiumYield(option) {
+        const ask = option.ask || option.optionPrice || 1e-6;
+        return Math.min(1, Math.max(0, Math.abs(option.theta) * 365 / ask));
+    }
+
+    /**
+     * Bucketización por tenor y moneyness para análisis relativo (cubo)
+     */
+    bucketTenor(days) {
+        if (days <= 7) return 'W1';
+        if (days <= 14) return 'W2';
+        if (days <= 21) return 'W3';
+        if (days <= 30) return 'M1';
+        if (days <= 60) return 'M2';
+        if (days <= 90) return 'Q1';
+        return 'LT';
+    }
+
+    bucketMoneyness(m) {
+        if (m < 0.9) return 'OTM2';
+        if (m < 0.97) return 'OTM1';
+        if (m <= 1.03) return 'ATM';
+        if (m <= 1.1) return 'ITM1';
+        return 'ITM2';
+    }
+
+    /**
+     * Baselines relativos por (tenor, moneyness): medias y desv. para cheapness, thetaYield, net
+     */
+    computeRelativeBaselines(opportunities) {
+        const groups = new Map();
+        const push = (key, name, value) => {
+            if (!groups.has(key)) groups.set(key, { cheapness: [], theta: [], net: [] });
+            const g = groups.get(key);
+            g[name].push(value);
+        };
+        for (const opp of opportunities) {
+            const t = this.bucketTenor(opp.daysToExpiry || 1);
+            const m = this.bucketMoneyness(opp.moneyness || 1);
+            const key = `${t}|${m}`;
+            const cheap = this.calculateNakedCheapness(opp);
+            const th = this.thetaPremiumYield(opp);
+            const net = Math.max(0, opp.expectedReturnNet || 0);
+            push(key, 'cheapness', cheap);
+            push(key, 'theta', th);
+            push(key, 'net', net);
+        }
+        const stats = {};
+        const toStats = (arr) => {
+            const n = arr.length || 1;
+            const mean = arr.reduce((a,b)=>a+b,0)/n;
+            const sd = Math.sqrt(Math.max(1e-10, arr.reduce((s,x)=>s+(x-mean)*(x-mean),0)/n));
+            return { mean, sd };
+        };
+        groups.forEach((g, key) => {
+            stats[key] = {
+                cheapness: toStats(g.cheapness),
+                theta: toStats(g.theta),
+                net: toStats(g.net)
+            };
+        });
+        return stats;
+    }
+
+    /**
+     * Score relativo por z-scores en cheapness, thetaYield y net
+     */
+    computeRelativeScore(opp, baselines) {
+        const t = this.bucketTenor(opp.daysToExpiry || 1);
+        const m = this.bucketMoneyness(opp.moneyness || 1);
+        const key = `${t}|${m}`;
+        const base = baselines[key];
+        if (!base) return 0;
+        const cheap = this.calculateNakedCheapness(opp);
+        const th = this.thetaPremiumYield(opp);
+        const net = Math.max(0, opp.expectedReturnNet || 0);
+        const z = (x, s) => (x - s.mean) / (s.sd || 1e-6);
+        const zc = z(cheap, base.cheapness);
+        const zt = z(th, base.theta);
+        const zn = z(net, base.net);
+        // Combinar con pesos relativos
+        const score = 0.5 * Math.tanh(zc) + 0.2 * Math.tanh(zt) + 0.3 * Math.tanh(zn);
+        return Math.max(0, Math.min(1, (score + 1) / 2));
+    }
+
+    /**
+     * Ensamble cuántico estocástico sobre la rentabilidad neta
+     */
+    simulateQuantumEnsemble(opp, samples = 64) {
+        const lambda = this.greeksConstants.lambda;
+        let acc = 0;
+        for (let i = 0; i < samples; i++) {
+            const eps = ((Date.now() % 100 - 50) / 100) * 0.2; // ±10% vol perturbed
+            const volPert = Math.max(0.05, opp.volatility * (1 + eps));
+            const T = Math.max(1e-6, (opp.daysToExpiry || 1) / 365);
+            // Aproximar retorno con sensibilidad a vol: usar vega contribución
+            const vegaImpact = (opp.quantumVega || 0) * Math.sqrt(T) * (volPert - opp.volatility);
+            const base = Math.max(0, opp.expectedReturn || 0);
+            const raw = Math.max(0, base + vegaImpact);
+            // Pesar por fase cuántica aleatoria
+            const phase = lambda * (opp.moneyness || 1) * ((Date.now() % 100) / 100);
+            const weight = 0.5 * (1 + Math.sin(phase));
+            // Costos ya considerados en expectedReturnNet; aplicar factor relativo
+            const net = Math.max(0, (opp.expectedReturnNet || raw) * (0.8 + 0.4 * weight));
+            acc += net;
+        }
+        return acc / samples;
+    }
+
+    calculateRiskRewardRatio(optionPrice, underlyingPrice, strike, type, vol, T) {
+        // Ingeniería inversa: el riesgo es la prima pagada (exposición limitada).
+        // Utilizamos expected move para aproximar el potencial de captura.
+        const expectedMoveAbs = vol * underlyingPrice * Math.sqrt(Math.max(T, 1e-6));
+        const intrinsic = type === 'CALL' ? Math.max(0, underlyingPrice - strike) : Math.max(0, strike - underlyingPrice);
+        const potentialPnL = Math.max(0, intrinsic + expectedMoveAbs);
+        const risk = Math.max(1e-6, optionPrice); // riesgo acotado a prima
+        return Math.min(10, potentialPnL / risk);
+    }
+
+    estimateRiskLevel(theta, gamma, vol) {
+        const scaled = Math.min(1, Math.abs(theta) * 500 + Math.abs(gamma) * 10 + vol * 0.5);
+        return scaled; // 0-1
+    }
+
+    estimateTimeToMaxProfit(type, moneyness, daysToExpiry) {
+        if (type === 'CALL') {
+            return moneyness >= 1 ? Math.max(1, Math.round(daysToExpiry * 0.3)) : Math.max(1, Math.round(daysToExpiry * 0.7));
+        }
+        return moneyness <= 1 ? Math.max(1, Math.round(daysToExpiry * 0.3)) : Math.max(1, Math.round(daysToExpiry * 0.7));
+    }
+
+    calculateOptionQuantumFactors(ctx) {
+        const { delta, gamma, theta, vega, rho, moneyness, volatility, daysToExpiry,
+                liquidityScore, probabilityOfProfit, riskRewardRatio, riskLevel, timeToMaxProfit } = ctx;
+        // Coherencia: consistencia de métricas
+        const coherence = Math.min(1, liquidityScore * probabilityOfProfit);
+        // Entanglement: diferencia entre griegos ajustados vs clásicos (aprox con gamma y vega)
+        const entanglement = Math.min(1, Math.abs(gamma) * 100 + Math.abs(vega) * 5);
+        // Momentum: usar riesgo/recompensa
+        const momentum = Math.min(1, riskRewardRatio / 3);
+        // Density: oportunidad concentrada (1 opción individual => usar PoP y liquidez)
+        const density = Math.min(1, (probabilityOfProfit + liquidityScore) / 2);
+        // Temperature: inverso del riesgo
+        const temperature = Math.max(0, 1 - riskLevel);
+        // Frequency: retornos esperados como "frecuencia"
+        const frequency = Math.min(1000, (probabilityOfProfit * 100 + (1 - temperature) * 50));
+        // Amplitude: magnitud de moneyness desviada
+        const amplitude = Math.min(2, Math.abs(Math.log(Math.max(1e-6, moneyness))) * 2);
+        // Phase: relación tiempo a expiración vs tiempo a max profit
+        const phase = Math.min(360, (timeToMaxProfit / Math.max(1, daysToExpiry)) * 360);
+        // Nuevos factores
+        const quantumEntropy = Math.min(1, Math.abs(delta) * 0.4 + Math.abs(theta) * 50 + Math.abs(rho) * 2);
+        const superpositionIndex = this.calculateSuperpositionIndex(moneyness, volatility);
+        const tunnelingProbability = Math.min(1, probabilityOfProfit * (1 - temperature) * 0.8 + 0.1);
+        return {
+            entanglement, coherence, momentum, density, temperature,
+            volatilidad: volatility, phase, amplitude, frequency,
+            quantumEntropy, superpositionIndex, tunnelingProbability
+        };
+    }
+
+    /**
+     * Factor de ajuste por entrada a precio ask en vez de mid/teórico
+     */
+    askAdjustmentFactor(option) {
+        const ask = option.ask ?? option.optionPrice;
+        const baseline = option.midPrice ?? option.optionPrice;
+        if (!ask || !baseline) return 1;
+        return Math.max(0.1, Math.min(1.5, baseline / ask));
+    }
+
+    /**
+     * Genera cotización simulada con spread dependiente de liquidez/tenor/volatilidad/moneyness
+     */
+    computeOptionQuote(mid, liquidityScore, daysToExpiry, moneyness, volatility, symbolForDepth) {
+        const baseBps = 120; // 1.2%
+        const liqAdj = (1 - Math.min(1, Math.max(0, liquidityScore))) * 100; // hasta +100 bps
+        const tenorAdj = Math.max(0, 30 - Math.min(30, daysToExpiry)); // contratos cortos tienden a spreads mayores
+        const volAdj = Math.min(200, Math.max(0, (volatility - 0.3) * 300));
+        const moneyAdj = Math.min(150, Math.abs(Math.log(Math.max(1e-6, moneyness))) * 200);
+        // Ajuste por profundidad de mercado (tightness e imbalance)
+        let depthAdjBps = 0;
+        if (symbolForDepth && this.marketDepth.depthMetrics.has(symbolForDepth)) {
+            const dm = this.marketDepth.depthMetrics.get(symbolForDepth);
+            // Menor tightness  más spread; imbalance a favor de ventas también lo amplía
+            depthAdjBps = Math.max(0, (1 - Math.min(1, dm.tightness)) * 120 + Math.max(0, -dm.imbalance) * 80);
+        }
+        const spreadBps = Math.max(40, Math.round(baseBps + liqAdj + tenorAdj + volAdj + moneyAdj + depthAdjBps));
+        const spread = (spreadBps / 10000) * mid;
+        const bid = Math.max(0.0001, mid - spread / 2);
+        const ask = mid + spread / 2;
+        return { bid, ask, mid, spreadBps };
+    }
+
+    /**
+     * Aplicar ajuste cuántico a los griegos
+     */
+    applyQuantumAdjustment(greeks, type, moneyness) {
+        const { z, lambda, quantumAdjustment } = this.greeksConstants;
+        
+        // Calcular factor de ajuste cuántico basado en constantes fundamentales
+        const quantumFactor = 1 + quantumAdjustment * Math.sin(lambda * moneyness) * 
+                             Math.sqrt(z.real * z.real + z.imag * z.imag) / 100;
+        
+        // Aplicar ajuste a cada griego
+        const adjustedGreeks = {
+            delta: greeks.delta * quantumFactor,
+            gamma: greeks.gamma * Math.pow(quantumFactor, 1.5),
+            theta: greeks.theta * quantumFactor,
+            vega: greeks.vega * Math.pow(quantumFactor, 0.8),
+            rho: greeks.rho * quantumFactor
+        };
+        
+        // Ajustes adicionales basados en el tipo de opción
+        if (type === 'CALL') {
+            adjustedGreeks.delta = Math.min(1, Math.max(0, adjustedGreeks.delta));
+        } else {
+            adjustedGreeks.delta = Math.min(0, Math.max(-1, adjustedGreeks.delta));
+        }
+        
+        return adjustedGreeks;
+    }
+
+    /**
+     * Calcular eficiencia cuántica basada en los griegos ajustados
+     */
+    calculateQuantumEfficiency(greeks, moneyStatus) {
+        // Calcular eficiencia basada en la magnitud de los griegos (valores pequeños)
+        const deltaEfficiency = Math.min(1, Math.abs(greeks.delta));
+        const gammaEfficiency = Math.min(1, Math.abs(greeks.gamma) * 50);
+        const thetaEfficiency = Math.min(1, Math.abs(greeks.theta) * 2000);
+        const vegaEfficiency = Math.min(1, Math.abs(greeks.vega) * 50);
+        const rhoEfficiency = Math.min(1, Math.abs(greeks.rho) * 50);
+
+        // Ponderar los griegos según su importancia (suma <= 1)
+        const weightedEfficiency = 
+            deltaEfficiency * 0.35 +
+            gammaEfficiency * 0.2 + 
+            thetaEfficiency * 0.15 + 
+            vegaEfficiency * 0.2 +
+            rhoEfficiency * 0.1;
+        
+        // Compresión no lineal para evitar saturación
+        let efficiency = 1 - Math.exp(-3 * Math.max(0, Math.min(2, weightedEfficiency)));
+        
+        // Ajustar según el estado del dinero
+        let statusMultiplier = 1;
+        if (moneyStatus === 'ITM') {
+            statusMultiplier = 1.1;
+        } else if (moneyStatus === 'OTM') {
+            statusMultiplier = 0.9;
+        }
+        
+        efficiency = Math.min(0.95, efficiency * statusMultiplier);
+        return efficiency;
+    }
+
+    /**
+     * Calcular probabilidad del camino cuántico
+     */
+    calculatePathProbability(moneyness, daysToExpiry) {
+        const { lambda } = this.greeksConstants;
+        
+        // Calcular probabilidad basada en moneyness y tiempo hasta expiración
+        const moneynessFactor = Math.exp(-Math.pow(moneyness - 1, 2) / 0.1);
+        const timeFactor = Math.exp(-daysToExpiry / 365);
+        
+        // Aplicar constante cuántica
+        const quantumPhase = lambda * moneyness * timeFactor;
+        const probability = (Math.sin(quantumPhase) + 1) / 2; // Normalizar a [0, 1]
+        
+        return probability;
+    }
+
+    /**
+     * Calcular índice de superposición
+     */
+    calculateSuperpositionIndex(moneyness, volatility) {
+        const { z, lambda } = this.greeksConstants;
+        
+        // Calcular índice basado en moneyness y volatilidad
+        const moneynessIndex = Math.abs(Math.log(moneyness));
+        const volatilityIndex = volatility;
+        
+        // Aplicar transformación cuántica
+        const realPart = z.real * moneynessIndex;
+        const imagPart = z.imag * volatilityIndex;
+        const magnitude = Math.sqrt(realPart * realPart + imagPart * imagPart);
+        
+        // Normalizar usando constante cuántica
+        const superpositionIndex = Math.sin(lambda * magnitude / 100);
+        
+        return Math.abs(superpositionIndex);
+    }
+
+    /**
+     * Obtener datos de opciones para todos los símbolos
+     */
+    async getAllOptionsData() {
+        const allOptionsData = {};
+        
+        for (const symbol of this.symbols) {
+            console.log(`[RELOAD] Procesando ${symbol}...`);
+            // Actualizar order book simulado antes de analizar (inspirado en profundidad de mercado)
+            await this.updateOrderBookAndLiquidity(symbol);
+            const optionsData = await this.getOptionsInfo(symbol);
+            allOptionsData[symbol] = optionsData;
+            
+            // Pequeña pausa para no sobrecargar la API
+            await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        
+        return allOptionsData;
+    }
+
+    async updateOrderBookAndLiquidity(symbol) {
+        // Simulación de libro de órdenes y métricas de liquidez
+        const mid = 1.0; // normalizado
+        const depthLevels = 10;
+        const bids = [], asks = [];
+        for (let i=1;i<=depthLevels;i++) {
+            bids.push({ price: mid * (1 - i*0.0005), size: ((Date.now() % 500) / 100) });
+            asks.push({ price: mid * (1 + i*0.0005), size: ((Date.now() % 500) / 100) });
+        }
+        const spread = (asks[0].price - bids[0].price) / mid;
+        const bidVol = bids.reduce((s,l)=>s+l.size,0);
+        const askVol = asks.reduce((s,l)=>s+l.size,0);
+        const imbalance = (bidVol - askVol) / Math.max(1e-6, bidVol + askVol);
+        const immediacy = 1 / Math.max(1e-6, spread);
+        const depth = (bidVol + askVol) / depthLevels;
+        const resilience = Math.min(1, depth / 10);
+        const tightness = Math.max(0, 1 - spread*500);
+        const metrics = { spread, bidVol, askVol, imbalance, immediacy, depth, resilience, tightness };
+        this.marketDepth.orderBooks.set(symbol, { bids, asks, mid });
+        this.marketDepth.depthMetrics.set(symbol, metrics);
+    }
+
+    /**
+     * Analizar oportunidades basadas en griegos cuánticos
+     */
+    analyzeOpportunities(optionsData) {
+        const opportunities = [];
+        
+        for (const [symbol, data] of Object.entries(optionsData)) {
+            // Analizar calls
+            for (const call of data.calls) {
+                if (this.isQuantumOpportunity(call)) {
+                    const expectedReturn = this.calculateExpectedReturn(call);
+                    const askAdj = this.askAdjustmentFactor(call);
+                    const expectedReturnAdj = expectedReturn * askAdj;
+        const stdApprox = Math.max(1e-6, call.volatility * Math.sqrt(Math.max(call.daysToExpiry / 365, 1e-6)));
+                    const cvar = this.cvarParametric(expectedReturnAdj, stdApprox, 0.05);
+                    const var99 = this.varParametric(expectedReturnAdj, stdApprox, 0.01);
+                    const riskAdjustedReturn = expectedReturnAdj - Math.max(0, cvar);
+                    const costInfo = this.adjustForCosts(call);
+                    const nakedCheapness = this.calculateNakedCheapness(call);
+                    const thetaYield = this.thetaPremiumYield(call);
+                    const edgeType = this.mapEdgeType(symbol);
+                    const optimalLeverage = this.calculateOptimalLeverage(symbol, call, edgeType);
+                    const zPlaneUtility = this.calculateZPlaneUtility(call, riskAdjustedReturn, stdApprox);
+                    const cubeWeights = this.computeCubeWeights(call);
+                    const fractal = this.computeFractalTimeFeatures(call);
+                    const expectedReturnNet = (riskAdjustedReturn - costInfo.totalCostFraction) * (1 + fractal.timeBonusFraction);
+                    const profitabilityScore = this.calculateProfitabilityScore({ ...call, nakedCheapness, thetaYield, neverExecuteProbability: fractal.neverExecuteProbability, coherentStrength: fractal.coherentStrength }, expectedReturnNet, expectedReturnNet, var99);
+                    opportunities.push({
+                        symbol: symbol,
+                        type: 'CALL',
+                        strike: call.strike,
+                        expiration: call.expiration,
+                        moneyness: call.moneyness,
+                        daysToExpiry: call.daysToExpiry,
+                        quantumEfficiency: call.quantumEfficiency,
+                        pathProbability: call.pathProbability,
+                        superpositionIndex: call.superpositionIndex,
+                        expectedReturn: expectedReturnAdj,
+                        riskAdjustedReturn,
+                        expectedReturnNet,
+                        cvar99: cvar,
+                        var99: var99,
+                        liquidityScore: call.liquidityScore,
+                        probabilityOfProfit: call.probabilityOfProfit,
+                        riskRewardRatio: call.riskRewardRatio,
+                        riskLevel: call.riskLevel,
+                        quantumFactors: call.quantumFactors,
+                        volatility: call.volatility,
+                        profitabilityScore,
+                        spreadBps: call.spreadBps,
+                        commissionFraction: costInfo.commissionFraction,
+                        slippageFraction: costInfo.slippageFraction,
+                        totalCostFraction: costInfo.totalCostFraction,
+                        entryPrice: call.ask,
+                        entryType: 'ASK',
+                        profitableAfterCosts: expectedReturnNet > 0,
+                        breakEvenMoveBps: this.estimateBreakEvenMoveBps(call, costInfo.totalCostFraction),
+                        nakedCheapness,
+                        thetaYield,
+                        edgeType,
+                        optimalLeverage,
+                        zPlaneUtility,
+                        cubeWeights,
+                        fractal
+                    });
+                }
+            }
+            
+            // Analizar puts
+            for (const put of data.puts) {
+                if (this.isQuantumOpportunity(put)) {
+                    const expectedReturn = this.calculateExpectedReturn(put);
+                    const askAdj = this.askAdjustmentFactor(put);
+                    const expectedReturnAdj = expectedReturn * askAdj;
+        const stdApprox = Math.max(1e-6, put.volatility * Math.sqrt(Math.max(put.daysToExpiry / 365, 1e-6)));
+                    const cvar = this.cvarParametric(expectedReturnAdj, stdApprox, 0.05);
+                    const var99 = this.varParametric(expectedReturnAdj, stdApprox, 0.01);
+                    const riskAdjustedReturn = expectedReturnAdj - Math.max(0, cvar);
+                    const costInfo = this.adjustForCosts(put);
+                    const nakedCheapness = this.calculateNakedCheapness(put);
+                    const thetaYield = this.thetaPremiumYield(put);
+                    const edgeType = this.mapEdgeType(symbol);
+                    const optimalLeverage = this.calculateOptimalLeverage(symbol, put, edgeType);
+                    const zPlaneUtility = this.calculateZPlaneUtility(put, riskAdjustedReturn, stdApprox);
+                    const cubeWeights = this.computeCubeWeights(put);
+                    const fractal = this.computeFractalTimeFeatures(put);
+                    const expectedReturnNet = (riskAdjustedReturn - costInfo.totalCostFraction) * (1 + fractal.timeBonusFraction);
+                    const profitabilityScore = this.calculateProfitabilityScore({ ...put, nakedCheapness, thetaYield, neverExecuteProbability: fractal.neverExecuteProbability, coherentStrength: fractal.coherentStrength }, expectedReturnNet, expectedReturnNet, var99);
+                    opportunities.push({
+                        symbol: symbol,
+                        type: 'PUT',
+                        strike: put.strike,
+                        expiration: put.expiration,
+                        moneyness: put.moneyness,
+                        daysToExpiry: put.daysToExpiry,
+                        quantumEfficiency: put.quantumEfficiency,
+                        pathProbability: put.pathProbability,
+                        superpositionIndex: put.superpositionIndex,
+                        expectedReturn: expectedReturnAdj,
+                        riskAdjustedReturn,
+                        expectedReturnNet,
+                        cvar99: cvar,
+                        var99: var99,
+                        liquidityScore: put.liquidityScore,
+                        probabilityOfProfit: put.probabilityOfProfit,
+                        riskRewardRatio: put.riskRewardRatio,
+                        riskLevel: put.riskLevel,
+                        quantumFactors: put.quantumFactors,
+                        volatility: put.volatility,
+                        profitabilityScore,
+                        spreadBps: put.spreadBps,
+                        commissionFraction: costInfo.commissionFraction,
+                        slippageFraction: costInfo.slippageFraction,
+                        totalCostFraction: costInfo.totalCostFraction,
+                        entryPrice: put.ask,
+                        entryType: 'ASK',
+                        profitableAfterCosts: expectedReturnNet > 0,
+                        breakEvenMoveBps: this.estimateBreakEvenMoveBps(put, costInfo.totalCostFraction),
+                        nakedCheapness,
+                        thetaYield,
+                        edgeType,
+                        optimalLeverage,
+                        zPlaneUtility,
+                        cubeWeights,
+                        fractal
+                    });
+                }
+            }
+        }
+        
+        // Computar baselines relativos por cubo (tenor x moneyness)
+        const baselines = this.computeRelativeBaselines(opportunities);
+        // Filtrar sólo oportunidades con retorno neto suficiente tras costos y aplicar boost gravitacional al score
+        const filtered = opportunities
+            .filter(o => o.profitableAfterCosts && (o.expectedReturnNet ?? 0) >= this.selectionThresholds.minNetReturn)
+            .map(o => {
+                const grav = this.calculateGravitationalBoost(o.symbol, o);
+                const rel = this.computeRelativeScore(o, baselines);
+                const hook = this.calculateHookWheelFactor(o.symbol, o);
+                const ens = this.simulateQuantumEnsemble(o, this.ensembleSamples) * (1 + (o.zPlaneUtility || 0) * this.zPlaneConfig.zUtilityWeight) * hook;
+                const prof = (o.profitabilityScore || 0) * (1 + grav) * hook;
+                return {
+                    ...o,
+                    relativeScore: rel,
+                    ensembleNet: ens,
+                    gravitationalBoost: grav,
+                    hookWheelFactor: hook,
+                    profitabilityScore: prof
+                };
+            });
+        // Ordenar por combinación de score con pesos de cubo
+        const cubeScore = (o) => {
+            const w = o.cubeWeights || { time: 1, price: 1, volume: 1 };
+            return o.ensembleNet * (0.4 * w.time + 0.4 * w.price + 0.2 * w.volume) + 0.15 * o.relativeScore + 0.1 * o.profitabilityScore;
+        };
+        return filtered.sort((a, b) => cubeScore(b) - cubeScore(a));
+    }
+
+    /**
+     * Construye portafolios Naked OTM (Strangles) combinando CALL+PUT por símbolo/expiración
+     * Aplica multiplicadores por Plano Z, Cheapness y RelativeScore con límites de riesgo
+     */
+    buildNakedOTMPortfolios(opportunities) {
+        const cfg = this.quantumPortfolioConfig || { maxLeverageCap: 20, maxMultiplierPerLeg: 15, topPortfolios: 10 };
+        if (cfg.enableStrangles === false) {
+            return []; // desactivado por configuración
+        }
+        // Agrupar por símbolo y expiración
+        const byKey = new Map();
+        for (const o of opportunities) {
+            const key = `${o.symbol}|${o.expiration}`;
+            if (!byKey.has(key)) byKey.set(key, { calls: [], puts: [] });
+            const isOTMCall = o.type === 'CALL' && (o.moneyness || 1) < 0.97;
+            const isOTMPut = o.type === 'PUT' && (o.moneyness || 1) > 1.03;
+            if (isOTMCall) byKey.get(key).calls.push(o);
+            if (isOTMPut) byKey.get(key).puts.push(o);
+        }
+        const portfolios = [];
+        const scoreOpp = (x) => 0.6 * (x.ensembleNet || 0) + 0.25 * (x.relativeScore || 0) + 0.15 * (x.profitabilityScore || 0);
+        for (const [key, grp] of byKey.entries()) {
+            const [symbol, expiration] = key.split('|');
+            if (!grp.calls.length || !grp.puts.length) continue;
+            // Ordenar y recortar top por cada lado
+            const topCalls = grp.calls.sort((a,b)=>scoreOpp(b)-scoreOpp(a)).slice(0, 5);
+            const topPuts = grp.puts.sort((a,b)=>scoreOpp(b)-scoreOpp(a)).slice(0, 5);
+            for (const c of topCalls) {
+                for (const p of topPuts) {
+                    // Multiplicadores por Plano Z y cheapness con límites
+                    const cheapC = Math.min(1, c.nakedCheapness || 0);
+                    const cheapP = Math.min(1, p.nakedCheapness || 0);
+                    const zC = Math.min(1, c.zPlaneUtility || 0);
+                    const zP = Math.min(1, p.zPlaneUtility || 0);
+                    const relC = Math.min(1, c.relativeScore || 0);
+                    const relP = Math.min(1, p.relativeScore || 0);
+                    let multC = 1 + 9 * cheapC + 6 * zC + 4 * relC;
+                    let multP = 1 + 9 * cheapP + 6 * zP + 4 * relP;
+                    // Ajustes por símbolo desde superficies IV
+                    const adj = this.symbolAdjustments[symbol] || { levBoost: 1, tpBoost: 1 };
+                    multC *= adj.levBoost; multP *= adj.levBoost;
+                    multC = Math.min(cfg.maxMultiplierPerLeg, Math.max(1, multC));
+                    multP = Math.min(cfg.maxMultiplierPerLeg, Math.max(1, multP));
+                    const sum = multC + multP;
+                    const scale = sum > cfg.maxLeverageCap ? (cfg.maxLeverageCap / sum) : 1;
+                    multC *= scale; multP *= scale;
+                    const wC = multC / (multC + multP);
+                    const wP = multP / (multC + multP);
+                    // Métricas de portafolio (promedios ponderados)
+                    const portEnsemble = (c.ensembleNet || 0) * wC + (p.ensembleNet || 0) * wP;
+                    const portNet = (c.expectedReturnNet || 0) * wC + (p.expectedReturnNet || 0) * wP;
+                    const portScore = scoreOpp(c) * wC + scoreOpp(p) * wP;
+                    const portSpread = Math.round((c.spreadBps || 0) * wC + (p.spreadBps || 0) * wP);
+                    const portBE = Math.round((c.breakEvenMoveBps || 0) * wC + (p.breakEvenMoveBps || 0) * wP);
+                    const portZ = (Math.min(1, zC) * wC + Math.min(1, zP) * wP);
+                    const portCheap = (cheapC * wC + cheapP * wP);
+                    // Dimensionamiento mínimo de contratos para maximizar leverage con menos unidades
+                    const contracts = this.sizeMinContracts(symbol, c, p, multC, multP);
+                    portfolios.push({
+                        symbol,
+                        expiration,
+                        call: { strike: c.strike, moneyness: c.moneyness, mult: Number(multC.toFixed(2)) },
+                        put: { strike: p.strike, moneyness: p.moneyness, mult: Number(multP.toFixed(2)) },
+                        leverage: Number((multC + multP).toFixed(2)),
+                        ensembleNet: Number(portEnsemble.toFixed(4)),
+                        expectedReturnNet: Number(portNet.toFixed(4)),
+                        portfolioScore: Number(portScore.toFixed(4)),
+                        spreadBps: portSpread,
+                        breakEvenMoveBps: portBE,
+                        zPlaneUtility: Number(portZ.toFixed(4)),
+                        nakedCheapness: Number(portCheap.toFixed(4)),
+                        type: 'NAKED_STRANGLE',
+                        contracts,
+                        symbolAdj: adj
+                    });
+                }
+            }
+        }
+        // Ordenar y devolver top
+        portfolios.sort((a,b)=> (b.ensembleNet - a.ensembleNet) || (b.portfolioScore - a.portfolioScore));
+        return portfolios.slice(0, cfg.topPortfolios);
+    }
+
+    /**
+     * Selección de opciones naked OTM individuales (CALL/PUT) con contratos mínimos
+     */
+    buildNakedOTMIndividuals(opportunities) {
+        const scoreOpp = (x) => 0.6 * (x.ensembleNet || 0) + 0.25 * (x.relativeScore || 0) + 0.15 * (x.profitabilityScore || 0);
+        const isOTMCall = (o) => o.type === 'CALL' && (o.moneyness || 1) < 0.97;
+        const isOTMPut = (o) => o.type === 'PUT' && (o.moneyness || 1) > 1.03;
+        // Ventanas recomendadas de moneyness para maximizar leverage
+        const inCallWindow = (o) => o.type === 'CALL' && (o.moneyness || 1) >= 0.92 && (o.moneyness || 1) < 0.97;
+        const inPutWindow  = (o) => o.type === 'PUT'  && (o.moneyness || 1) > 1.03 && (o.moneyness || 1) <= 1.08;
+        const capital = this.capitalConfig.capitalPerTradeUSD || 0;
+        const filtered = opportunities.filter(o => (inCallWindow(o) || inPutWindow(o)) && (o.expectedReturnNet || 0) > this.selectionThresholds.minNetReturn);
+
+        // Análisis de precios relativos para detectar infraprecio (comprar barato)
+        const baselines = this.computeRelativeBaselines(filtered);
+        const relUnderpricing = (o) => {
+            const rel = this.computeRelativeScore(o, baselines) || 0; // 0..1
+            const cheap = this.calculateNakedCheapness(o) || 0;       // 0..1
+            const spreadPen = Math.min(0.3, (o.spreadBps || 0) / 10000);
+            const score = Math.max(0, 0.7 * cheap + 0.3 * rel - 0.1 * spreadPen);
+            return Number.isFinite(score) ? score : 0;
+        };
+
+        // Selección de mejor CALL y mejor PUT para COMPRAR (naked longs)
+        const bestLongCall = filtered.filter(f => f.type === 'CALL').sort((a,b)=> relUnderpricing(b) - relUnderpricing(a))[0];
+        const bestLongPut  = filtered.filter(f => f.type === 'PUT').sort((a,b)=> relUnderpricing(b) - relUnderpricing(a))[0];
+            const withSizing = filtered.map(o => {
+            const lev = this.computeImplicitLeverageLog7919(o);
+            const contracts = this.sizeMinContractsSingle(o);
+            const days = Math.max(1, o.daysToExpiry || 1);
+            const notional = contracts.totalPremiumUSD || 0;
+            const exProfit = (o.expectedReturnNet || 0) * notional;
+            const profitPerDay = days > 0 ? exProfit / days : exProfit;
+            return {
+                symbol: o.symbol,
+                type: o.type,
+                strike: o.strike,
+                expiration: o.expiration,
+                moneyness: o.moneyness,
+                expectedReturnNet: Number((o.expectedReturnNet || 0).toFixed(4)),
+                spreadBps: o.spreadBps || 0,
+                breakEvenMoveBps: o.breakEvenMoveBps || 0,
+                nakedCheapness: Number((o.nakedCheapness || 0).toFixed(4)),
+                ensembleNet: Number((o.ensembleNet || 0).toFixed(4)),
+                profitabilityScore: Number((o.profitabilityScore || 0).toFixed(4)),
+                    hookWheelFactor: Number((o.hookWheelFactor || 1).toFixed(4)),
+                leverage: Number(lev.toFixed(2)),
+                entryPrice: o.entryPrice || 0,
+                contracts,
+                score: Number(scoreOpp(o).toFixed(4)),
+                expectedProfitUSD: Number(exProfit.toFixed(4)),
+                profitPerDay: Number(profitPerDay.toFixed(4))
+            };
+        }).filter(x => (x.contracts?.n || 0) >= 1 && (capital <= 0 || (x.contracts.totalPremiumUSD || 0) <= capital));
+        // Rank reforzado: leverage por dólar y luego profit absoluto
+        const levPerDollar = (o) => {
+            const lev = this.computeImplicitLeverageLog7919(o) || 0;
+            const price = Math.max(1e-6, o.entryPrice || o.ask || o.optionPrice || 0);
+            return lev / price;
+        };
+        withSizing.sort((a,b) => (levPerDollar(b) - levPerDollar(a)) || (b.expectedProfitUSD - a.expectedProfitUSD) || (b.profitPerDay - a.profitPerDay));
+        // Guardar mejores longs para exportarlo en overview (comprar barato)
+        this.longBest = {
+            call: bestLongCall ? {
+                symbol: bestLongCall.symbol,
+                type: bestLongCall.type,
+                strike: bestLongCall.strike,
+                expiration: bestLongCall.expiration,
+                entryAsk: bestLongCall.ask || bestLongCall.entryPrice || bestLongCall.optionPrice,
+                relUnder: Number(relUnderpricing(bestLongCall).toFixed(4))
+            } : null,
+            put: bestLongPut ? {
+                symbol: bestLongPut.symbol,
+                type: bestLongPut.type,
+                strike: bestLongPut.strike,
+                expiration: bestLongPut.expiration,
+                entryAsk: bestLongPut.ask || bestLongPut.entryPrice || bestLongPut.optionPrice,
+                relUnder: Number(relUnderpricing(bestLongPut).toFixed(4))
+            } : null
+        };
+        return withSizing.slice(0, 25);
+    }
+
+    /**
+     * Selección tipo knapsack (greedy) para maximizar leverage total
+     * - Valor: leverage por dólar (lev_7919 / prima)
+     * - Costo: prima total (contracts.totalPremiumUSD)
+     * - Presupuesto: this.capitalConfig.portfolioCapitalUSD
+     * - Ajuste fraccional en el último leg si no cabe completo
+     */
+    buildLeverageMaxPortfolio(nakedIndividuals) {
+        const budget = this.capitalConfig.portfolioCapitalUSD || 0;
+        if (!budget || budget <= 0 || !Array.isArray(nakedIndividuals) || !nakedIndividuals.length) {
+            return null;
+        }
+        const objective = (this.portfolioConfig?.objective || 'profit');
+        const items = nakedIndividuals.map(o => {
+            const entry = Math.max(1e-6, o.entryPrice || o.ask || o.optionPrice || 0);
+            const lev = Math.max(0, o.leverage || this.computeImplicitLeverageLog7919(o));
+            const ratioLev = lev / entry;
+            const days = Math.max(1, o.daysToExpiry || 1);
+            const erNet = Math.max(0, o.expectedReturnNet || 0);
+            const ppdPerUSD = erNet / days; // profit/día por dólar invertido (lineal en el gasto)
+            const hook = o.hookWheelFactor || 1;
+            // Penalización por riesgo (VaR + CVaR) y boost por Z-plane
+            const var99 = Math.max(0, o.var99 || 0);
+            const cvar99 = Math.max(0, o.cvar99 || 0);
+            const riskPenalty = 1 / (1 + 3 * (var99 + cvar99));
+            const z = this.greeksConstants?.z || { real: 9, imag: 16 };
+            const zMag = Math.sqrt(z.real * z.real + z.imag * z.imag);
+            const zBoost = 1 + Math.min(0.5, 0.01 * zMag);
+            const M = this.computeMultiplierM(o);
+            const route = this.recommendRoute(o);
+            const objMetric = ppdPerUSD * hook * riskPenalty * zBoost * M; // priorizar extracción ponderada por Z, riesgo y M
+            return { ...o, _entry: entry, _lev: lev, _ratioLev: ratioLev, _ppdPerUSD: ppdPerUSD, _objMetric: objMetric, _route: route, _M: M };
+        }).filter(x => x._entry > 0).sort((a,b)=> {
+            if (objective === 'profit') {
+                return (b._objMetric - a._objMetric) || (b._ppdPerUSD - a._ppdPerUSD) || (b._ratioLev - a._ratioLev);
+            }
+            return (b._ratioLev - a._ratioLev) || (b._ppdPerUSD - a._ppdPerUSD);
+        });
+        const symbolCount = new Set(items.map(it => it.symbol)).size;
+        // Cap dinámico por símbolo: con pocos símbolos permitimos mayor concentración
+        let maxSymbolSpendFrac = 0.35;
+        if (symbolCount <= 2) maxSymbolSpendFrac = 0.8;
+        else if (symbolCount === 3) maxSymbolSpendFrac = 0.6;
+        else if (symbolCount === 4) maxSymbolSpendFrac = 0.5;
+        const symbolSpend = new Map();
+        let remaining = budget;
+        const selected = [];
+
+        for (const it of items) {
+            if (remaining <= 1e-6) break;
+            const symbol = it.symbol;
+            const currSpend = symbolSpend.get(symbol) || 0;
+            const symbolCap = budget * maxSymbolSpendFrac;
+            const roomSymbol = Math.max(0, symbolCap - currSpend);
+            const roomBudget = Math.max(0, remaining);
+            const room = Math.min(roomSymbol, roomBudget);
+            if (room <= 1e-6) continue;
+            // Asignar todo el room al mejor item (greedy continuo por ppd/USD)
+            const spend = room;
+            const n = spend / it._entry;
+            const days = Math.max(1, it.daysToExpiry || 1);
+            const exProfit = (it.expectedReturnNet || 0) * spend;
+            const profitPerDay = exProfit / days;
+            const adjContracts = { n: Number(n.toFixed(4)), totalPremiumUSD: Number(spend.toFixed(2)) };
+            selected.push({ ...it, contracts: adjContracts, expectedProfitUSD: Number(exProfit.toFixed(4)), profitPerDay: Number(profitPerDay.toFixed(4)), route: it._route, M: Number((it._M||1).toFixed(2)) });
+            remaining -= spend;
+            symbolSpend.set(symbol, currSpend + spend);
+        }
+
+        // Waterfilling iterativo: escalar seleccionados y añadir nuevos hasta agotar presupuesto (100%)
+        let iterations = 0;
+        while (remaining > 1 && selected.length && iterations < 5) {
+            let progressed = false;
+            for (const it of items) {
+                if (remaining <= 1) break;
+                const idx = selected.findIndex(s => s.symbol===it.symbol && s.type===it.type && s.strike===it.strike && s.expiration===it.expiration);
+                const symbol = it.symbol;
+                const currSpend = symbolSpend.get(symbol) || 0;
+                const symbolCap = budget * maxSymbolSpendFrac;
+                const roomSymbol = Math.max(0, symbolCap - currSpend);
+                const room = Math.min(roomSymbol, remaining);
+                if (room <= 0.5) continue;
+                if (idx >= 0) {
+                    const s = selected[idx];
+                    const oldSpend = s.contracts?.totalPremiumUSD || 0;
+                    const addSpend = room; // añadir todo lo disponible para este símbolo
+                    const newSpend = oldSpend + addSpend;
+                    const oldN = (s.contracts?.n || 0);
+                    const addN = addSpend / Math.max(1e-6, it._entry);
+                    const newN = oldN + addN;
+                    const days = Math.max(1, s.daysToExpiry || 1);
+                    const exProfit = (s.expectedReturnNet || 0) * newSpend;
+                    const profitPerDay = exProfit / days;
+                    s.contracts = { ...(s.contracts||{}), n: Number(newN.toFixed(4)), totalPremiumUSD: Number(newSpend.toFixed(2)) };
+                    s.expectedProfitUSD = Number(exProfit.toFixed(4));
+                    s.profitPerDay = Number(profitPerDay.toFixed(4));
+                    const inc = addSpend;
+                    remaining -= inc;
+                    symbolSpend.set(symbol, currSpend + inc);
+                    progressed = true;
+                } else {
+                    // Intentar añadir nuevo item si respeta cap
+                    const spend = room;
+                    if (spend >= 0.5) {
+                        const n = spend / Math.max(1e-6, it._entry);
+                        const days = Math.max(1, it.daysToExpiry || 1);
+                        const exProfit = (it.expectedReturnNet || 0) * spend;
+                        const profitPerDay = exProfit / days;
+                        const adjContracts = { n: Number(n.toFixed(4)), totalPremiumUSD: Number(spend.toFixed(2)) };
+                        selected.push({ ...it, contracts: adjContracts, expectedProfitUSD: Number(exProfit.toFixed(4)), profitPerDay: Number(profitPerDay.toFixed(4)), route: it._route, M: Number((it._M||1).toFixed(2)) });
+                        remaining -= spend;
+                        symbolSpend.set(symbol, currSpend + spend);
+                        progressed = true;
+                    }
+                }
+            }
+            if (!progressed) break;
+            iterations++;
+        }
+
+            const totals = selected.reduce((acc, x) => {
+            const spend = x.contracts?.totalPremiumUSD || x._price || 0;
+            const lev = Math.max(0, x.leverage || 0);
+            const n = (x.contracts?.n || 1);
+            const p = x.expectedProfitUSD || 0;
+            const ppd = x.profitPerDay || 0;
+                const var99i = Math.max(0, x.var99 || 0);
+                const cvar99i = Math.max(0, x.cvar99 || 0);
+            acc.totalSpendUSD += spend;
+            acc.leverageTotal += lev * n;
+            acc.expectedProfitUSD += p;
+            acc.profitPerDay += ppd;
+                acc.varSum += var99i;
+                acc.cvarSum += cvar99i;
+            return acc;
+            }, { totalSpendUSD: 0, leverageTotal: 0, expectedProfitUSD: 0, profitPerDay: 0, varSum: 0, cvarSum: 0 });
+        totals.totalSpendUSD = Number(totals.totalSpendUSD.toFixed(2));
+        totals.leverageTotal = Number(totals.leverageTotal.toFixed(2));
+        totals.expectedProfitUSD = Number(totals.expectedProfitUSD.toFixed(2));
+        totals.profitPerDay = Number(totals.profitPerDay.toFixed(2));
+        return { budgetUSD: budget, remainingUSD: Number(remaining.toFixed(2)), selected, totals, objective };
+    }
+
+    /**
+     * Contratos mínimos para una opción individual según capital por trade
+     */
+    sizeMinContractsSingle(opp) {
+        const capital = this.capitalConfig.capitalPerTradeUSD || 0;
+        const price = Math.max(1e-6, opp.entryPrice || opp.ask || opp.optionPrice || 0);
+        if (capital > 0) {
+            const n = capital / price;
+            const spend = n * price;
+            return { n: Number(n.toFixed(4)), totalPremiumUSD: Number(spend.toFixed(2)) };
+        }
+        return { n: 1, totalPremiumUSD: Number(price.toFixed(2)) };
+    }
+
+    mapEdgeType(symbol) {
+        if (symbol.startsWith('BTC')) return 'LAMBDA_888';
+        if (symbol.startsWith('ETH')) return 'LOG_7919';
+        if (symbol.startsWith('SOL')) return 'HOOK_WHEEL';
+        if (symbol.startsWith('BNB')) return 'SYMBIOSIS';
+        if (symbol.startsWith('DOGE')) return 'GREEKS';
+        return 'VECTOR';
+    }
+
+    calculateOptimalLeverage(symbol, option, edgeType) {
+        // Leverage implícito vía LOG7919 (convexidad por prima vs spot)
+        const implicitLev = this.computeImplicitLeverageLog7919(option);
+        // Ajustes por liquidez y spread (seguridad de ejecución)
+        const liq = Math.min(1, Math.max(0.1, option.liquidityScore || 0.5));
+        const spr = Math.max(0, Math.min(400, option.spreadBps || 150));
+        const execScale = (0.6 + 0.6 * liq) * (1 - spr / 800); // 0.151.2 aprox
+        // EdgeType boost: LOG_7919 y LAMBDA_888 (888 MHz) más agresivos
+        let edgeBoost = 1.0;
+        if (edgeType === 'LOG_7919') edgeBoost = 1.1;
+        if (edgeType === 'LAMBDA_888') edgeBoost = 1.0;
+        const rawLev = implicitLev * execScale * edgeBoost;
+        const cap = this.quantumPortfolioConfig?.maxLeverageCap || 30;
+        return Math.max(2, Math.min(cap, rawLev));
+    }
+
+    calculateZPlaneUtility(option, riskAdjustedReturn, stdApprox) {
+        const { alphaReturn, betaRisk, gammaUtility, phi } = this.zPlaneConfig;
+        const zConst = this.greeksConstants.z;
+        const zMag = Math.sqrt(zConst.real*zConst.real + zConst.imag*zConst.imag);
+        const ret = Math.max(0, riskAdjustedReturn || 0);
+        const risk = Math.max(1e-6, stdApprox || 1e-3);
+        const zMix = Math.min(1, (option.nakedCheapness || 0) * 0.6 + (option.thetaYield || 0) * 0.4);
+        const utility = alphaReturn * ret - betaRisk * risk + gammaUtility * Math.pow(zMix, phi) * (1 + 0.02 * zMag);
+        return Math.max(0, utility);
+    }
+
+    computeCubeWeights(option) {
+        const days = Math.max(1, option.daysToExpiry || 1);
+        const timeW = Math.max(0.5, Math.min(1, (30 / days))) * Math.min(1, (option.thetaYield || 0.2) + 0.5);
+        const priceW = Math.min(1, (1 / Math.max(0.5, (option.spreadBps || 100) / 150))) * (1 - Math.min(1, Math.abs(Math.log(option.moneyness || 1))));
+        const volumeW = Math.min(1, (Math.abs(option.vega || 0) * 50 + (option.liquidityScore || 0)) / 2);
+        return { time: timeW, price: priceW, volume: volumeW };
+    }
+
+    /**
+     * Leonardo Hook Wheel factor: reduce carnada (precio de prima) y prioriza extracción (ppd/USD)
+     * - Usa momentum/volatilidad/fundingSlope del símbolo si existen en meta mercado
+     */
+    calculateHookWheelFactor(symbol, option) {
+        try {
+            const meta = this.marketMeta || {};
+            const k = (meta.klineMetrics && meta.klineMetrics.get(symbol)) || { vol: 0.02, mom: 0.0 };
+            const fSlope = (meta.fundingSlope && meta.fundingSlope.get(symbol)) || 0;
+            const volReadiness = Math.min(1.0, Math.max(0, k.vol * 40));
+            const momReadiness = Math.min(1.0, Math.abs(k.mom || 0) * 80);
+            const fundReadiness = Math.min(1.0, Math.abs(fSlope) * 10);
+            // Carnada mínima: penaliza precios altos (prima) y spreads
+            const baitPenalty = Math.min(0.2, (option.entryPrice || option.ask || option.optionPrice || 0) / 10000) + Math.min(0.2, (option.spreadBps || 0) / 10000);
+            const readiness = 0.4 * volReadiness + 0.4 * momReadiness + 0.2 * fundReadiness;
+            return Math.max(0.8, Math.min(1.3, readiness + 1 - baitPenalty));
+        } catch {
+            return 1.0;
+        }
+    }
+
+    /**
+     * Boost gravitacional inspirado en SRONA_Options_Gravitational_Model:
+     * F  Gq * (M_symbol / r_eff^2)
+     * - M_symbol: masa gravitacional del activo
+     * - r_eff: distancia efectiva compuesta por moneyness, iliquidez y spread
+     * Devuelve un multiplicador [0 .. maxBoost] para ajustar el profitabilityScore
+     */
+    calculateGravitationalBoost(symbol, option) {
+        try {
+            const cfg = this.gravitationalConfig || {};
+            const Gq = cfg.Gq || 0.3;
+            const mass = (cfg.masses && cfg.masses[symbol]) ? cfg.masses[symbol] : 300;
+            const w = cfg.distanceWeights || { moneyness: 0.6, illiquidity: 0.3, spread: 0.1 };
+            const m = Math.max(0, Math.abs(Math.log(Math.max(1e-6, option.moneyness || 1)))) ;
+            const illiq = 1 - Math.max(0, Math.min(1, option.liquidityScore || 0));
+            const spr = Math.max(0, (option.spreadBps || 0) / 10000);
+            const rEff = Math.max(1e-4, w.moneyness * m + w.illiquidity * illiq + w.spread * spr);
+            const F = (Gq * mass) / (rEff * rEff);
+            const boost = Math.min(cfg.maxBoost || 0.12, F / 20000); // suavisar impacto
+            return Math.max(0, boost);
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Tiempo fractal inspirado en SRONA (log7919):
+     * - Extiende días efectivos
+     * - Bonus de tiempo como fracción de retorno
+     * - Probabilidad de nunca ejecutar
+     */
+    computeFractalTimeFeatures(option) {
+        const cfg = this.fractalTimeConfig;
+        const days = Math.max(cfg.MIN_TIME_EXTENSION_DAYS, Math.min(cfg.MAX_TIME_EXTENSION_DAYS, option.daysToExpiry || 7));
+        const coherence = Math.min(1, Math.max(0, 0.6 * (option.superpositionIndex || 0) + 0.4 * (option.pathProbability || 0)));
+        const fractalMultiplier = cfg.FRACTAL_DIMENSION_BASE * (cfg.LOG_7919 / 10);
+        const fractalExtendedDays = Math.min(cfg.MAX_TIME_EXTENSION_DAYS, days * fractalMultiplier);
+        const cheap = Math.min(1, this.calculateNakedCheapness(option));
+        const neverExecuteProbability = Math.min(0.999, 0.95 + 0.04 * cheap * coherence);
+        const timeBonusFraction = Math.min(0.05, fractalExtendedDays * cfg.TIME_BONUS_PER_DAY * coherence); // cap 5%
+        const coherentStrength = Math.min(1, 0.4 * coherence + 0.3 * (1 - (option.riskLevel || 0)) + 0.3 * neverExecuteProbability);
+        return {
+            fractalExtendedDays,
+            neverExecuteProbability,
+            timeBonusFraction,
+            coherentStrength
+        };
+    }
+
+    /**
+     * LOG7919: Leverage implícito por convexidad de prima vs. underlying
+     * Formula base: lev = ln(7919) * (expectedMove / premium) * f(delta, gamma)
+     */
+    computeImplicitLeverageLog7919(option) {
+        const lambda = Math.log(7919);
+        // Refuerzo por plano z=9+16j
+        const z = this.greeksConstants.z;
+        const zMag = Math.sqrt(z.real*z.real + z.imag*z.imag);
+        const zBoost = Math.min(1.5, 1 + 0.02 * zMag);
+        const underlyingPrice = Math.max(1e-6, option.currentPrice || 1);
+        const T = Math.max(1e-6, (option.daysToExpiry || 1) / 365);
+        const vol = Math.max(0.01, option.volatility || 0.5);
+        const expectedMove = underlyingPrice * vol * Math.sqrt(T);
+        const premium = Math.max(1e-6, option.entryPremium || option.ask || option.optionPrice || 1);
+        const base = (expectedMove / premium);
+        const deltaAdj = Math.max(0.2, 1 - Math.min(1, Math.abs(option.delta || 0))); // OTM favorece (delta bajo)
+        const gammaAdj = Math.min(2.0, 1 + Math.min(1.0, Math.abs(option.gamma || 0) * 100)); // mayor gamma  más convexidad
+        const lev = lambda * base * deltaAdj * gammaAdj * zBoost;
+        // Suavizar y acotar
+        return Math.max(2, Math.min(100, lev));
+    }
+
+    /**
+     * Calcular número mínimo de contratos (enteros) para alcanzar apalancamiento objetivo
+     * sin sobrepasar capital por trade (si está configurado).
+     */
+    sizeMinContracts(symbol, callOpp, putOpp, multC, multP) {
+        const capital = this.capitalConfig.capitalPerTradeUSD || 0;
+        const priceC = Math.max(1e-6, callOpp.entryPrice || callOpp.ask || callOpp.optionPrice || 0);
+        const priceP = Math.max(1e-6, putOpp.entryPrice || putOpp.ask || putOpp.optionPrice || 0);
+        const sumMult = Math.max(1e-6, multC + multP);
+        if (capital > 0) {
+            const wC = multC / sumMult;
+            const wP = multP / sumMult;
+            const spendC = capital * wC;
+            const spendP = capital * wP;
+            const nC = spendC / priceC;
+            const nP = spendP / priceP;
+            return { nCall: Number(nC.toFixed(4)), nPut: Number(nP.toFixed(4)), totalPremiumUSD: Number((nC*priceC + nP*priceP).toFixed(2)) };
+        }
+        const base = 1;
+        const nC = base * (multC / sumMult);
+        const nP = base * (multP / sumMult);
+        return { nCall: Number(nC.toFixed(4)), nPut: Number(nP.toFixed(4)), totalPremiumUSD: Number((nC*priceC + nP*priceP).toFixed(2)) };
+    }
+
+    calculateProfitabilityScore(option, expectedReturn, riskAdjustedReturn, var99) {
+        // Pesos base + términos adicionales (Z-plane y HookWheel)
+        const weights = { eff: 0.22, pop: 0.14, rr: 0.09, rar: 0.18, risk: 0.09, cheap: 0.1, carry: 0.05, z: 0.08, hook: 0.05 };
+        const eff = Math.max(0, Math.min(1, option.quantumEfficiency ?? 0));
+        const pop = Math.max(0, Math.min(1, option.probabilityOfProfit ?? 0));
+        const rr = Math.min(1, (option.riskRewardRatio ?? 0) / 3);
+        const rar = Math.max(0, riskAdjustedReturn ?? 0);
+        const riskPenalty = Math.exp(-Math.max(0, -var99)); // menor var => mayor
+        const cheap = Math.min(1, option.nakedCheapness ?? 0);
+        const carry = Math.min(1, option.thetaYield ?? 0);
+
+        // Plano Z adaptativo (fase dinámica simple)
+        const z = this.greeksConstants?.z || { real: 9, imag: 16 };
+        const zMag = Math.sqrt(z.real * z.real + z.imag * z.imag);
+        const momentum = option.quantumFactors?.momentum ?? 0;
+        const baseTheta = (Date.now() % 600000) / 600000 * (2 * Math.PI); // 10 min cycle
+        const theta = baseTheta + 0.5 * momentum; // rotación por momentum
+        const phaseBoost = Math.max(0, Math.cos(theta));
+        const phi = this.zPlaneConfig?.phi ?? 1.618;
+        const zUtilityWeight = this.zPlaneConfig?.zUtilityWeight ?? 0.25;
+        const zTerm = Math.min(1, zUtilityWeight * Math.pow(zMag, phi) * phaseBoost / 50); // normalizar suavemente
+
+        // Hook wheel factor (si no viene, calcular aproximado)
+        const hook = Math.min(1.5, Math.max(0, option.hookWheelFactor ?? 0));
+
+        // Bonus fractal
+        const neverExec = Math.min(1, option.neverExecuteProbability ?? 0);
+        const coherent = Math.min(1, option.coherentStrength ?? 0);
+        const fractalBonus = 0.05 * neverExec + 0.05 * coherent; // hasta +0.1
+
+        let score = weights.eff * eff + weights.pop * pop + weights.rr * rr + weights.rar * rar +
+                    weights.risk * riskPenalty + weights.cheap * cheap + weights.carry * carry +
+                    weights.z * zTerm + weights.hook * (hook / 1.5) + fractalBonus;
+        score = Math.min(1, Math.max(0, score));
+        return score;
+    }
+
+    /**
+     * Ajusta retorno esperado por costos de transacción: comisiones, spread y deslizamiento
+     * Devuelve fracciones respecto a la prima
+     */
+    adjustForCosts(option) {
+        const ask = option.ask ?? option.optionPrice ?? 0;
+        const bid = option.bid ?? option.optionPrice ?? 0;
+        const commissionFraction = 2 * this.feeModel.commissionRate; // entrada + salida
+        // Modelo conservador: entrada en ASK y salida en BID  coste de spread completo
+        const spreadFraction = ask > 0 ? Math.max(0, ask - bid) / ask : 0; // full spread relativo al ask
+        const slippageFraction = this.feeModel.slippageFractionOfSpread * spreadFraction; // extra por ejecución
+        const totalCostFraction = Math.max(0, commissionFraction + spreadFraction + slippageFraction);
+        return { commissionFraction, spreadFraction, slippageFraction, totalCostFraction, exitType: 'BID' };
+    }
+
+    // ===== Z-plane helpers y ejecución (dentro de la clase) =====
+    computeZState(momentum = 0) {
+        const z = this.greeksConstants?.z || { real: 9, imag: 16 };
+        const zMag = Math.sqrt(z.real * z.real + z.imag * z.imag);
+        const baseTheta = (Date.now() % 600000) / 600000 * (2 * Math.PI);
+        const theta = baseTheta + 0.5 * (momentum || 0);
+        const zBoost = 1 + Math.min(0.5, 0.01 * zMag);
+        return { zMag, theta, zBoost };
+    }
+
+    computeMultiplierM(option) {
+        const lambda = Math.log(7919);
+        const momentum = option.quantumFactors?.momentum || 0;
+        const zState = this.computeZState(momentum);
+        const costs = Math.max(1e-4, option.totalCostFraction || 0.01);
+        const be = Math.max(1, option.breakEvenMoveBps || 50);
+        const var99 = Math.max(0, option.var99 || 0);
+        const spreadBps = Math.max(1, option.spreadBps || 100);
+        const base = (lambda * zState.zMag) / (costs * be);
+        let M = base / 100;
+        M = M / (1 + 2 * var99) / (1 + spreadBps / 1000);
+        return Math.max(0.5, Math.min(3, M));
+    }
+
+    recommendRoute(option) {
+        const spread = option.spreadBps || 0;
+        const liq = option.liquidityScore || 0;
+        const immed = option.orderImmediacy || 0;
+        if (spread <= 150 && liq >= 0.7 && immed >= 0.6) return 'post-only';
+        if (spread > 300 || liq < 0.5) return 'TWAP';
+        return 'VWAP';
+    }
+
+    /**
+     * Movimiento en bps del subyacente necesario para cubrir costos, aproximado con delta
+     */
+    estimateBreakEvenMoveBps(option, totalCostFraction) {
+        const premium = option.midPrice || option.optionPrice || 1e-6;
+        const requiredPnL = totalCostFraction * premium; // costo a recuperar
+        const deltaAbs = Math.max(1e-6, Math.abs(option.delta));
+        const moveInUnderlying = requiredPnL / deltaAbs; // aproximación lineal
+        const movePct = moveInUnderlying / Math.max(1e-6, option.currentPrice);
+        return Math.round(movePct * 10000); // bps
+    }
+
+    /**
+     * Determinar si una opción es una oportunidad cuántica
+     */
+    isQuantumOpportunity(option) {
+        // Criterios reforzados con umbrales configurables
+        const t = this.selectionThresholds;
+        return (
+            option.quantumEfficiency >= t.minQuantumEfficiency &&
+            option.pathProbability >= t.minPathProbability &&
+            option.superpositionIndex >= t.superpositionMin &&
+            option.superpositionIndex <= t.superpositionMax &&
+            (option.liquidityScore ?? 0) >= t.minLiquidityScore &&
+            (option.spreadBps ?? 9999) <= t.maxSpreadBps
+        );
+    }
+
+    /**
+     * Calcular retorno esperado basado en griegos cuánticos
+     */
+    calculateExpectedReturn(option) {
+        // Retorno esperado dimensionless comprimido y acotado
+        // Reescala griegos para evitar magnitudes desproporcionadas
+        const absDelta = Math.abs(option.quantumDelta);
+        const absGamma = Math.abs(option.quantumGamma) * 100; // gamma pequeña
+        const absTheta = Math.abs(option.quantumTheta) * 365; // diario  anualizado aprox
+        const absVega = Math.abs(option.quantumVega) * 100;
+        const absRho = Math.abs(option.quantumRho) * 100;
+
+        // Ponderaciones conservadoras
+        const baseScore =
+            0.15 * absDelta +
+            0.05 * absGamma +
+            0.03 * absTheta +
+            0.05 * absVega +
+            0.02 * absRho;
+
+        // Factor de tiempo: más corto  no más del 0.7
+        const days = Math.max(1, option.daysToExpiry || 1);
+        const timeFactor = Math.min(0.7, Math.sqrt(Math.min(180, days) / 365));
+
+        const raw = baseScore * timeFactor;
+        // Compresión suave y techo de 20%
+        let expected = Math.tanh(raw) * Math.max(0.1, Math.min(1, option.quantumEfficiency)) * 0.2;
+        // Modo agresivo OTM: permitir que el Plano Z y cheapness amplifiquen retorno (con techo)
+        if (this.quantumPortfolioConfig?.aggressiveQuantumMode && (option.moneyStatus === 'OTM' || Math.abs((option.moneyness || 1) - 1) > 0.05)) {
+            const dist = Math.min(1, Math.abs(Math.log(Math.max(1e-6, option.moneyness || 1))));
+            const cheap = this.calculateNakedCheapness(option);
+            const boost = 1 + (this.quantumPortfolioConfig.otmAggressiveness - 1) * (0.6 * cheap + 0.4 * dist);
+            expected = Math.min(0.35, expected * boost);
+        }
+        return expected; // fracción
+    }
+
+    /**
+     * Optimizar parámetros del sistema basado en análisis de opciones
+     */
+    optimizeSystemParameters(opportunities) {
+        // Extraer métricas clave de las oportunidades
+        const avgEfficiency = opportunities.reduce((sum, opp) => sum + opp.quantumEfficiency, 0) / opportunities.length;
+        const avgPathProbability = opportunities.reduce((sum, opp) => sum + opp.pathProbability, 0) / opportunities.length;
+        const avgSuperposition = opportunities.reduce((sum, opp) => sum + opp.superpositionIndex, 0) / opportunities.length;
+        const avgRAR = opportunities.reduce((s, o) => s + (o.expectedReturnNet ?? o.riskAdjustedReturn ?? 0), 0) / Math.max(1, opportunities.length);
+        const avgRiskLevel = opportunities.reduce((s, o) => s + (o.riskLevel || 0), 0) / Math.max(1, opportunities.length);
+        const sharpe = this.estimateSharpe(opportunities);
+        const sortino = this.estimateSortino(opportunities);
+        
+        // Calcular parámetros optimizados
+        const avgFractalBonus = opportunities.reduce((s,o)=> s + ((o.fractal?.timeBonusFraction)||0),0)/Math.max(1,opportunities.length);
+        const avgNeverExec = opportunities.reduce((s,o)=> s + ((o.fractal?.neverExecuteProbability)||0),0)/Math.max(1,opportunities.length);
+        const avgVolatility = opportunities.reduce((s,o)=> s + (o.volatility||0),0)/Math.max(1,opportunities.length);
+        const avgSpreadBps = opportunities.reduce((s,o)=> s + (o.spreadBps||0),0)/Math.max(1,opportunities.length);
+        const optimizedParameters = {
+            // Señal: permitir más señales cuando hay fuerza fractal y LOG7919 (aprox con sharpe)
+            signalThreshold: 0.30 + (avgEfficiency * 0.18) + (sharpe > 1 ? 0.06 : -0.04),
+
+            // Riesgo: subir con PathProbability y fuerza fractal, acotado
+            riskPerTrade: Math.min(0.03, 0.012 + (avgPathProbability * 0.012) * (sortino > 1 ? 1 : 0.85) * (1 + avgFractalBonus)),
+
+            // TP: 8%12% guiado por superposición, RAR y bonus de tiempo fractal
+            takeProfitPercentage: Math.min(0.12, Math.max(0.08,
+                0.06 + (avgSuperposition * 0.03) + Math.max(0, avgRAR) * 0.03 + avgFractalBonus * 0.6
+            )),
+
+            // SL para opciones: más amplio, dependiente de vol y spread (10%45%)
+            stopLossPercentage: Math.min(0.45, Math.max(0.10,
+                0.08 + 0.5 * Math.max(0, avgVolatility) + 0.0007 * Math.max(0, avgSpreadBps) + 0.10 * Math.max(0, avgRiskLevel)
+                - Math.max(0, (avgNeverExec - 0.9)) * 0.04
+            )),
+
+            // Posiciones
+            maxPositions: Math.min(8, Math.max(4, Math.floor(opportunities.length / 9))),
+            
+            // Métricas cuánticas para el sistema
+            quantumEfficiencyTarget: avgEfficiency,
+            pathProbabilityTarget: avgPathProbability,
+            superpositionIndexTarget: avgSuperposition,
+            sharpeRatio: sharpe,
+            sortinoRatio: sortino,
+            avgRiskAdjustedReturn: avgRAR,
+            avgVolatility,
+            avgSpreadBps
+        };
+        
+        return optimizedParameters;
+    }
+
+    estimateSharpe(opportunities) {
+        if (!opportunities.length) return 0;
+        const rets = opportunities.map(o => o.expectedReturn || 0);
+        const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+        const variance = rets.reduce((s, r) => s + Math.pow(r - mean, 2), 0) / Math.max(1, rets.length - 1);
+        const std = Math.sqrt(Math.max(variance, 1e-10));
+        return std > 0 ? mean / std : 0;
+    }
+
+    estimateSortino(opportunities) {
+        if (!opportunities.length) return 0;
+        const rets = opportunities.map(o => o.expectedReturn || 0);
+        const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+        const negatives = rets.filter(r => r < 0);
+        const downsideVar = negatives.reduce((s, r) => s + r * r, 0) / Math.max(1, negatives.length);
+        const downside = Math.sqrt(Math.max(downsideVar, 1e-10));
+        return downside > 0 ? mean / downside : 0;
+    }
+
+    /**
+     * Ejecutar análisis completo y optimización
+     */
+    async runAnalysis() {
+        try {
+            console.log(' Iniciando análisis de opciones con griegos cuánticos...');
+            
+            // Obtener datos de opciones
+            const optionsData = await this.getAllOptionsData();
+            // Ingeniería inversa: construir superficies de volatilidad
+            const volSurfaces = this.buildVolatilitySurfaces(optionsData);
+            
+            // Analizar oportunidades
+            const opportunities = this.analyzeOpportunities(optionsData);
+            // Construir portafolios naked OTM (strangles)
+            const portfolios = this.buildNakedOTMPortfolios(opportunities);
+            const nakedIndividuals = this.buildNakedOTMIndividuals(opportunities);
+            const leveragePortfolio = this.buildLeverageMaxPortfolio(nakedIndividuals);
+
+            // Visión global 6 símbolos y entrelazamiento
+            const globalOverview = this.buildGlobalOverview(opportunities);
+            
+            // Optimizar parámetros del sistema
+            // Ajustes por símbolo desde superficies IV
+            const symbolAdj = this.deriveSymbolAdjustmentsFromSurfaces(volSurfaces);
+            const optimizedParameters = this.optimizeSystemParameters(opportunities);
+            
+            // Mostrar resultados
+            console.log('[OK] Análisis completado');
+            console.log(`[DATA] Oportunidades identificadas: ${opportunities.length}`);
+            console.log(` Visión Global por símbolo (promedios):`);
+            for (const s of Object.keys(globalOverview.symbols)) {
+                const g = globalOverview.symbols[s];
+                console.log(`   ${s}: eff ${(g.avgEfficiency*100).toFixed(1)}% | net ${(g.avgNetReturn*100).toFixed(2)}% | liq ${(g.avgLiquidity*100).toFixed(0)}% | spread ${Math.round(g.avgSpreadBps)} bps | opps ${g.opportunityCount}`);
+            }
+            console.log(` Top 5 pares por entrelazamiento:`);
+            for (let i = 0; i < Math.min(5, globalOverview.topPairs.length); i++) {
+                const p = globalOverview.topPairs[i];
+                console.log(`   ${i+1}. ${p.a}${p.b}: ${(p.score*100).toFixed(1)}%`);
+            }
+            console.log(`\n[ENDPOINTS] Top 5 oportunidades (con costos, spread y break-even):`);
+            
+            for (let i = 0; i < Math.min(5, opportunities.length); i++) {
+                const opp = opportunities[i];
+                const costPct = (opp.totalCostFraction ?? 0) * 100;
+                const netPct = (opp.expectedReturnNet ?? 0) * 100;
+                const commPct = (opp.commissionFraction ?? 0) * 100;
+                console.log(
+                    `   ${i + 1}. ${opp.symbol} ${opp.type} ${opp.strike}` +
+                    ` - Eficiencia: ${(opp.quantumEfficiency * 100).toFixed(2)}%` +
+                    ` | Spread: ${opp.spreadBps ?? 0} bps` +
+                    ` | Comisión: ${commPct.toFixed(2)}%` +
+                    ` | Costos totales: ${costPct.toFixed(2)}%` +
+                    ` | Retorno neto: ${netPct.toFixed(2)}%` +
+                    ` | BE move: ${opp.breakEvenMoveBps ?? 0} bps`
+                );
+            }
+            
+            console.log('\n Parámetros optimizados:');
+            console.log(`   Umbral de señales: ${optimizedParameters.signalThreshold.toFixed(3)}`);
+            console.log(`   Riesgo por operación: ${(optimizedParameters.riskPerTrade * 100).toFixed(2)}%`);
+            console.log(`   Take Profit: ${(optimizedParameters.takeProfitPercentage * 100).toFixed(2)}%`);
+            console.log(`   Stop Loss: ${(optimizedParameters.stopLossPercentage * 100).toFixed(2)}%`);
+            console.log(`   Max posiciones: ${optimizedParameters.maxPositions}`);
+            
+            // Consultar estado real de Options (EAPI): balance y posiciones
+            let eapiStatus = null;
+            try {
+                eapiStatus = await this.fetchOptionsStatusEAPI();
+                // Persistir snapshot para inspección rápida
+                if (eapiStatus) {
+                    try {
+                        const logDir = path.join(__dirname, 'logs');
+                        fs.mkdirSync(logDir, { recursive: true });
+                        fs.writeFileSync(path.join(logDir, 'eapi-status-latest.json'), JSON.stringify(eapiStatus, null, 2), 'utf8');
+                    } catch {}
+                }
+            } catch (e) {
+                // Silencioso en prod si falla EAPI
+            }
+
+            // Estado Z-plane y riesgo agregado (placeholders, se refinan con portfolio)
+            const zStateSnapshot = this.computeZState(0);
+
+            // Guardar visión global a JSON
+            const fullOverviewPayload = {
+                timestamp: new Date().toISOString(),
+                symbols: globalOverview.symbols,
+                entanglement: globalOverview.entanglement,
+                topPairs: globalOverview.topPairs.slice(0, 15),
+                optimizedParameters,
+                topOpportunities: opportunities.slice(0, 50),
+                topPortfolios: portfolios,
+                volSurfacesMeta: Object.fromEntries(Object.entries(volSurfaces).map(([sym,surf]) => [sym, { expiries: surf.expiries, strikes: surf.strikes }])),
+                topNakedIndividuals: nakedIndividuals,
+                longBest: this.longBest || null,
+                allocation: {
+                    portfolioCapitalUSD: this.capitalConfig.portfolioCapitalUSD,
+                    capitalPerTradeUSD: this.capitalConfig.capitalPerTradeUSD,
+                    allocationSource: (process.env.ALLOCATION_SOURCE || 'futures').toLowerCase()
+                },
+                zPlaneState: {
+                    zMag: Number(zStateSnapshot.zMag.toFixed(4)),
+                    theta: Number(zStateSnapshot.theta.toFixed(4)),
+                    zBoost: Number(zStateSnapshot.zBoost.toFixed(4))
+                },
+                eapiStatus: eapiStatus ? {
+                    availableUSDT: eapiStatus.availableUSDT,
+                    equity: eapiStatus.equity,
+                    positionsCount: Array.isArray(eapiStatus.positions) ? eapiStatus.positions.length : 0,
+                    positionsSample: Array.isArray(eapiStatus.positions) ? eapiStatus.positions.filter(p => (p.underlying || '').includes('BTC') || (p.symbol || '').includes('BTC')).slice(0, 10) : []
+                } : null
+            };
+            if (leveragePortfolio) {
+                fullOverviewPayload.leverageMaxPortfolio = {
+                    budgetUSD: leveragePortfolio.budgetUSD,
+                    remainingUSD: leveragePortfolio.remainingUSD,
+                    totals: leveragePortfolio.totals,
+                    risk: {
+                        varSum: Number((leveragePortfolio.totals?.varSum || 0).toFixed(6)),
+                        cvarSum: Number((leveragePortfolio.totals?.cvarSum || 0).toFixed(6)),
+                        drawdownExpected: Number(((leveragePortfolio.totals?.cvarSum || 0) * 1.2).toFixed(6))
+                    },
+                    count: leveragePortfolio.selected.length,
+                    execPlan: ((process.env.ALLOCATION_SOURCE || 'futures').toLowerCase() === 'futures') ? 'futures-only' : 'combined-planning-futures-exec',
+                    selected: leveragePortfolio.selected
+                };
+                try {
+                    this.saveTradePlan(leveragePortfolio.selected, optimizedParameters);
+                    this.saveLeveragePortfolioCSV(leveragePortfolio);
+                } catch (e) {
+                    console.warn('No se pudo exportar trade plan:', e?.message || e);
+                }
+            }
+            const overviewFile = this.saveGlobalOverview(fullOverviewPayload);
+            const overviewFileMin = this.saveGlobalOverviewMin(fullOverviewPayload);
+            if (overviewFile) console.log(` Visión global exportada a: ${overviewFile}`);
+            if (overviewFileMin) console.log(` Visión global (min) exportada a: ${overviewFileMin}`);
+            
+            return {
+                optionsData,
+                opportunities,
+                optimizedParameters,
+                globalOverview
+            };
+            
+        } catch (error) {
+            console.error('[ERROR] Error en análisis:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Construye visión global: resumen por símbolo y matriz de entrelazamiento
+     */
+    buildGlobalOverview(opportunities) {
+        const perSymbol = {};
+        for (const s of this.symbols) {
+            perSymbol[s] = { eff: [], net: [], liq: [], spread: [], pop: [], rr: [], risk: [] };
+        }
+        for (const opp of opportunities) {
+            const k = opp.symbol;
+            if (!perSymbol[k]) continue;
+            perSymbol[k].eff.push(opp.quantumEfficiency ?? 0);
+            perSymbol[k].net.push(Math.max(0, Math.min(0.5, opp.expectedReturnNet ?? 0))); // cap 50%
+            perSymbol[k].liq.push(opp.liquidityScore ?? 0);
+            perSymbol[k].spread.push((opp.spreadBps ?? 0) / 10000);
+            perSymbol[k].pop.push(opp.probabilityOfProfit ?? 0);
+            perSymbol[k].rr.push(Math.min(1, (opp.riskRewardRatio ?? 0) / 3));
+            perSymbol[k].risk.push(1 - Math.min(1, opp.riskLevel ?? 0)); // seguridad
+        }
+        const summary = {};
+        const featureVectors = {};
+        for (const [sym, arrs] of Object.entries(perSymbol)) {
+            const avg = (xs) => xs.length ? xs.reduce((a,b)=>a+b,0)/xs.length : 0;
+            const s = {
+                avgEfficiency: avg(arrs.eff),
+                avgNetReturn: avg(arrs.net),
+                avgLiquidity: avg(arrs.liq),
+                avgSpreadBps: avg(arrs.spread) * 10000,
+                opportunityCount: arrs.eff.length,
+                avgProbabilityOfProfit: avg(arrs.pop),
+                avgRiskReward: avg(arrs.rr),
+                avgSafety: avg(arrs.risk)
+            };
+            summary[sym] = s;
+            featureVectors[sym] = [
+                s.avgEfficiency,
+                s.avgNetReturn,
+                s.avgProbabilityOfProfit,
+                s.avgLiquidity,
+                s.avgRiskReward,
+                s.avgSafety
+            ];
+        }
+        const ent = this.computeEntanglementMatrix(featureVectors);
+        return { symbols: summary, entanglement: ent.matrix, topPairs: ent.topPairs };
+    }
+
+    computeEntanglementMatrix(featureVectors) {
+        const syms = Object.keys(featureVectors);
+        const matrix = {};
+        const pairs = [];
+        const cos = (a,b) => {
+            const dot = a.reduce((s, v, i) => s + v * b[i], 0);
+            const na = Math.sqrt(a.reduce((s, v) => s + v*v, 0));
+            const nb = Math.sqrt(b.reduce((s, v) => s + v*v, 0));
+            if (na === 0 || nb === 0) return 0;
+            return dot / (na * nb);
+        };
+        for (let i=0;i<syms.length;i++) {
+            const ai = syms[i];
+            matrix[ai] = {};
+            for (let j=0;j<syms.length;j++) {
+                const aj = syms[j];
+                const c = (cos(featureVectors[ai], featureVectors[aj]) + 1) / 2; // [0,1]
+                matrix[ai][aj] = c;
+                if (i<j) pairs.push({ a: ai, b: aj, score: c });
+            }
+        }
+        pairs.sort((x,y)=>y.score - x.score);
+        return { matrix, topPairs: pairs };
+    }
+
+    /**
+     * Guarda JSON con visión global y oportunidades
+     */
+    saveGlobalOverview(payload) {
+        try {
+            const logDir = path.join(__dirname, 'logs');
+            fs.mkdirSync(logDir, { recursive: true });
+            const ts = new Date();
+            const stamp = `${ts.getFullYear()}${String(ts.getMonth()+1).padStart(2,'0')}${String(ts.getDate()).padStart(2,'0')}-${String(ts.getHours()).padStart(2,'0')}${String(ts.getMinutes()).padStart(2,'0')}${String(ts.getSeconds()).padStart(2,'0')}`;
+            const file = path.join(logDir, `global-overview-${stamp}.json`);
+            fs.writeFileSync(file, JSON.stringify(payload, null, 2), 'utf8');
+            return file;
+        } catch (e) {
+            console.error('[ERROR] Error guardando visión global:', e.message);
+            return null;
+        }
+    }
+
+    /**
+     * Guarda versión minificada (compacta) limitando campos de oportunidades
+     */
+    saveGlobalOverviewMin(fullPayload) {
+        try {
+            const compact = this.buildCompactOverview(fullPayload);
+            const logDir = path.join(__dirname, 'logs');
+            fs.mkdirSync(logDir, { recursive: true });
+            const ts = new Date();
+            const stamp = `${ts.getFullYear()}${String(ts.getMonth()+1).padStart(2,'0')}${String(ts.getDate()).padStart(2,'0')}-${String(ts.getHours()).padStart(2,'0')}${String(ts.getMinutes()).padStart(2,'0')}${String(ts.getSeconds()).padStart(2,'0')}`;
+            const file = path.join(logDir, `global-overview-${stamp}.min.json`);
+            fs.writeFileSync(file, JSON.stringify(compact), 'utf8');
+            return file;
+        } catch (e) {
+            console.error('[ERROR] Error guardando visión global min:', e.message);
+            return null;
+        }
+    }
+
+    /**
+     * Exportar plan de trading (CSV y JSON) con TP/SL por posición
+     */
+    saveTradePlan(selected, optimizedParameters) {
+        try {
+            const dir = path.join(__dirname, 'logs');
+            fs.mkdirSync(dir, { recursive: true });
+            const ts = new Date();
+            const stamp = `${ts.getFullYear()}${String(ts.getMonth()+1).padStart(2,'0')}${String(ts.getDate()).padStart(2,'0')}-${String(ts.getHours()).padStart(2,'0')}${String(ts.getMinutes()).padStart(2,'0')}${String(ts.getSeconds()).padStart(2,'0')}`;
+            const csvPath = path.join(dir, `trade-plan-${stamp}.csv`);
+            const jsonPath = path.join(dir, `trade-plan-${stamp}.json`);
+            const tpPct = optimizedParameters?.takeProfitPercentage ?? 0.1;
+            const slPct = optimizedParameters?.stopLossPercentage ?? 0.3;
+            const header = 'symbol,type,strike,exp,n,spendUSD,entry,lev,profitPerDay,tpPct,slPct,hookWheelFactor';
+            const rows = [header];
+            const items = [];
+            for (const it of (selected || [])) {
+                const n = it.contracts?.n ?? 1;
+                const spend = it.contracts?.totalPremiumUSD ?? it._price ?? 0;
+                const entry = it.entryPrice ?? it.ask ?? it.optionPrice ?? 0;
+                rows.push([it.symbol, it.type, it.strike, it.expiration, n, spend, entry, it.leverage ?? '', it.profitPerDay ?? '', tpPct, slPct].join(','));
+                items.push({
+                    symbol: it.symbol,
+                    type: it.type,
+                    strike: it.strike,
+                    expiration: it.expiration,
+                    quantity: n,
+                    spendUSD: spend,
+                    entry,
+                    leverage: it.leverage ?? 0,
+                    profitPerDay: it.profitPerDay ?? 0,
+                    takeProfitPct: tpPct,
+                    stopLossPct: slPct,
+                    hookWheelFactor: it.hookWheelFactor ?? 1
+                });
+            }
+            fs.writeFileSync(csvPath, rows.join('\n'), 'utf8');
+            fs.writeFileSync(jsonPath, JSON.stringify(items, null, 2), 'utf8');
+            console.log(` Trade plan exportado: ${csvPath}`);
+            console.log(` Trade plan exportado: ${jsonPath}`);
+            return { csvPath, jsonPath };
+        } catch (e) {
+            console.error('[ERROR] Error exportando trade plan:', e.message);
+            return null;
+        }
+    }
+
+    saveLeveragePortfolioCSV(leveragePortfolio) {
+        try {
+            const dir = path.join(__dirname, 'logs');
+            fs.mkdirSync(dir, { recursive: true });
+            const file = path.join(dir, 'leverage-portfolio.csv');
+            const rows = ['symbol,type,strike,exp,n,spendUSD,lev,ppd,hookWheelFactor'];
+            for (const it of (leveragePortfolio.selected || [])) {
+                const n = it.contracts?.n ?? 1;
+                const spend = it.contracts?.totalPremiumUSD ?? it._price ?? 0;
+                const lev = it.leverage ?? 0;
+                const ppd = it.profitPerDay ?? 0;
+                const hook = it.hookWheelFactor ?? 1;
+                rows.push([it.symbol, it.type, it.strike, it.expiration, n, spend, lev, ppd, hook].join(','));
+            }
+            fs.writeFileSync(file, rows.join('\n'), 'utf8');
+            console.log(` Leverage portfolio exportado: ${file}`);
+            return file;
+        } catch (e) {
+            console.warn('No se pudo exportar leverage-portfolio.csv:', e?.message || e);
+            return null;
+        }
+    }
+
+    buildCompactOverview(fullPayload) {
+        const pickOpp = (o) => ({
+            s: o.symbol,
+            t: o.type,
+            k: o.strike,
+            x: o.expiration,
+            eff: Number((o.quantumEfficiency ?? 0).toFixed(4)),
+            net: Number(((o.expectedReturnNet ?? 0)).toFixed(4)),
+            spr: o.spreadBps ?? 0,
+            com: Number(((o.commissionFraction ?? 0)).toFixed(4)),
+            cst: Number(((o.totalCostFraction ?? 0)).toFixed(4)),
+            be: o.breakEvenMoveBps ?? 0
+        });
+        const pickPort = (p) => ({
+            s: p.symbol,
+            x: p.expiration,
+            lev: p.leverage,
+            en: p.ensembleNet,
+            net: p.expectedReturnNet,
+            sc: p.portfolioScore,
+            spr: p.spreadBps,
+            be: p.breakEvenMoveBps,
+            z: p.zPlaneUtility,
+            cheap: p.nakedCheapness,
+            c: p.call,
+            p: p.put,
+            ty: p.type
+        });
+        return {
+            ts: fullPayload.timestamp,
+            syms: fullPayload.symbols,
+            ent: fullPayload.entanglement,
+            pairs: fullPayload.topPairs,
+            opt: fullPayload.optimizedParameters,
+            top: (fullPayload.topOpportunities || []).map(pickOpp),
+            ports: (fullPayload.topPortfolios || []).map(pickPort),
+            fractal: this.buildFractalTimeSnapshot(fullPayload.topPortfolios || [])
+        };
+    }
+
+    buildFractalTimeSnapshot(portfolios) {
+        // Inspirado en SRONA Fractal Time: medir extensión temporal efectiva y bonus de tiempo
+        const cfg = this.fractalTimeConfig;
+        if (!portfolios.length) {
+            return { status: 'NO_PORTS', message: 'No hay portafolios para cálculo fractal' };
+        }
+        // Aproximar tiempo extendido: usar días a vencimiento promedio ponderado por leverage
+        const totalLev = portfolios.reduce((s,p)=> s + (p.leverage||0), 0) || 1;
+        const avgDays = portfolios.reduce((s,p)=> s + ((p.call?.daysToExpiry||0)+(p.put?.daysToExpiry||0))/2 * (p.leverage||0), 0) / totalLev;
+        const baseDays = Math.max(cfg.MIN_TIME_EXTENSION_DAYS, Math.min(cfg.MAX_TIME_EXTENSION_DAYS, avgDays || 14));
+        const fractalMultiplier = cfg.FRACTAL_DIMENSION_BASE * (cfg.LOG_7919 / 10);
+        const fractalExtendedDays = Math.min(cfg.MAX_TIME_EXTENSION_DAYS, baseDays * fractalMultiplier);
+        const timeBonus = fractalExtendedDays * cfg.TIME_BONUS_PER_DAY; // fracción
+        // Probabilidad de nunca ejecutar aproximada por cheapness media
+        const avgCheap = portfolios.reduce((s,p)=> s + (p.nakedCheapness||0)*(p.leverage||0),0)/totalLev;
+        const neverExecuteProb = Math.min(0.999, 0.95 + 0.04 * (avgCheap||0));
+        return {
+            fractal_extended_days: Number(fractalExtendedDays.toFixed(1)),
+            time_bonus_fraction: Number(timeBonus.toFixed(4)),
+            never_execute_probability: Number(neverExecuteProb.toFixed(4)),
+            coherent_strength_proxy: Number((Math.min(1, 0.4*neverExecuteProb + 0.6*avgCheap)).toFixed(4))
+        };
+    }
+}
+
+// Exportar la clase
+module.exports = OptionsDataFetcher;
+
+// Ejecutar si este archivo es el principal
+if (require.main === module) {
+    const fetcher = new OptionsDataFetcher();
+    fetcher.runAnalysis().then((results) => {
+        console.log('\n[OK] Análisis de opciones con griegos cuánticos completado');
+        process.exit(0);
+    }).catch((error) => {
+        console.error('[ERROR] Error ejecutando análisis:', error);
+        process.exit(1);
+    });
+}

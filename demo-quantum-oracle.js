@@ -1,0 +1,427 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+#!/usr/bin/env node
+
+/**
+ *  QUANTUM ORACLE INTERACTIVE DEMO
+ * 
+ * Demostración interactiva del Sistema de Oráculo Cuántico
+ * Muestra datos en tiempo real y permite explorar todas las funcionalidades
+ */
+
+const http = require('http');
+const readline = require('readline');
+
+const BASE_URL = 'http://localhost:4002';
+
+// Colores para la consola
+const colors = {
+    reset: '\x1b[0m',
+    bright: '\x1b[1m',
+    red: '\x1b[31m',
+    green: '\x1b[32m',
+    yellow: '\x1b[33m',
+    blue: '\x1b[34m',
+    magenta: '\x1b[35m',
+    cyan: '\x1b[36m'
+};
+
+function log(message, color = 'reset') {
+    console.log(`${colors[color]}${message}${colors.reset}`);
+}
+
+function makeRequest(path) {
+    return new Promise((resolve, reject) => {
+        const options = {
+            hostname: 'localhost',
+            port: 4002,
+            path: path,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            let body = '';
+            res.on('data', (chunk) => {
+                body += chunk;
+            });
+            res.on('end', () => {
+                try {
+                    const jsonData = JSON.parse(body);
+                    resolve(jsonData);
+                } catch (e) {
+                    resolve({ error: 'Invalid JSON', body });
+                }
+            });
+        });
+
+        req.on('error', (err) => {
+            reject(err);
+        });
+
+        req.end();
+    });
+}
+
+async function showOracleStatus() {
+    try {
+        log('\n QUANTUM ORACLE STATUS', 'magenta');
+        log('=' .repeat(50), 'cyan');
+        
+        const response = await makeRequest('/api/oracle/status');
+        if (response.success && response.data) {
+            const data = response.data;
+            log(`[DATA] Symbols Tracked: ${data.symbolsTracked || 'N/A'}`, 'blue');
+            log(` Quantum Coherence: ${((data.quantumCoherence || 0) * 100).toFixed(1)}%`, 'green');
+            log(`[FAST] Cache Status: ${data.cacheStatus || 'Active'}`, 'yellow');
+            log(` Last Update: ${new Date(data.lastUpdate || Date.now()).toLocaleTimeString()}`, 'cyan');
+            
+            if (data.fearGreedIndex) {
+                const fgColor = data.fearGreedIndex >= 70 ? 'red' : data.fearGreedIndex >= 30 ? 'yellow' : 'green';
+                log(` Fear & Greed: ${data.fearGreedIndex} (${data.fearGreedTrend || 'Neutral'})`, fgColor);
+            }
+        } else {
+            log('[ERROR] Could not fetch oracle status', 'red');
+        }
+    } catch (error) {
+        log(`[ERROR] Error: ${error.message}`, 'red');
+    }
+}
+
+async function showMarketData() {
+    try {
+        log('\n[UP] REAL-TIME MARKET DATA', 'magenta');
+        log('=' .repeat(50), 'cyan');
+        
+        const response = await makeRequest('/api/market-data');
+        if (response.success && response.data) {
+            const symbols = response.data;
+            
+            symbols.forEach(symbol => {
+                const price = symbol.price ? `$${parseFloat(symbol.price).toLocaleString()}` : 'N/A';
+                const change = symbol.change24h ? `${symbol.change24h > 0 ? '+' : ''}${symbol.change24h.toFixed(2)}%` : 'N/A';
+                const changeColor = symbol.change24h > 0 ? 'green' : symbol.change24h < 0 ? 'red' : 'yellow';
+                
+                log(`${symbol.symbol.padEnd(6)} ${price.padEnd(12)} ${change}`, changeColor);
+            });
+        } else {
+            log('[ERROR] Could not fetch market data', 'red');
+        }
+    } catch (error) {
+        log(`[ERROR] Error: ${error.message}`, 'red');
+    }
+}
+
+async function showTradingSignals() {
+    try {
+        log('\n[ENDPOINTS] QUANTUM TRADING SIGNALS', 'magenta');
+        log('=' .repeat(50), 'cyan');
+        
+        const response = await makeRequest('/api/trading-signals');
+        if (response.success && response.data) {
+            const signals = response.data;
+            
+            signals.forEach(signal => {
+                const confidence = `${(signal.confidence * 100).toFixed(1)}%`;
+                const confidenceColor = signal.confidence > 0.7 ? 'green' : signal.confidence > 0.5 ? 'yellow' : 'red';
+                
+                log(`${signal.symbol.padEnd(6)} ${signal.strategy.padEnd(18)} ${signal.direction.padEnd(8)} ${confidence}`, confidenceColor);
+            });
+        } else {
+            log('[ERROR] Could not fetch trading signals', 'red');
+        }
+    } catch (error) {
+        log(`[ERROR] Error: ${error.message}`, 'red');
+    }
+}
+
+async function showProjections(symbol = null) {
+    try {
+        const endpoint = symbol ? `/api/oracle/projections?symbol=${symbol}` : '/api/oracle/projections';
+        log(`\n[START] QUANTUM PROJECTIONS${symbol ? ` - ${symbol}` : ''}`, 'magenta');
+        log('=' .repeat(50), 'cyan');
+        
+        const response = await makeRequest(endpoint);
+        if (response.success && response.data) {
+            const projections = response.data.projections || response.data;
+            
+            if (Array.isArray(projections)) {
+                projections.forEach(proj => {
+                    log(`\n[DATA] ${proj.symbol}:`, 'bright');
+                    if (proj.timeframes) {
+                        Object.entries(proj.timeframes).forEach(([timeframe, data]) => {
+                            const direction = data.direction === 'UP' ? '[UP]' : data.direction === 'DOWN' ? '[DOWN]' : '';
+                            const confidence = `${(data.confidence * 100).toFixed(1)}%`;
+                            log(`  ${timeframe.padEnd(4)} ${direction} ${data.projection.toFixed(4)} (${confidence})`, 'blue');
+                        });
+                    }
+                });
+            } else {
+                log('[DATA] Projection data structure:', 'blue');
+                log(JSON.stringify(projections, null, 2), 'cyan');
+            }
+        } else {
+            log('[ERROR] Could not fetch projections', 'red');
+        }
+    } catch (error) {
+        log(`[ERROR] Error: ${error.message}`, 'red');
+    }
+}
+
+async function showFearGreed() {
+    try {
+        log('\n FEAR & GREED INDEX', 'magenta');
+        log('=' .repeat(50), 'cyan');
+        
+        const response = await makeRequest('/api/oracle/fear-greed');
+        if (response.success && response.data) {
+            const data = response.data;
+            
+            const current = data.current || data.fearGreedIndex || 50;
+            const trend = data.trend || 'Neutral';
+            const movingAvg = data.movingAverage || data.movingAverage30d || current;
+            
+            // Determinar color basado en el valor
+            let color = 'yellow';
+            let emotion = 'Neutral';
+            
+            if (current >= 75) {
+                color = 'red';
+                emotion = 'Extreme Greed';
+            } else if (current >= 55) {
+                color = 'yellow';
+                emotion = 'Greed';
+            } else if (current >= 45) {
+                color = 'blue';
+                emotion = 'Neutral';
+            } else if (current >= 25) {
+                color = 'green';
+                emotion = 'Fear';
+            } else {
+                color = 'green';
+                emotion = 'Extreme Fear';
+            }
+            
+            log(`[DATA] Current Index: ${current} (${emotion})`, color);
+            log(`[UP] 30-Day Average: ${movingAvg.toFixed(1)}`, 'blue');
+            log(`[RELOAD] Trend: ${trend}`, 'cyan');
+            
+            // Mostrar barra visual
+            const barLength = 20;
+            const filled = Math.round((current / 100) * barLength);
+            const bar = ''.repeat(filled) + ''.repeat(barLength - filled);
+            log(`[DATA] [${bar}] ${current}%`, color);
+            
+        } else {
+            log('[ERROR] Could not fetch Fear & Greed data', 'red');
+        }
+    } catch (error) {
+        log(`[ERROR] Error: ${error.message}`, 'red');
+    }
+}
+
+async function showRecommendations() {
+    try {
+        log('\n AI RECOMMENDATIONS', 'magenta');
+        log('=' .repeat(50), 'cyan');
+        
+        const response = await makeRequest('/api/oracle/recommendations');
+        if (response.success && response.data) {
+            const data = response.data;
+            
+            if (data.recommendations && Array.isArray(data.recommendations)) {
+                data.recommendations.forEach((rec, index) => {
+                    log(`\n${index + 1}. ${rec.symbol || 'General'}:`, 'bright');
+                    log(`   Action: ${rec.action || rec.recommendation}`, 'green');
+                    log(`   Reason: ${rec.reason || rec.rationale}`, 'blue');
+                    if (rec.confidence) {
+                        log(`   Confidence: ${(rec.confidence * 100).toFixed(1)}%`, 'yellow');
+                    }
+                });
+            } else {
+                log('[DATA] Recommendations data:', 'blue');
+                log(JSON.stringify(data, null, 2), 'cyan');
+            }
+        } else {
+            log('[ERROR] Could not fetch recommendations', 'red');
+        }
+    } catch (error) {
+        log(`[ERROR] Error: ${error.message}`, 'red');
+    }
+}
+
+async function showDashboard() {
+    try {
+        log('\n  QUANTUM DASHBOARD', 'magenta');
+        log('=' .repeat(60), 'cyan');
+        
+        const response = await makeRequest('/api/dashboard');
+        if (response.success && response.data) {
+            const data = response.data;
+            
+            // Mostrar resumen
+            log('\n[DATA] MARKET SUMMARY:', 'bright');
+            if (data.marketData && Array.isArray(data.marketData)) {
+                const totalValue = data.marketData.reduce((sum, symbol) => sum + (parseFloat(symbol.price) || 0), 0);
+                log(`   Total Market Value: $${totalValue.toLocaleString()}`, 'green');
+                log(`   Symbols Tracked: ${data.marketData.length}`, 'blue');
+            }
+            
+            // Mostrar señales activas
+            log('\n[ENDPOINTS] ACTIVE SIGNALS:', 'bright');
+            if (data.signals && Array.isArray(data.signals)) {
+                const highConfidence = data.signals.filter(s => s.confidence > 0.7).length;
+                log(`   Total Signals: ${data.signals.length}`, 'blue');
+                log(`   High Confidence: ${highConfidence}`, 'green');
+            }
+            
+            // Mostrar estado del sistema
+            log('\n[FAST] SYSTEM STATUS:', 'bright');
+            log(`   Quantum Coherence: ${((data.quantumCoherence || 0.68) * 100).toFixed(1)}%`, 'green');
+            log(`   Oracle Status: Active`, 'green');
+            log(`   Last Update: ${new Date().toLocaleTimeString()}`, 'cyan');
+            
+        } else {
+            log('[ERROR] Could not fetch dashboard data', 'red');
+        }
+    } catch (error) {
+        log(`[ERROR] Error: ${error.message}`, 'red');
+    }
+}
+
+function showMenu() {
+    log('\n QUANTUM ORACLE DEMO MENU', 'magenta');
+    log('=' .repeat(40), 'cyan');
+    log('1. Oracle Status', 'blue');
+    log('2. Market Data', 'blue');
+    log('3. Trading Signals', 'blue');
+    log('4. Quantum Projections', 'blue');
+    log('5. Fear & Greed Index', 'blue');
+    log('6. AI Recommendations', 'blue');
+    log('7. Full Dashboard', 'blue');
+    log('8. BTC Projections', 'blue');
+    log('9. ETH Projections', 'blue');
+    log('0. Exit', 'red');
+    log('=' .repeat(40), 'cyan');
+}
+
+async function runDemo() {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    log(' QUANTUM ORACLE INTERACTIVE DEMO', 'magenta');
+    log('Welcome to the Quantum Oracle System!', 'cyan');
+    log('This demo shows real-time data from the quantum trading system.', 'blue');
+
+    // Mostrar estado inicial
+    await showOracleStatus();
+
+    const askQuestion = () => {
+        showMenu();
+        rl.question('\nSelect an option (1-9, 0 to exit): ', async (answer) => {
+            switch (answer.trim()) {
+                case '1':
+                    await showOracleStatus();
+                    break;
+                case '2':
+                    await showMarketData();
+                    break;
+                case '3':
+                    await showTradingSignals();
+                    break;
+                case '4':
+                    await showProjections();
+                    break;
+                case '5':
+                    await showFearGreed();
+                    break;
+                case '6':
+                    await showRecommendations();
+                    break;
+                case '7':
+                    await showDashboard();
+                    break;
+                case '8':
+                    await showProjections('BTC');
+                    break;
+                case '9':
+                    await showProjections('ETH');
+                    break;
+                case '0':
+                    log('\n Thank you for using Quantum Oracle Demo!', 'magenta');
+                    log('The quantum system continues running in the background.', 'cyan');
+                    rl.close();
+                    return;
+                default:
+                    log('\n[ERROR] Invalid option. Please select 1-9 or 0 to exit.', 'red');
+            }
+            
+            // Preguntar si quiere continuar
+            setTimeout(() => {
+                rl.question('\nPress Enter to continue or type "menu" for options: ', (input) => {
+                    if (input.toLowerCase() === 'menu') {
+                        askQuestion();
+                    } else {
+                        askQuestion();
+                    }
+                });
+            }, 1000);
+        });
+    };
+
+    askQuestion();
+}
+
+// Ejecutar demo
+if (require.main === module) {
+    runDemo().catch(console.error);
+}
+
+module.exports = { runDemo };

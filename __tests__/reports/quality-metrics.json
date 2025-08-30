@@ -1,0 +1,33 @@
+{
+  "history": [
+    {
+      "timestamp": "2025-08-30T16:52:26.687Z",
+      "date": "2025-08-30",
+      "coverage": 96.49,
+      "testSuccess": 100,
+      "totalTests": 28,
+      "passedTests": 28,
+      "performance": 1324,
+      "quality": 98.25
+    }
+  ],
+  "trends": {
+    "coverage": {
+      "trend": "stable",
+      "change": 0
+    },
+    "testSuccess": {
+      "trend": "stable",
+      "change": 0
+    },
+    "performance": {
+      "trend": "stable",
+      "change": 0
+    },
+    "quality": {
+      "trend": "stable",
+      "change": 0
+    }
+  },
+  "alerts": []
+}

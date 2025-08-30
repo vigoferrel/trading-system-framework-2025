@@ -1,0 +1,7 @@
+{
+  "symbol": "BTCUSDT",
+  "type": "EMERGENCY_CLOSE",
+  "reason": "Loss threshold exceeded",
+  "timestamp": "2025-08-20T00:47:19.576Z",
+  "currentPNL": -77.04
+}

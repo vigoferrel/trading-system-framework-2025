@@ -1,0 +1,1303 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QBTC-UNIFIED PRIME QUANTUM DASHBOARD V3 - SIMPLE</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .quantum-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quantum-header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1, #96ceb4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .quantum-header p {
+            color: #888;
+            font-size: 1.1em;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .opportunities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .opportunity-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .opportunity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #4ecdc4;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .symbol-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .confidence {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .price-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .current-price {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #96ceb4;
+        }
+
+        .price-change {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .change-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .change-percent {
+            font-size: 0.9em;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .positive { color: #96ceb4; background: rgba(150, 206, 180, 0.2); }
+        .negative { color: #ff6b6b; background: rgba(255, 107, 107, 0.2); }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .metric {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .signals {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .signal-tag {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            border: 1px solid #4ecdc4;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-analyze {
+            background: #45b7d1;
+            color: white;
+        }
+
+        .btn-execute {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .error {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .success {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid #4ecdc4;
+            color: #4ecdc4;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #4ecdc4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quantum-header">
+            <h1> QBTC-UNIFIED PRIME QUANTUM DASHBOARD V3</h1>
+            <p>Sistema de Trading Cuántico Avanzado - Datos Reales</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Sistema Cuántico: ACTIVO</span>
+            </div>
+            <div class="status-item">
+                <span>Última actualización: <span id="last-update">--</span></span>
+            </div>
+            <div class="status-item">
+                <span>Oportunidades: <span id="opportunities-count">0</span></span>
+            </div>
+        </div>
+
+        <div id="opportunities-grid" class="opportunities-grid">
+            <div class="loading">
+                <div class="spinner"></div>
+                <h3> Cargando Oportunidades Cuánticas...</h3>
+                <p>Conectando con el sistema de trading avanzado</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // QUANTUM UNIVERSE - Símbolos disponibles en FUTURES
+        const QUANTUM_UNIVERSE = [
+            // FUTURES (CAPA 2 - EJECUCIÓN) - TODOS LOS TOKENS (USANDO EDGE DE OPTIONS)
+            { symbol: 'BTCUSDT', name: 'Bitcoin', optimalTrade: 'FUTURES_OPTIMAL', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MAXIMUM', id: 'BTC_EXECUTION' },
+            { symbol: 'ETHUSDT', name: 'Ethereum', optimalTrade: 'FUTURES_LONG', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MAXIMUM', id: 'ETH_EXECUTION' },
+            { symbol: 'BNBUSDT', name: 'Binance Coin', optimalTrade: 'FUTURES_SHORT', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MAXIMUM', id: 'BNB_EXECUTION' },
+            { symbol: 'SOLUSDT', name: 'Solana', optimalTrade: 'FUTURES_MOMENTUM', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'HIGH', id: 'SOL_EXECUTION' },
+            { symbol: 'XRPUSDT', name: 'Ripple', optimalTrade: 'FUTURES_ARBITRAGE', layer: 'EXECUTION', volatility: 'MEDIUM', liquidity: 'HIGH', id: 'XRP_EXECUTION' },
+            { symbol: 'ADAUSDT', name: 'Cardano', optimalTrade: 'FUTURES_HEDGE', layer: 'EXECUTION', volatility: 'MEDIUM', liquidity: 'HIGH', id: 'ADA_EXECUTION' },
+            { symbol: 'DOGEUSDT', name: 'Dogecoin', optimalTrade: 'FUTURES_VOLATILITY', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MEDIUM', id: 'DOGE_EXECUTION' },
+            { symbol: 'AVAXUSDT', name: 'Avalanche', optimalTrade: 'FUTURES_TREND', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'HIGH', id: 'AVAX_EXECUTION' },
+            { symbol: 'DOTUSDT', name: 'Polkadot', optimalTrade: 'FUTURES_MEAN_REVERSION', layer: 'EXECUTION', volatility: 'MEDIUM', liquidity: 'HIGH', id: 'DOT_EXECUTION' },
+            { symbol: 'LINKUSDT', name: 'Chainlink', optimalTrade: 'FUTURES_BREAKOUT', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'HIGH', id: 'LINK_EXECUTION' },
+            { symbol: 'MATICUSDT', name: 'Polygon', optimalTrade: 'FUTURES_SCALPING', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'HIGH', id: 'MATIC_EXECUTION' },
+            { symbol: 'LTCUSDT', name: 'Litecoin', optimalTrade: 'FUTURES_SWING', layer: 'EXECUTION', volatility: 'MEDIUM', liquidity: 'HIGH', id: 'LTC_EXECUTION' },
+            { symbol: 'UNIUSDT', name: 'Uniswap', optimalTrade: 'FUTURES_GRID', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'HIGH', id: 'UNI_EXECUTION' },
+            { symbol: 'ATOMUSDT', name: 'Cosmos', optimalTrade: 'FUTURES_DCA', layer: 'EXECUTION', volatility: 'MEDIUM', liquidity: 'HIGH', id: 'ATOM_EXECUTION' },
+            { symbol: 'ETCUSDT', name: 'Ethereum Classic', optimalTrade: 'FUTURES_PAIRS', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MEDIUM', id: 'ETC_EXECUTION' },
+            { symbol: 'FILUSDT', name: 'Filecoin', optimalTrade: 'FUTURES_OPTIONS_HEDGE', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MEDIUM', id: 'FIL_EXECUTION' },
+            { symbol: 'NEARUSDT', name: 'NEAR Protocol', optimalTrade: 'FUTURES_GAMMA_SCALPING', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MEDIUM', id: 'NEAR_EXECUTION' },
+            { symbol: 'ALGOUSDT', name: 'Algorand', optimalTrade: 'FUTURES_DELTA_NEUTRAL', layer: 'EXECUTION', volatility: 'MEDIUM', liquidity: 'HIGH', id: 'ALGO_EXECUTION' },
+            { symbol: 'ICPUSDT', name: 'Internet Computer', optimalTrade: 'FUTURES_VEGA_HEDGE', layer: 'EXECUTION', volatility: 'HIGH', liquidity: 'MEDIUM', id: 'ICP_EXECUTION' },
+            { symbol: 'VETUSDT', name: 'VeChain', optimalTrade: 'FUTURES_THETA_DECAY', layer: 'EXECUTION', volatility: 'MEDIUM', liquidity: 'HIGH', id: 'VET_EXECUTION' }
+        ];
+
+        class QuantumDashboard {
+            constructor() {
+                this.lastUpdate = null;
+                this.init();
+            }
+
+            init() {
+                console.log(' [DASHBOARD] QBTC-UNIFIED PRIME QUANTUM DASHBOARD V3 SIMPLE cargado');
+                this.loadOpportunities();
+                this.startAutoUpdate();
+            }
+
+            startAutoUpdate() {
+                setInterval(async () => {
+                    await this.loadOpportunities();
+                }, 5000);
+            }
+
+            async loadOpportunities() {
+                try {
+                    console.log(' [OPPORTUNITIES] Cargando oportunidades reales...');
+                    const response = await axios.get('http://localhost:4602/api/enhanced-opportunities');
+                    
+                    if (response.data.success && response.data.opportunities) {
+                        this.displayOpportunities(response.data.opportunities);
+                        this.lastUpdate = new Date();
+                        console.log(' [OPPORTUNITIES] Oportunidades reales cargadas');
+                    }
+                } catch (error) {
+                    console.error(' [OPPORTUNITIES] Error:', error);
+                    this.displayError('Error conectando con el backend cuántico');
+                }
+            }
+
+            displayOpportunities(opportunities) {
+                const opportunitiesGrid = document.getElementById('opportunities-grid');
+                const countElement = document.getElementById('opportunities-count');
+                
+                if (opportunitiesGrid && opportunities) {
+                                         console.log(` [DEBUG] Total oportunidades recibidas: ${opportunities.length}`);
+                     console.log(` [DEBUG] Primeras 3 oportunidades:`, opportunities.slice(0, 3));
+                     
+                     // YA NO NECESITAMOS FILTRAR - EL BACKEND SOLO ENVÍA FUTURES
+                     const futuresOpportunities = opportunities;
+                     
+                     console.log(` [DEBUG] Oportunidades FUTURES procesadas: ${futuresOpportunities.length}`);
+                    
+                                         // SEPARAR LONGS Y SHORTS
+                     const longs = futuresOpportunities.filter(opp => (opp.priceChangePercent || 0) > 0);
+                     const shorts = futuresOpportunities.filter(opp => (opp.priceChangePercent || 0) < 0);
+                     
+                     // Ordenar por confianza
+                     longs.sort((a, b) => b.confidence - a.confidence);
+                     shorts.sort((a, b) => b.confidence - a.confidence);
+                     
+                     // Tomar las mejores 6 de cada tipo
+                     const topLongs = longs.slice(0, 6);
+                     const topShorts = shorts.slice(0, 6);
+                     
+                     if (futuresOpportunities.length === 0) {
+                         opportunitiesGrid.innerHTML = `
+                             <div class="error" style="grid-column: 1 / -1;">
+                                 <h3> No hay Oportunidades de FUTURES Disponibles</h3>
+                                 <p>El backend no está enviando datos para los símbolos de FUTURES configurados.</p>
+                                 <p><strong>Debug:</strong> Se recibieron ${opportunities.length} oportunidades totales</p>
+                                 <button onclick="dashboard.loadOpportunities()" style="margin-top: 15px; padding: 10px 20px; background: #4ecdc4; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                                      REFRESCAR DATOS REALES
+                                 </button>
+                             </div>
+                         `;
+                         return;
+                     }
+                     
+                     opportunitiesGrid.innerHTML = `
+                         <div style="grid-column: 1 / -1; text-align: center; margin-bottom: 20px;">
+                             <h2 style="color: #4ecdc4; margin-bottom: 10px;"> OPORTUNIDADES FUTURES - EJECUCIÓN REAL</h2>
+                             <p style="color: #888;">Total: ${futuresOpportunities.length} oportunidades | LONGS: ${longs.length} | SHORTS: ${shorts.length}</p>
+                             <p style="color: #ff6b6b; font-size: 0.9em;"> SPOT: Análisis |  OPTIONS: Inteligencia |  FUTURES: Ejecución</p>
+                         </div>
+                         
+                         <!-- SECCIÓN LONGS -->
+                         <div style="grid-column: 1 / -1; margin-bottom: 30px;">
+                             <h3 style="text-align: center; color: #96ceb4; font-size: 1.5em; margin-bottom: 20px;">
+                                  MEJORES LONGS - FUTURES (${topLongs.length} oportunidades)
+                             </h3>
+                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+                                 ${topLongs.map((item, index) => this.renderOpportunityCard(item, index, 'LONG')).join('')}
+                             </div>
+                         </div>
+                         
+                         <!-- SECCIÓN SHORTS -->
+                         <div style="grid-column: 1 / -1;">
+                             <h3 style="text-align: center; color: #ff6b6b; font-size: 1.5em; margin-bottom: 20px;">
+                                  MEJORES SHORTS - FUTURES (${topShorts.length} oportunidades)
+                             </h3>
+                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+                                 ${topShorts.map((item, index) => this.renderOpportunityCard(item, index, 'SHORT')).join('')}
+                             </div>
+                         </div>
+                     `;
+                    
+                    countElement.textContent = futuresOpportunities.length;
+                    this.updateLastUpdate();
+                }
+            }
+
+                         renderOpportunityCard(item, index, direction = 'UNKNOWN') {
+                 const priceChange = item.priceChangePercent || 0;
+                 const isPositive = priceChange >= 0;
+                 
+                 // Buscar información del símbolo en QUANTUM_UNIVERSE
+                 const symbolInfo = QUANTUM_UNIVERSE.find(s => s.symbol === item.symbol);
+                 const strategy = symbolInfo ? symbolInfo.optimalTrade : 'FUTURES_UNKNOWN';
+                 
+                 // Determinar color de borde basado en dirección
+                 const borderColor = direction === 'LONG' ? '#96ceb4' : direction === 'SHORT' ? '#ff6b6b' : '#4ecdc4';
+                 const bgColor = direction === 'LONG' ? 'rgba(150, 206, 180, 0.1)' : direction === 'SHORT' ? 'rgba(255, 107, 107, 0.1)' : 'rgba(78, 205, 196, 0.1)';
+                 
+                 return `
+                     <div class="opportunity-card" style="border-color: ${borderColor}; background: ${bgColor};">
+                         <div class="card-header">
+                             <div class="symbol-name">${item.symbol}</div>
+                             <div class="confidence" style="background: ${direction === 'LONG' ? 'linear-gradient(45deg, #96ceb4, #4ecdc4)' : 'linear-gradient(45deg, #ff6b6b, #ffa500)'};">${((item.confidence || 0.5) * 100).toFixed(1)}%</div>
+                         </div>
+                         
+                         <div class="price-info">
+                             <div class="current-price">$${item.currentPrice?.toFixed(4) || '0.0000'}</div>
+                             <div class="price-change">
+                                 <div class="change-amount ${isPositive ? 'positive' : 'negative'}">
+                                     ${isPositive ? '+' : ''}${item.priceChange?.toFixed(4) || '0.0000'}
+                                 </div>
+                                 <div class="change-percent ${isPositive ? 'positive' : 'negative'}">
+                                     ${isPositive ? '+' : ''}${priceChange.toFixed(2)}%
+                                 </div>
+                             </div>
+                         </div>
+                         
+                         <div class="metrics">
+                             <div class="metric">
+                                 <div class="metric-label">VOLUMEN</div>
+                                 <div class="metric-value">${this.formatVolume(item.volume)}</div>
+                             </div>
+                             <div class="metric">
+                                 <div class="metric-label">ESTRATEGIA</div>
+                                 <div class="metric-value">${strategy.replace('FUTURES_', '')}</div>
+                             </div>
+                         </div>
+                         
+                         <div class="signals">
+                             <span class="signal-tag">${item.priority || 'MEDIUM'}_PRIORITY</span>
+                             <span class="signal-tag">${isPositive ? 'BULLISH' : 'BEARISH'}_MOMENTUM</span>
+                             <span class="signal-tag" style="background: ${direction === 'LONG' ? 'rgba(150, 206, 180, 0.2)' : 'rgba(255, 107, 107, 0.2)'}; color: ${borderColor}; border: 1px solid ${borderColor};">${direction}_FUTURES</span>
+                         </div>
+                         
+                         <div class="action-buttons">
+                             <button class="btn btn-analyze" onclick="dashboard.analyzeOpportunity('${item.symbol}', '${direction}')">
+                                  ANALIZAR
+                             </button>
+                             <button class="btn btn-execute" onclick="dashboard.executeOpportunity('${item.symbol}', '${direction}')" style="background: ${direction === 'LONG' ? '#96ceb4' : '#ff6b6b'};">
+                                  EJECUTAR ${direction}
+                             </button>
+                         </div>
+                     </div>
+                 `;
+             }
+
+            formatVolume(volume) {
+                if (!volume) return '0';
+                if (volume >= 1000000000) return (volume / 1000000000).toFixed(1) + 'B';
+                if (volume >= 1000000) return (volume / 1000000).toFixed(1) + 'M';
+                if (volume >= 1000) return (volume / 1000).toFixed(1) + 'K';
+                return volume.toFixed(0);
+            }
+
+            displayError(message) {
+                const opportunitiesGrid = document.getElementById('opportunities-grid');
+                if (opportunitiesGrid) {
+                    opportunitiesGrid.innerHTML = `
+                        <div class="error" style="grid-column: 1 / -1;">
+                            <h3> Error de Conexión</h3>
+                            <p>${message}</p>
+                            <button onclick="dashboard.loadOpportunities()" style="margin-top: 15px; padding: 10px 20px; background: #4ecdc4; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                                 REINTENTAR
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            updateLastUpdate() {
+                const lastUpdateElement = document.getElementById('last-update');
+                if (this.lastUpdate) {
+                    lastUpdateElement.textContent = this.lastUpdate.toLocaleTimeString();
+                }
+            }
+
+                         analyzeOpportunity(symbol, direction = 'UNKNOWN') {
+                 console.log(` [ANALYZE] Analizando ${symbol} en FUTURES ${direction}`);
+                 this.showSuccess(`Análisis FUTURES ${direction} iniciado para ${symbol}`);
+             }
+
+             executeOpportunity(symbol, direction = 'UNKNOWN') {
+                 console.log(` [EXECUTE] Ejecutando ${symbol} en FUTURES ${direction}`);
+                 
+                 //  ANÁLISIS CUÁNTICO DE MARKOV
+                 this.analyzeQuantumMarkovChain(symbol, direction);
+                 
+                 this.showSuccess(`Ejecución FUTURES ${direction} iniciada para ${symbol}`);
+             }
+             
+             //  SISTEMA DE CADENA DE MARKOV CUÁNTICA
+             async analyzeQuantumMarkovChain(symbol, direction) {
+                 console.log(` [QUANTUM MARKOV] Analizando cadena cuántica para ${symbol} ${direction}...`);
+                 
+                 // ESTADOS CUÁNTICOS ACTUALES (simulados - en producción vendrían del backend)
+                 const currentQuantumMetrics = {
+                     coherence: 0.85,
+                     conscience: 0.92,
+                     entanglement: 0.78,
+                     superposition: 0.82,
+                     tunneling: 0.65,
+                     market_health: 0.88
+                 };
+                 
+                 // ANÁLISIS DE MARKOV CUÁNTICO
+                 const quantumAnalysis = await this.performQuantumMarkovAnalysis(symbol, currentQuantumMetrics, direction);
+                 
+                 // MOSTRAR RESULTADOS CUÁNTICOS
+                 this.displayQuantumMarkovResults(quantumAnalysis);
+             }
+             
+                           async performQuantumMarkovAnalysis(symbol, metrics, direction) {
+                  // ESTADOS CUÁNTICOS
+                  const quantumStates = {
+                      COHERENCE: { HIGH: 0.8, MEDIUM: 0.5, LOW: 0.2 },
+                      CONSCIENCE: { ENLIGHTENED: 0.95, AWARE: 0.75, CONSCIOUS: 0.55, DROWSY: 0.35 },
+                      ENTANGLEMENT: { PERFECT: 0.9, STRONG: 0.7, WEAK: 0.4, BROKEN: 0.1 },
+                      SUPERPOSITION: { BULLISH: 0.8, NEUTRAL: 0.5, BEARISH: 0.2 },
+                      TUNNELING: { ACTIVE: 0.8, POTENTIAL: 0.6, INACTIVE: 0.3 },
+                      MARKET_HEALTH: { EXCELLENT: 0.9, GOOD: 0.7, FAIR: 0.5, POOR: 0.3 }
+                  };
+                  
+                  // MICROPATRONES DE ENTRADA ÓPTIMOS EN TIMEFRAMES PEQUEÑOS
+                  const microPatterns = {
+                      // PATRONES DE 1 MINUTO
+                      '1M_MICRO_BREAKOUT': {
+                          required_conditions: ['VOLUME_SPIKE', 'PRICE_ACCELERATION', 'MICRO_STRUCTURE_BREAK'],
+                          timeframe: '1m',
+                          precision: 0.95,
+                          optimal_leverage: 127,
+                          entry_window: '30-60 seconds'
+                      },
+                      '1M_MICRO_REVERSAL': {
+                          required_conditions: ['MICRO_DIVERGENCE', 'VOLUME_CONFIRMATION', 'SUPPORT_RESISTANCE'],
+                          timeframe: '1m',
+                          precision: 0.88,
+                          optimal_leverage: 89,
+                          entry_window: '1-2 minutes'
+                      },
+                      
+                      // PATRONES DE 5 MINUTOS
+                      '5M_PRECISION_ENTRY': {
+                          required_conditions: ['MULTI_TF_ALIGNMENT', 'VOLUME_PROFILE', 'MICRO_STRUCTURE'],
+                          timeframe: '5m',
+                          precision: 0.92,
+                          optimal_leverage: 67,
+                          entry_window: '2-5 minutes'
+                      },
+                      '5M_MOMENTUM_CAPTURE': {
+                          required_conditions: ['MOMENTUM_ACCELERATION', 'VOLUME_EXPANSION', 'MICRO_BREAKOUT'],
+                          timeframe: '5m',
+                          precision: 0.90,
+                          optimal_leverage: 89,
+                          entry_window: '3-8 minutes'
+                      },
+                      
+                      // PATRONES DE 15 MINUTOS
+                      '15M_STRUCTURE_ENTRY': {
+                          required_conditions: ['STRUCTURE_BREAK', 'VOLUME_CONFIRMATION', 'MICRO_ALIGNMENT'],
+                          timeframe: '15m',
+                          precision: 0.87,
+                          optimal_leverage: 50,
+                          entry_window: '5-15 minutes'
+                      },
+                      '15M_SWING_ENTRY': {
+                          required_conditions: ['SWING_LEVEL_TOUCH', 'VOLUME_SPIKE', 'MICRO_MOMENTUM'],
+                          timeframe: '15m',
+                          precision: 0.85,
+                          optimal_leverage: 67,
+                          entry_window: '10-30 minutes'
+                      }
+                  };
+                  
+                  // FILTRO DE TRANSFORMACIONES PRIMAS PARA EVITAR SÍMBOLOS DUPLICADOS
+                  const primeTransformations = {
+                      // NÚMEROS PRIMOS CUÁNTICOS (evitar duplicados)
+                      PRIME_FILTERS: {
+                          COHERENCE_PRIMES: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127],
+                          CONSCIENCE_PRIMES: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127],
+                          ENTANGLEMENT_PRIMES: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127],
+                          SUPERPOSITION_PRIMES: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127],
+                          TUNNELING_PRIMES: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127]
+                      },
+                      
+                      // FUNCIÓN PARA FILTRAR SÍMBOLOS DUPLICADOS
+                      filterDuplicateSymbols: function(symbols) {
+                          const uniqueSymbols = new Set();
+                          const filteredSymbols = [];
+                          
+                          symbols.forEach(symbol => {
+                              // Verificar si el símbolo ya existe (evitar duplicados)
+                              if (!uniqueSymbols.has(symbol)) {
+                                  uniqueSymbols.add(symbol);
+                                  filteredSymbols.push(symbol);
+                              }
+                          });
+                          
+                          return filteredSymbols;
+                      },
+                      
+                      // FUNCIÓN PARA VALIDAR TRANSFORMACIONES PRIMAS
+                      validatePrimeTransformation: function(metric, value) {
+                          const primes = this.PRIME_FILTERS[`${metric.toUpperCase()}_PRIMES`];
+                          if (!primes) return false;
+                          
+                          // Verificar si el valor está en el rango de primos válidos
+                          return primes.includes(Math.round(value * 100));
+                      }
+                  };
+                 
+                 // MAPEAR ESTADOS ACTUALES
+                 const currentState = {
+                     coherence: metrics.coherence >= 0.7 ? 'HIGH' : metrics.coherence >= 0.4 ? 'MEDIUM' : 'LOW',
+                     conscience: metrics.conscience >= 0.85 ? 'ENLIGHTENED' : metrics.conscience >= 0.65 ? 'AWARE' : metrics.conscience >= 0.45 ? 'CONSCIOUS' : 'DROWSY',
+                     entanglement: metrics.entanglement >= 0.8 ? 'PERFECT' : metrics.entanglement >= 0.6 ? 'STRONG' : metrics.entanglement >= 0.3 ? 'WEAK' : 'BROKEN',
+                     superposition: metrics.superposition >= 0.7 ? 'BULLISH' : metrics.superposition >= 0.4 ? 'NEUTRAL' : 'BEARISH',
+                     tunneling: metrics.tunneling >= 0.7 ? 'ACTIVE' : metrics.tunneling >= 0.5 ? 'POTENTIAL' : 'INACTIVE',
+                     market_health: metrics.market_health >= 0.8 ? 'EXCELLENT' : metrics.market_health >= 0.6 ? 'GOOD' : metrics.market_health >= 0.4 ? 'FAIR' : 'POOR'
+                 };
+                 
+                 // CALCULAR SCORE COMPUESTO CUÁNTICO
+                 const compositeScore = (
+                     quantumStates.COHERENCE[currentState.coherence] * 0.25 +
+                     quantumStates.CONSCIENCE[currentState.conscience] * 0.25 +
+                     quantumStates.ENTANGLEMENT[currentState.entanglement] * 0.20 +
+                     quantumStates.SUPERPOSITION[currentState.superposition] * 0.15 +
+                     quantumStates.TUNNELING[currentState.tunneling] * 0.10 +
+                     quantumStates.MARKET_HEALTH[currentState.market_health] * 0.05
+                 );
+                 
+                                   // DETECTAR PATRONES CUÁNTICOS Y MICROPATRONES
+                  const patterns = [];
+                  
+                  // PATRONES CUÁNTICOS PRINCIPALES
+                  if (currentState.conscience === 'ENLIGHTENED' && currentState.coherence === 'HIGH') {
+                      patterns.push({
+                          name: 'GOLDEN_QUANTUM_CONFLUENCE',
+                          confidence: 0.95,
+                          action: 'QUANTUM_MAXIMUM_ENTRY',
+                          leverage: 127,
+                          timeframe: 'QUANTUM',
+                          entry_window: 'IMMEDIATE'
+                      });
+                  }
+                  
+                  if (currentState.entanglement === 'PERFECT' && currentState.superposition === 'BULLISH') {
+                      patterns.push({
+                          name: 'ENTANGLEMENT_SYNC',
+                          confidence: 0.85,
+                          action: 'ENTANGLEMENT_ENTRY',
+                          leverage: 89,
+                          timeframe: 'QUANTUM',
+                          entry_window: '5-15 minutes'
+                      });
+                  }
+                  
+                  if (currentState.coherence === 'LOW' && currentState.conscience === 'DROWSY') {
+                      patterns.push({
+                          name: 'QUANTUM_DECAY',
+                          confidence: 0.90,
+                          action: 'QUANTUM_EXIT_IMMEDIATE',
+                          leverage: 0,
+                          timeframe: 'QUANTUM',
+                          entry_window: 'IMMEDIATE'
+                      });
+                  }
+                  
+                  // DETECTAR MICROPATRONES DE ENTRADA ÓPTIMOS
+                  const detectedMicroPatterns = this.detectMicroPatterns(microPatterns, metrics, direction);
+                  patterns.push(...detectedMicroPatterns);
+                  
+                  // FILTRAR PATRONES USANDO TRANSFORMACIONES PRIMAS
+                  const filteredPatterns = this.filterPatternsWithPrimes(patterns, primeTransformations, metrics);
+                 
+                                   // DETERMINAR ACCIÓN ÓPTIMA
+                  let optimalAction = 'WAIT';
+                  let optimalLeverage = 0;
+                  let confidence = compositeScore;
+                  
+                  if (filteredPatterns.length > 0) {
+                      // PRIORIZAR MICROPATRONES DE TIMEFRAMES PEQUEÑOS
+                      const microPatterns = filteredPatterns.filter(p => p.timeframe && p.timeframe !== 'QUANTUM');
+                      const quantumPatterns = filteredPatterns.filter(p => p.timeframe === 'QUANTUM');
+                      
+                      let bestPattern;
+                      
+                      if (microPatterns.length > 0) {
+                          // PRIORIZAR MICROPATRONES DE MAYOR PRECISIÓN
+                          bestPattern = microPatterns.reduce((a, b) => 
+                              (a.precision || a.confidence) > (b.precision || b.confidence) ? a : b
+                          );
+                      } else if (quantumPatterns.length > 0) {
+                          bestPattern = quantumPatterns.reduce((a, b) => a.confidence > b.confidence ? a : b);
+                      }
+                      
+                      if (bestPattern) {
+                          optimalAction = bestPattern.action;
+                          optimalLeverage = bestPattern.leverage;
+                          confidence = bestPattern.confidence || bestPattern.precision;
+                      }
+                  } else if (compositeScore > 0.7) {
+                      optimalAction = 'MODERATE_ENTRY';
+                      optimalLeverage = 50;
+                  } else if (compositeScore < 0.3) {
+                      optimalAction = 'EXIT_SIGNAL';
+                      optimalLeverage = 0;
+                  }
+                 
+                                   // GENERAR PRECIOS DE SALIDA Y STOP LOSS
+                  const exitPrices = this.generateExitPrices(symbol, direction, optimalLeverage, confidence, filteredPatterns);
+                  
+                  return {
+                      symbol,
+                      direction,
+                      current_quantum_state: currentState,
+                      composite_quantum_score: compositeScore,
+                      detected_patterns: patterns,
+                      filtered_patterns: filteredPatterns,
+                      optimal_action: optimalAction,
+                      optimal_leverage: optimalLeverage,
+                      confidence: confidence,
+                      quantum_timing: this.determineQuantumTiming(compositeScore, filteredPatterns),
+                      markov_chain: this.generateMarkovChain(currentState, filteredPatterns),
+                      micro_patterns_detected: filteredPatterns.filter(p => p.timeframe && p.timeframe !== 'QUANTUM').length,
+                      prime_validation_score: this.calculatePrimeScore(metrics, primeTransformations),
+                      exit_strategy: exitPrices
+                  };
+             }
+             
+             determineQuantumTiming(compositeScore, patterns) {
+                 if (patterns.some(p => p.name === 'GOLDEN_QUANTUM_CONFLUENCE')) {
+                     return { timing: 'IMMEDIATE', urgency: 'CRITICAL', window: '5-15 minutes' };
+                 } else if (compositeScore > 0.8) {
+                     return { timing: 'OPTIMAL', urgency: 'HIGH', window: '15-60 minutes' };
+                 } else if (compositeScore > 0.6) {
+                     return { timing: 'GOOD', urgency: 'MEDIUM', window: '1-4 hours' };
+                 } else {
+                     return { timing: 'WAIT', urgency: 'LOW', window: 'INDEFINITE' };
+                 }
+             }
+             
+             generateMarkovChain(currentState, patterns) {
+                 const chain = {
+                     current_state: currentState,
+                     next_likely_states: {},
+                     transition_probabilities: {},
+                     optimal_sequence: []
+                 };
+                 
+                 // PREDECIR ESTADOS SIGUIENTES MÁS PROBABLES
+                 if (currentState.conscience === 'ENLIGHTENED') {
+                     chain.next_likely_states.conscience = 'AWARE'; // Probable decaimiento
+                     chain.transition_probabilities.conscience = 0.7;
+                 }
+                 
+                 if (currentState.entanglement === 'PERFECT') {
+                     chain.next_likely_states.entanglement = 'STRONG'; // Probable debilitamiento
+                     chain.transition_probabilities.entanglement = 0.6;
+                 }
+                 
+                 // SECUENCIA ÓPTIMA BASADA EN PATRONES
+                 if (patterns.some(p => p.name === 'GOLDEN_QUANTUM_CONFLUENCE')) {
+                     chain.optimal_sequence = [
+                         'CONSCIENCE_ENLIGHTENED',
+                         'COHERENCE_HIGH',
+                         'ENTANGLEMENT_PERFECT',
+                         'SUPERPOSITION_BULLISH'
+                     ];
+                 }
+                 
+                                   return chain;
+              }
+              
+              // FUNCIÓN PARA DETECTAR MICROPATRONES
+              detectMicroPatterns(microPatterns, metrics, direction) {
+                  const detectedPatterns = [];
+                  
+                  // SIMULAR CONDICIONES DE MICROPATRONES (en producción vendrían del backend)
+                  const microConditions = {
+                                      VOLUME_SPIKE: priceChange > 5,
+                PRICE_ACCELERATION: Math.abs(priceChange) > 3,
+                MICRO_STRUCTURE_BREAK: volume > 1000000,
+                MICRO_DIVERGENCE: Math.abs(priceChange) > 2,
+                VOLUME_CONFIRMATION: volume > 500000,
+                SUPPORT_RESISTANCE: Math.abs(priceChange) > 1,
+                MULTI_TF_ALIGNMENT: priceChange > 0,
+                VOLUME_PROFILE: volume > 200000,
+                MICRO_STRUCTURE: Math.abs(priceChange) > 0.5,
+                MOMENTUM_ACCELERATION: priceChange > 2,
+                VOLUME_EXPANSION: volume > 300000,
+                MICRO_BREAKOUT: priceChange > 4,
+                STRUCTURE_BREAK: Math.abs(priceChange) > 6,
+                MICRO_ALIGNMENT: priceChange > 1,
+                SWING_LEVEL_TOUCH: Math.abs(priceChange) > 1.5,
+                MICRO_MOMENTUM: priceChange > 0.5
+                  };
+                  
+                  // VERIFICAR CADA MICROPATRÓN
+                  for (const [patternName, pattern] of Object.entries(microPatterns)) {
+                      const conditionsMet = pattern.required_conditions.every(condition => 
+                          microConditions[condition]
+                      );
+                      
+                      if (conditionsMet) {
+                          detectedPatterns.push({
+                              name: patternName,
+                              confidence: pattern.precision,
+                              action: `MICRO_${pattern.timeframe}_ENTRY`,
+                              leverage: pattern.optimal_leverage,
+                              timeframe: pattern.timeframe,
+                              entry_window: pattern.entry_window,
+                              precision: pattern.precision
+                          });
+                      }
+                  }
+                  
+                  return detectedPatterns;
+              }
+              
+              // FUNCIÓN PARA FILTRAR PATRONES CON PRIMOS
+              filterPatternsWithPrimes(patterns, primeTransformations, metrics) {
+                  const filteredPatterns = [];
+                  
+                  patterns.forEach(pattern => {
+                      // VALIDAR SI EL PATRÓN CUMPLE CON TRANSFORMACIONES PRIMAS
+                      let isValidPrime = true;
+                      
+                      // Verificar cada métrica cuántica
+                      const quantumMetrics = ['coherence', 'conscience', 'entanglement', 'superposition', 'tunneling'];
+                      
+                      quantumMetrics.forEach(metric => {
+                          const metricValue = metrics[metric];
+                          if (!primeTransformations.validatePrimeTransformation(metric, metricValue)) {
+                              isValidPrime = false;
+                          }
+                      });
+                      
+                      // Solo incluir patrones que pasen el filtro de primos
+                      if (isValidPrime) {
+                          filteredPatterns.push({
+                              ...pattern,
+                              prime_validated: true,
+                              prime_score: this.calculatePrimeScore(metrics, primeTransformations)
+                          });
+                      }
+                  });
+                  
+                  return filteredPatterns;
+              }
+              
+              // FUNCIÓN PARA CALCULAR SCORE DE PRIMOS
+              calculatePrimeScore(metrics, primeTransformations) {
+                  let primeScore = 0;
+                  let totalMetrics = 0;
+                  
+                  Object.keys(metrics).forEach(metric => {
+                      const metricValue = metrics[metric];
+                      if (primeTransformations.validatePrimeTransformation(metric, metricValue)) {
+                          primeScore += 1;
+                      }
+                      totalMetrics += 1;
+                  });
+                  
+                                 return primeScore / totalMetrics;
+           }
+           
+           // FUNCIÓN PARA GENERAR PRECIOS DE SALIDA Y STOP LOSS
+           generateExitPrices(symbol, direction, leverage, confidence, patterns) {
+               // SIMULAR PRECIO ACTUAL (en producción vendría del backend)
+               const currentPrice = this.getCurrentPrice(symbol);
+               
+               // ESTRATEGIAS DE SALIDA BASADAS EN PATRONES Y LEVERAGE
+               const exitStrategies = {
+                   // ESTRATEGIA PARA MICROPATRONES DE 1 MINUTO
+                   '1M_MICRO_BREAKOUT': {
+                       take_profit_1: 0.015, // 1.5% - Salida rápida
+                       take_profit_2: 0.025, // 2.5% - Salida media
+                       take_profit_3: 0.040, // 4.0% - Salida máxima
+                       stop_loss: 0.008,     // 0.8% - Stop loss ajustado
+                       trailing_stop: 0.005, // 0.5% - Trailing stop
+                       time_exit: '2-5 minutes'
+                   },
+                   '1M_MICRO_REVERSAL': {
+                       take_profit_1: 0.012, // 1.2% - Salida rápida
+                       take_profit_2: 0.020, // 2.0% - Salida media
+                       take_profit_3: 0.032, // 3.2% - Salida máxima
+                       stop_loss: 0.006,     // 0.6% - Stop loss ajustado
+                       trailing_stop: 0.004, // 0.4% - Trailing stop
+                       time_exit: '3-8 minutes'
+                   },
+                   
+                   // ESTRATEGIA PARA MICROPATRONES DE 5 MINUTOS
+                   '5M_PRECISION_ENTRY': {
+                       take_profit_1: 0.020, // 2.0% - Salida rápida
+                       take_profit_2: 0.035, // 3.5% - Salida media
+                       take_profit_3: 0.055, // 5.5% - Salida máxima
+                       stop_loss: 0.010,     // 1.0% - Stop loss ajustado
+                       trailing_stop: 0.006, // 0.6% - Trailing stop
+                       time_exit: '5-15 minutes'
+                   },
+                   '5M_MOMENTUM_CAPTURE': {
+                       take_profit_1: 0.025, // 2.5% - Salida rápida
+                       take_profit_2: 0.040, // 4.0% - Salida media
+                       take_profit_3: 0.060, // 6.0% - Salida máxima
+                       stop_loss: 0.012,     // 1.2% - Stop loss ajustado
+                       trailing_stop: 0.008, // 0.8% - Trailing stop
+                       time_exit: '8-20 minutes'
+                   },
+                   
+                   // ESTRATEGIA PARA MICROPATRONES DE 15 MINUTOS
+                   '15M_STRUCTURE_ENTRY': {
+                       take_profit_1: 0.030, // 3.0% - Salida rápida
+                       take_profit_2: 0.050, // 5.0% - Salida media
+                       take_profit_3: 0.080, // 8.0% - Salida máxima
+                       stop_loss: 0.015,     // 1.5% - Stop loss ajustado
+                       trailing_stop: 0.010, // 1.0% - Trailing stop
+                       time_exit: '15-45 minutes'
+                   },
+                   '15M_SWING_ENTRY': {
+                       take_profit_1: 0.035, // 3.5% - Salida rápida
+                       take_profit_2: 0.060, // 6.0% - Salida media
+                       take_profit_3: 0.100, // 10.0% - Salida máxima
+                       stop_loss: 0.018,     // 1.8% - Stop loss ajustado
+                       trailing_stop: 0.012, // 1.2% - Trailing stop
+                       time_exit: '30-90 minutes'
+                   },
+                   
+                   // ESTRATEGIA PARA PATRONES CUÁNTICOS
+                   'GOLDEN_QUANTUM_CONFLUENCE': {
+                       take_profit_1: 0.050, // 5.0% - Salida rápida
+                       take_profit_2: 0.080, // 8.0% - Salida media
+                       take_profit_3: 0.150, // 15.0% - Salida máxima
+                       stop_loss: 0.020,     // 2.0% - Stop loss ajustado
+                       trailing_stop: 0.015, // 1.5% - Trailing stop
+                       time_exit: 'IMMEDIATE-30 minutes'
+                   },
+                   'ENTANGLEMENT_SYNC': {
+                       take_profit_1: 0.040, // 4.0% - Salida rápida
+                       take_profit_2: 0.065, // 6.5% - Salida media
+                       take_profit_3: 0.120, // 12.0% - Salida máxima
+                       stop_loss: 0.018,     // 1.8% - Stop loss ajustado
+                       trailing_stop: 0.012, // 1.2% - Trailing stop
+                       time_exit: '10-60 minutes'
+                   }
+               };
+               
+               // DETERMINAR ESTRATEGIA BASADA EN PATRONES DETECTADOS
+               let selectedStrategy = null;
+               let patternName = '';
+               
+               // PRIORIZAR MICROPATRONES SOBRE PATRONES CUÁNTICOS
+               const microPatterns = patterns.filter(p => p.timeframe && p.timeframe !== 'QUANTUM');
+               const quantumPatterns = patterns.filter(p => p.timeframe === 'QUANTUM');
+               
+               if (microPatterns.length > 0) {
+                   // USAR EL MICROPATRÓN DE MAYOR PRECISIÓN
+                   const bestMicroPattern = microPatterns.reduce((a, b) => 
+                       (a.precision || a.confidence) > (b.precision || b.confidence) ? a : b
+                   );
+                   patternName = bestMicroPattern.name;
+                   selectedStrategy = exitStrategies[patternName];
+               } else if (quantumPatterns.length > 0) {
+                   // USAR EL PATRÓN CUÁNTICO DE MAYOR CONFIANZA
+                   const bestQuantumPattern = quantumPatterns.reduce((a, b) => a.confidence > b.confidence ? a : b);
+                   patternName = bestQuantumPattern.name;
+                   selectedStrategy = exitStrategies[patternName];
+               }
+               
+               // ESTRATEGIA POR DEFECTO SI NO HAY PATRONES
+               if (!selectedStrategy) {
+                   selectedStrategy = {
+                       take_profit_1: 0.020, // 2.0%
+                       take_profit_2: 0.035, // 3.5%
+                       take_profit_3: 0.055, // 5.5%
+                       stop_loss: 0.010,     // 1.0%
+                       trailing_stop: 0.006, // 0.6%
+                       time_exit: '10-30 minutes'
+                   };
+                   patternName = 'DEFAULT_STRATEGY';
+               }
+               
+               // AJUSTAR POR LEVERAGE Y CONFIANZA
+               const leverageMultiplier = Math.min(leverage / 50, 2.5); // Máximo 2.5x
+               const confidenceMultiplier = confidence; // 0-1
+               
+               // CALCULAR PRECIOS DE SALIDA
+               const calculateExitPrice = (percentage, isLong) => {
+                   const adjustedPercentage = percentage * leverageMultiplier * confidenceMultiplier;
+                   return isLong ? 
+                       currentPrice * (1 + adjustedPercentage) : 
+                       currentPrice * (1 - adjustedPercentage);
+               };
+               
+               const isLong = direction === 'LONG';
+               
+               return {
+                   pattern_used: patternName,
+                   current_price: currentPrice,
+                   entry_price: currentPrice,
+                   
+                   // PRECIOS DE TOMA DE GANANCIA
+                   take_profit_1: calculateExitPrice(selectedStrategy.take_profit_1, isLong),
+                   take_profit_2: calculateExitPrice(selectedStrategy.take_profit_2, isLong),
+                   take_profit_3: calculateExitPrice(selectedStrategy.take_profit_3, isLong),
+                   
+                   // PRECIOS DE STOP LOSS
+                   stop_loss: calculateExitPrice(selectedStrategy.stop_loss, !isLong),
+                   trailing_stop: selectedStrategy.trailing_stop,
+                   
+                   // PORCENTAJES PARA REFERENCIA
+                   tp1_percentage: selectedStrategy.take_profit_1 * 100,
+                   tp2_percentage: selectedStrategy.take_profit_2 * 100,
+                   tp3_percentage: selectedStrategy.take_profit_3 * 100,
+                   sl_percentage: selectedStrategy.stop_loss * 100,
+                   
+                   // TIMING Y ESTRATEGIA
+                   time_exit: selectedStrategy.time_exit,
+                   leverage_multiplier: leverageMultiplier,
+                   confidence_multiplier: confidenceMultiplier,
+                   
+                   // RIESGO/BENEFICIO
+                   risk_reward_1: selectedStrategy.take_profit_1 / selectedStrategy.stop_loss,
+                   risk_reward_2: selectedStrategy.take_profit_2 / selectedStrategy.stop_loss,
+                   risk_reward_3: selectedStrategy.take_profit_3 / selectedStrategy.stop_loss
+               };
+           }
+           
+           // FUNCIÓN AUXILIAR PARA OBTENER PRECIO ACTUAL
+           getCurrentPrice(symbol) {
+               // SIMULAR PRECIO ACTUAL (en producción vendría del backend)
+               const basePrices = {
+                   'BTCUSDT': 45000,
+                   'ETHUSDT': 2800,
+                   'BNBUSDT': 320,
+                   'SOLUSDT': 95,
+                   'XRPUSDT': 0.55,
+                   'ADAUSDT': 0.45,
+                   'DOGEUSDT': 0.08,
+                   'AVAXUSDT': 35,
+                   'DOTUSDT': 7.5,
+                   'LINKUSDT': 15,
+                   'MATICUSDT': 0.85,
+                   'LTCUSDT': 75,
+                   'UNIUSDT': 7.2,
+                   'ATOMUSDT': 8.5,
+                   'ETCUSDT': 25,
+                   'FILUSDT': 5.5,
+                   'NEARUSDT': 3.2,
+                   'ALGOUSDT': 0.18,
+                   'ICPUSDT': 12,
+                   'VETUSDT': 0.025
+               };
+               
+               return basePrices[symbol] || 100; // Precio por defecto
+           }
+             
+             displayQuantumMarkovResults(analysis) {
+                 const resultsDiv = document.createElement('div');
+                 resultsDiv.style.cssText = `
+                     position: fixed;
+                     top: 50%;
+                     left: 50%;
+                     transform: translate(-50%, -50%);
+                     background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+                     border: 2px solid #4ecdc4;
+                     border-radius: 15px;
+                     padding: 30px;
+                     max-width: 600px;
+                     max-height: 80vh;
+                     overflow-y: auto;
+                     z-index: 1000;
+                     color: white;
+                     font-family: 'Segoe UI', sans-serif;
+                 `;
+                 
+                 resultsDiv.innerHTML = `
+                     <h2 style="color: #4ecdc4; text-align: center; margin-bottom: 20px;">
+                          ANÁLISIS CUÁNTICO DE MARKOV
+                     </h2>
+                     
+                     <div style="margin-bottom: 20px;">
+                         <h3 style="color: #96ceb4;"> Estado Cuántico Actual</h3>
+                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                             <div>Coherence: <span style="color: #4ecdc4;">${analysis.current_quantum_state.coherence}</span></div>
+                             <div>Conscience: <span style="color: #4ecdc4;">${analysis.current_quantum_state.conscience}</span></div>
+                             <div>Entanglement: <span style="color: #4ecdc4;">${analysis.current_quantum_state.entanglement}</span></div>
+                             <div>Superposition: <span style="color: #4ecdc4;">${analysis.current_quantum_state.superposition}</span></div>
+                             <div>Tunneling: <span style="color: #4ecdc4;">${analysis.current_quantum_state.tunneling}</span></div>
+                             <div>Market Health: <span style="color: #4ecdc4;">${analysis.current_quantum_state.market_health}</span></div>
+                         </div>
+                     </div>
+                     
+                     <div style="margin-bottom: 20px;">
+                         <h3 style="color: #96ceb4;"> Score Compuesto Cuántico</h3>
+                         <div style="font-size: 1.5em; color: #4ecdc4; text-align: center;">
+                             ${(analysis.composite_quantum_score * 100).toFixed(1)}%
+                         </div>
+                     </div>
+                     
+                                           <div style="margin-bottom: 20px;">
+                          <h3 style="color: #96ceb4;"> Patrones Detectados</h3>
+                          ${analysis.filtered_patterns.length > 0 ? 
+                              analysis.filtered_patterns.map(pattern => `
+                                  <div style="background: ${pattern.timeframe && pattern.timeframe !== 'QUANTUM' ? 'rgba(255, 165, 0, 0.1)' : 'rgba(78, 205, 196, 0.1)'}; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid ${pattern.timeframe && pattern.timeframe !== 'QUANTUM' ? '#ffa500' : '#4ecdc4'};">
+                                      <strong>${pattern.name}</strong><br>
+                                      ${pattern.timeframe ? `Timeframe: ${pattern.timeframe}<br>` : ''}
+                                      Confianza: ${((pattern.confidence || pattern.precision) * 100).toFixed(1)}%<br>
+                                      Acción: ${pattern.action}<br>
+                                      Leverage: ${pattern.leverage}x<br>
+                                      ${pattern.entry_window ? `Ventana: ${pattern.entry_window}<br>` : ''}
+                                      ${pattern.prime_validated ? ' Validado por Primos' : ''}
+                                  </div>
+                              `).join('') : 
+                              '<div style="color: #888;">No se detectaron patrones cuánticos específicos</div>'
+                          }
+                      </div>
+                      
+                      <div style="margin-bottom: 20px;">
+                          <h3 style="color: #96ceb4;"> Micropatrones y Validación</h3>
+                          <div style="background: rgba(255, 165, 0, 0.1); padding: 10px; border-radius: 8px; border: 1px solid #ffa500;">
+                              <strong>Micropatrones Detectados:</strong> ${analysis.micro_patterns_detected}<br>
+                              <strong>Score de Validación Primos:</strong> ${(analysis.prime_validation_score * 100).toFixed(1)}%<br>
+                              <strong>Patrones Filtrados:</strong> ${analysis.filtered_patterns.length} de ${analysis.detected_patterns.length}
+                          </div>
+                      </div>
+                     
+                     <div style="margin-bottom: 20px;">
+                         <h3 style="color: #96ceb4;"> Acción Óptima</h3>
+                         <div style="background: rgba(255, 107, 107, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #ff6b6b;">
+                             <strong>${analysis.optimal_action}</strong><br>
+                             Leverage Recomendado: ${analysis.optimal_leverage}x<br>
+                             Confianza: ${(analysis.confidence * 100).toFixed(1)}%
+                         </div>
+                     </div>
+                     
+                                           <div style="margin-bottom: 20px;">
+                          <h3 style="color: #96ceb4;"> Timing Cuántico</h3>
+                          <div style="background: rgba(150, 206, 180, 0.1); padding: 10px; border-radius: 8px; border: 1px solid #96ceb4;">
+                              Timing: ${analysis.quantum_timing.timing}<br>
+                              Urgencia: ${analysis.quantum_timing.urgency}<br>
+                              Ventana: ${analysis.quantum_timing.window}
+                          </div>
+                      </div>
+                      
+                      <div style="margin-bottom: 20px;">
+                          <h3 style="color: #96ceb4;"> Estrategia de Salida y Stop Loss</h3>
+                          <div style="background: rgba(255, 215, 0, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #ffd700;">
+                              <strong>Patrón Usado:</strong> ${analysis.exit_strategy.pattern_used}<br>
+                              <strong>Precio Actual:</strong> $${analysis.exit_strategy.current_price.toFixed(4)}<br>
+                              <strong>Ventana de Salida:</strong> ${analysis.exit_strategy.time_exit}<br><br>
+                              
+                              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                                  <div style="background: rgba(150, 206, 180, 0.1); padding: 8px; border-radius: 6px; border: 1px solid #96ceb4;">
+                                      <strong> Take Profit 1:</strong><br>
+                                      $${analysis.exit_strategy.take_profit_1.toFixed(4)} (${analysis.exit_strategy.tp1_percentage.toFixed(1)}%)<br>
+                                      R/R: ${analysis.exit_strategy.risk_reward_1.toFixed(2)}:1
+                                  </div>
+                                  <div style="background: rgba(150, 206, 180, 0.1); padding: 8px; border-radius: 6px; border: 1px solid #96ceb4;">
+                                      <strong> Take Profit 2:</strong><br>
+                                      $${analysis.exit_strategy.take_profit_2.toFixed(4)} (${analysis.exit_strategy.tp2_percentage.toFixed(1)}%)<br>
+                                      R/R: ${analysis.exit_strategy.risk_reward_2.toFixed(2)}:1
+                                  </div>
+                                  <div style="background: rgba(150, 206, 180, 0.1); padding: 8px; border-radius: 6px; border: 1px solid #96ceb4;">
+                                      <strong> Take Profit 3:</strong><br>
+                                      $${analysis.exit_strategy.take_profit_3.toFixed(4)} (${analysis.exit_strategy.tp3_percentage.toFixed(1)}%)<br>
+                                      R/R: ${analysis.exit_strategy.risk_reward_3.toFixed(2)}:1
+                                  </div>
+                                  <div style="background: rgba(255, 107, 107, 0.1); padding: 8px; border-radius: 6px; border: 1px solid #ff6b6b;">
+                                      <strong> Stop Loss:</strong><br>
+                                      $${analysis.exit_strategy.stop_loss.toFixed(4)} (${analysis.exit_strategy.sl_percentage.toFixed(1)}%)<br>
+                                      Trailing: ${(analysis.exit_strategy.trailing_stop * 100).toFixed(1)}%
+                                  </div>
+                              </div>
+                              
+                              <div style="margin-top: 10px; padding: 8px; background: rgba(78, 205, 196, 0.1); border-radius: 6px; border: 1px solid #4ecdc4;">
+                                  <strong> Multiplicadores:</strong><br>
+                                  Leverage: ${analysis.exit_strategy.leverage_multiplier.toFixed(2)}x | 
+                                  Confianza: ${(analysis.exit_strategy.confidence_multiplier * 100).toFixed(1)}%
+                              </div>
+                          </div>
+                      </div>
+                     
+                     <button onclick="this.parentElement.remove()" style="
+                         background: #4ecdc4; 
+                         color: white; 
+                         border: none; 
+                         padding: 10px 20px; 
+                         border-radius: 8px; 
+                         cursor: pointer; 
+                         font-weight: bold;
+                         width: 100%;
+                     ">
+                          ENTENDIDO
+                     </button>
+                 `;
+                 
+                 document.body.appendChild(resultsDiv);
+             }
+
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success';
+                successDiv.textContent = message;
+                document.querySelector('.container').insertBefore(successDiv, document.querySelector('.quantum-header'));
+                
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 5000);
+            }
+        }
+
+        // Inicializar dashboard
+        const dashboard = new QuantumDashboard();
+    </script>
+</body>
+</html>

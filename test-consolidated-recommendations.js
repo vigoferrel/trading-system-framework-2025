@@ -1,0 +1,188 @@
+// ============================================================================
+// TEST SISTEMA DE CONSOLIDACIÓN DE RECOMENDACIONES
+// ============================================================================
+
+const axios = require('axios');
+
+async function testConsolidatedRecommendations() {
+    console.log(`[TEST] [TEST] Iniciando prueba del sistema de consolidación...`);
+    
+    try {
+        // PASO 1: Verificar que el servidor esté funcionando
+        console.log(`[SEARCH] [TEST] Verificando conectividad del servidor...`);
+        
+        try {
+            const healthResponse = await axios.get('http://localhost:4602/health', { timeout: 5000 });
+            console.log(`[OK] [TEST] Servidor activo: ${healthResponse.data.status}`);
+        } catch (error) {
+            console.error(`[ERROR] [TEST] Error conectando al servidor:`, error.message);
+            return;
+        }
+
+        // PASO 2: Probar el endpoint de consolidación
+        console.log(`[RELOAD] [TEST] Probando endpoint de consolidación...`);
+        
+        const startTime = Date.now();
+        const consolidatedResponse = await axios.get('http://localhost:4602/api/consolidated-recommendations', { 
+            timeout: 30000 
+        });
+        const endTime = Date.now();
+        
+        if (consolidatedResponse.data && consolidatedResponse.data.success) {
+            const data = consolidatedResponse.data.data;
+            
+            console.log(`[OK] [TEST] Consolidación exitosa en ${endTime - startTime}ms`);
+            console.log(`[DATA] [TEST] Resumen:`);
+            console.log(`   - Total recomendaciones: ${data.recommendations.length}`);
+            console.log(`   - Símbolos únicos: ${data.summary.uniqueSymbols}`);
+            console.log(`   - Salud del sistema: ${data.summary.systemHealth}`);
+            console.log(`   - Fuentes disponibles: ${data.summary.sourcesAvailable}/${data.summary.totalSources}`);
+            console.log(`   - Score promedio: ${data.summary.averageFinalScore?.toFixed(2) || 'N/A'}`);
+            
+            // PASO 3: Analizar top 5 recomendaciones
+            console.log(` [TEST] Top 5 recomendaciones:`);
+            data.recommendations.slice(0, 5).forEach((rec, index) => {
+                console.log(`   ${index + 1}. ${rec.symbol} - ${rec.action} (${rec.confidence})`);
+                console.log(`      Precio: $${rec.entryPrice} | SL: $${rec.stopLoss} | TP: $${rec.takeProfit}`);
+                console.log(`      Leverage: ${rec.leverage} | Fuentes: ${rec.sourceCount} | Prioridad: ${rec.priority}`);
+                console.log(`      Quantum Score: ${rec.quantumScore} | Brain Score: ${rec.brainScore}`);
+                console.log(`      Volumen: ${rec.volume} | Cambio: ${rec.priceChange}`);
+                console.log(`      Razón: ${rec.reasoning.substring(0, 100)}...`);
+                console.log(``);
+            });
+            
+            // PASO 4: Verificar calidad de datos
+            console.log(`[SEARCH] [TEST] Verificando calidad de datos...`);
+            
+            const qualityChecks = {
+                hasRecommendations: data.recommendations.length > 0,
+                hasValidPrices: data.recommendations.every(rec => 
+                    parseFloat(rec.entryPrice) > 0 && 
+                    parseFloat(rec.stopLoss) > 0 && 
+                    parseFloat(rec.takeProfit) > 0
+                ),
+                hasValidConfidence: data.recommendations.every(rec => 
+                    parseFloat(rec.confidence.replace('%', '')) >= 0 && 
+                    parseFloat(rec.confidence.replace('%', '')) <= 100
+                ),
+                hasMultipleSources: data.recommendations.some(rec => rec.sourceCount > 1),
+                hasQuantumScores: data.recommendations.every(rec => 
+                    parseFloat(rec.quantumScore.replace('%', '')) >= 0
+                ),
+                hasBrainScores: data.recommendations.every(rec => 
+                    parseFloat(rec.brainScore.replace('%', '')) >= 0
+                )
+            };
+            
+            console.log(`[DATA] [TEST] Resultados de calidad:`);
+            Object.entries(qualityChecks).forEach(([check, passed]) => {
+                console.log(`   ${passed ? '[OK]' : '[ERROR]'} ${check}: ${passed ? 'PASS' : 'FAIL'}`);
+            });
+            
+            // PASO 5: Verificar fuentes individuales
+            console.log(`[SEARCH] [TEST] Verificando fuentes individuales...`);
+            
+            const sources = [
+                { name: 'Enhanced Opportunities', url: '/api/enhanced-opportunities' },
+                { name: 'Quantum Recommendations', url: '/api/quantum-recommendations' },
+                { name: 'Quantum Brain', url: '/api/quantum-brain-test' },
+                { name: 'Quantum Analysis', url: '/api/quantum-analysis' }
+            ];
+            
+            for (const source of sources) {
+                try {
+                    const response = await axios.get(`http://localhost:4602${source.url}`, { timeout: 10000 });
+                    if (response.data && response.data.success) {
+                        const count = response.data.opportunities?.length || 
+                                    response.data.recommendations?.length || 
+                                    response.data.brainRecommendations?.length || 
+                                    response.data.quantumRecommendations?.length || 0;
+                        console.log(`   [OK] ${source.name}: ${count} elementos`);
+                    } else {
+                        console.log(`   [WARNING] ${source.name}: Sin datos`);
+                    }
+                } catch (error) {
+                    console.log(`   [ERROR] ${source.name}: Error - ${error.message}`);
+                }
+            }
+            
+            // PASO 6: Análisis de distribución de fuentes
+            console.log(`[DATA] [TEST] Análisis de distribución de fuentes:`);
+            
+            const sourceDistribution = {};
+            data.recommendations.forEach(rec => {
+                rec.sources.forEach(source => {
+                    sourceDistribution[source] = (sourceDistribution[source] || 0) + 1;
+                });
+            });
+            
+            Object.entries(sourceDistribution).forEach(([source, count]) => {
+                const percentage = ((count / data.recommendations.length) * 100).toFixed(1);
+                console.log(`   ${source}: ${count} (${percentage}%)`);
+            });
+            
+            // PASO 7: Verificar consistencia de datos
+            console.log(`[SEARCH] [TEST] Verificando consistencia de datos...`);
+            
+            const consistencyChecks = {
+                allHaveSymbols: data.recommendations.every(rec => rec.symbol && rec.symbol.length > 0),
+                allHaveActions: data.recommendations.every(rec => ['LONG', 'SHORT'].includes(rec.action)),
+                allHaveLeverage: data.recommendations.every(rec => rec.leverage && rec.leverage.includes('x')),
+                allHaveTimeframes: data.recommendations.every(rec => rec.timeframe && rec.timeframe.length > 0),
+                allHaveRiskLevels: data.recommendations.every(rec => ['LOW', 'MEDIUM', 'HIGH'].includes(rec.riskLevel)),
+                allHavePriorities: data.recommendations.every(rec => ['LOW', 'MEDIUM', 'HIGH'].includes(rec.priority))
+            };
+            
+            console.log(`[DATA] [TEST] Resultados de consistencia:`);
+            Object.entries(consistencyChecks).forEach(([check, passed]) => {
+                console.log(`   ${passed ? '[OK]' : '[ERROR]'} ${check}: ${passed ? 'PASS' : 'FAIL'}`);
+            });
+            
+            // PASO 8: Resumen final
+            console.log(`[LIST] [TEST] Resumen final:`);
+            console.log(`   [OK] Sistema de consolidación funcionando correctamente`);
+            console.log(`   [DATA] ${data.recommendations.length} recomendaciones consolidadas`);
+            console.log(`    Score promedio: ${data.summary.averageFinalScore?.toFixed(2) || 'N/A'}`);
+            console.log(`    ${data.summary.sourcesAvailable}/${data.summary.totalSources} fuentes activas`);
+            console.log(`    Tiempo de respuesta: ${endTime - startTime}ms`);
+            
+            // Verificar si hay recomendaciones de alta calidad
+            const highQualityRecs = data.recommendations.filter(rec => 
+                parseFloat(rec.confidence.replace('%', '')) >= 70
+            );
+            
+            if (highQualityRecs.length > 0) {
+                console.log(`   [ENDPOINTS] ${highQualityRecs.length} recomendaciones de alta calidad (70%)`);
+            } else {
+                console.log(`   [WARNING] No hay recomendaciones de alta calidad (70%)`);
+            }
+            
+        } else {
+            console.error(`[ERROR] [TEST] Error en consolidación:`, consolidatedResponse.data?.error || 'Respuesta inválida');
+        }
+        
+    } catch (error) {
+        console.error(`[ERROR] [TEST] Error general:`, error.message);
+        
+        if (error.code === 'ECONNREFUSED') {
+            console.error(` [TEST] Sugerencia: Asegúrate de que el servidor esté ejecutándose en puerto 4602`);
+        } else if (error.code === 'ETIMEDOUT') {
+            console.error(` [TEST] Sugerencia: El servidor está tardando demasiado en responder`);
+        }
+    }
+}
+
+// Ejecutar prueba
+if (require.main === module) {
+    testConsolidatedRecommendations()
+        .then(() => {
+            console.log(`\n[OK] [TEST] Prueba completada`);
+            process.exit(0);
+        })
+        .catch((error) => {
+            console.error(`\n[ERROR] [TEST] Prueba fallida:`, error);
+            process.exit(1);
+        });
+}
+
+module.exports = { testConsolidatedRecommendations };

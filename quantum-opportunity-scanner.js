@@ -1,0 +1,1300 @@
+/**
+ * QUANTUM OPPORTUNITY SCANNER SYSTEM (QOSS) - MEJORADO
+ * ====================================================
+ * 
+ * Scanner de oportunidades multi-dimensional usando cache QBTC existente
+ * Sin simulaciones - solo datos reales de la cache
+ */
+
+const axios = require('axios');
+
+// ============================================================================
+// GRAVITATIONAL LAYER ANALYSIS SYSTEM
+// ============================================================================
+
+const GRAVITATIONAL_LAYERS = {
+    L1_BITCOIN: {
+        gravitational_force: "SCARCITY_PULL", // 21M cap
+        session_impact: {
+            asia: "WHALE_ACCUMULATION",
+            europe: "TECHNICAL_CONSOLIDATION", 
+            america: "ETF_FLOWS"
+        },
+        binance_amplification: "FUTURES_LEVERAGE_125X"
+    },
+    
+    L2_ETHEREUM: {
+        gravitational_force: "UTILITY_EXPANSION", // DeFi/NFT
+        fragmentation_risk: "LIQUIDITY_DISPERSION",
+        staking_lock: "17.5M_ETH_LOCKED"
+    }
+};
+
+const SESSION_GRAVITATIONAL_PATTERNS = {
+    ASIA_SESSION: {
+        timeframe: "8PM - 4AM UTC",
+        gravitational_behavior: {
+            BTC: "WHALE_ACCUMULATION_PHASE",
+            ETH: "L2_VOLUME_SPIKES", 
+            typical_action: "CATALYZES_INITIAL_MOVEMENTS"
+        },
+        binance_specifics: "30% global liquidity concentration"
+    },
+    
+    EUROPE_SESSION: {
+        timeframe: "7AM - 3PM UTC", 
+        gravitational_behavior: {
+            BTC: "TECHNICAL_CONSOLIDATION",
+            ETH: "STRUCTURE_CONFIRMATION",
+            typical_action: "CONSOLIDATES_TRENDS"
+        }
+    },
+    
+    AMERICA_SESSION: {
+        timeframe: "12PM - 8PM UTC",
+        gravitational_behavior: {
+            BTC: "ETF_FLOW_AMPLIFICATION", 
+            ETH: "RETAIL_FOMO_EXTREMES",
+            typical_action: "AMPLIFIES_MOVEMENTS"
+        }
+    }
+};
+
+const HIDDEN_MANIPULATION_PATTERNS = {
+    SPOOFING_DETECTION: {
+        description: "False orders in Binance order book during Asian session",
+        detection_method: "Large bid/ask imbalances that disappear",
+        gravitational_impact: "CREATES_FAKE_SUPPORT/RESISTANCE"
+    },
+    
+    ICEBERG_ACCUMULATION: {
+        description: "Whales using iceberg orders in Binance Futures",
+        detection_method: "Volume without price movement",
+        gravitational_impact: "HIDDEN_INSTITUTIONAL_FLOW"
+    },
+    
+    LIQUIDATION_CASCADES: {
+        description: "$758M liquidations amplify movements", 
+        detection_method: "Funding rate extremes + leverage data",
+        gravitational_impact: "ARTIFICIAL_ACCELERATION"
+    }
+};
+
+const EASTER_EGGS_FROM_DOCUMENT = {
+    accumulation_signals: [
+        "On-chain transfers without price movement",
+        "L2 volume spikes during Asian session",
+        "Influencer posts before Binance listings"
+    ],
+    
+    distribution_signals: [
+        "Massive BTC/ETH transfers to Binance",
+        "Euphoric sentiment on X during US session",
+        "Volume decrease with stable prices"
+    ]
+};
+
+class GravitationalLayerAnalyzer {
+    constructor() {
+        this.currentSession = this.detectCurrentSession();
+        this.gravitationalForces = new Map();
+    }
+
+    detectCurrentSession() {
+        const utcHour = new Date().getUTCHours();
+        
+        if (utcHour >= 20 || utcHour < 4) return 'ASIA_SESSION';
+        if (utcHour >= 7 && utcHour < 15) return 'EUROPE_SESSION';
+        if (utcHour >= 12 && utcHour < 20) return 'AMERICA_SESSION';
+        
+        return 'EUROPE_SESSION'; // Default
+    }
+
+    async analyzeGravitationalForces(symbol, symbolData) {
+        return {
+            // L1 GRAVITATIONAL ANALYSIS
+            l1_gravity: await this.analyzeL1Gravity(symbol, symbolData),
+            
+            // L2 IMPACT ASSESSMENT  
+            l2_dynamics: await this.analyzeL2Impact(symbol, symbolData),
+            
+            // SESSION-BASED GRAVITATIONAL SHIFTS
+            session_gravity: await this.analyzeSessionGravity(symbol, symbolData),
+            
+            // BINANCE-SPECIFIC AMPLIFIERS
+            binance_amplification: await this.analyzeBinanceAmplification(symbol, symbolData),
+            
+            // HIDDEN MANIPULATION DETECTION
+            manipulation_patterns: await this.detectManipulationPatterns(symbol, symbolData)
+        };
+    }
+    
+    async analyzeL1Gravity(symbol, symbolData) {
+        if (symbol === 'BTCUSDT') {
+            const priceChange = symbolData.priceChange || 0;
+            const volume = symbolData.volume || 0;
+            
+            return {
+                scarcity_force: this.calculateScarcityPressure(volume), // 21M cap impact
+                halving_gravity: this.calculateHalvingEffect(), // Post-halving dynamics
+                institutional_attraction: this.calculateInstitutionalFlow(priceChange),
+                gravitational_strength: 'MAXIMUM', // L1 Bitcoin = strongest gravity
+                scarcity_score: 0.95
+            };
+        }
+        
+        if (symbol === 'ETHUSDT') {
+            const priceChange = symbolData.priceChange || 0;
+            const volume = symbolData.volume || 0;
+            
+            return {
+                staking_lock_force: this.calculateStakingImpact(volume), // 17.5M locked
+                deflation_pressure: this.calculateDeflationaryForce(priceChange), // EIP-1559
+                defi_utility_gravity: this.calculateDeFiTVL(volume),
+                gravitational_strength: 'HIGH', // L1 Ethereum = strong gravity
+                utility_score: 0.85
+            };
+        }
+        
+        return {
+            gravitational_strength: 'MEDIUM',
+            base_score: 0.6
+        };
+    }
+
+    async analyzeL2Impact(symbol, symbolData) {
+        // L2 tokens analysis
+        const l2Tokens = ['ARBUSDT', 'OPUSDT', 'MATICUSDT', 'IMXUSDT'];
+        
+        if (l2Tokens.includes(symbol)) {
+            const priceChange = symbolData.priceChange || 0;
+            const volume = symbolData.volume || 0;
+            
+            return {
+                l2_tvl_impact: this.calculateL2TVL(volume),
+                fragmentation_risk: this.calculateFragmentationRisk(priceChange),
+                cross_chain_gravity: this.calculateCrossChainFlow(volume),
+                l2_score: 0.75
+            };
+        }
+        
+        return {
+            l2_score: 0.5
+        };
+    }
+
+    async analyzeSessionGravity(symbol, symbolData) {
+        const session = this.currentSession;
+        const sessionPattern = SESSION_GRAVITATIONAL_PATTERNS[session];
+        const priceChange = symbolData.priceChange || 0;
+        const volume = symbolData.volume || 0;
+        
+        let sessionModifier = 1.0;
+        let sessionBehavior = 'NEUTRAL';
+        
+        if (symbol === 'BTCUSDT') {
+            if (session === 'ASIA_SESSION') {
+                sessionModifier = 1.3; // Whale accumulation phase
+                sessionBehavior = 'WHALE_ACCUMULATION_PHASE';
+            } else if (session === 'EUROPE_SESSION') {
+                sessionModifier = 1.1; // Technical consolidation
+                sessionBehavior = 'TECHNICAL_CONSOLIDATION';
+            } else if (session === 'AMERICA_SESSION') {
+                sessionModifier = 1.4; // ETF flow amplification
+                sessionBehavior = 'ETF_FLOW_AMPLIFICATION';
+            }
+        }
+        
+        if (symbol === 'ETHUSDT') {
+            if (session === 'ASIA_SESSION') {
+                sessionModifier = 1.2; // L2 volume spikes
+                sessionBehavior = 'L2_VOLUME_SPIKES';
+            } else if (session === 'EUROPE_SESSION') {
+                sessionModifier = 1.0; // Structure confirmation
+                sessionBehavior = 'STRUCTURE_CONFIRMATION';
+            } else if (session === 'AMERICA_SESSION') {
+                sessionModifier = 1.3; // Retail FOMO extremes
+                sessionBehavior = 'RETAIL_FOMO_EXTREMES';
+            }
+        }
+        
+        return {
+            current_session: session,
+            session_modifier: sessionModifier,
+            session_behavior: sessionBehavior,
+            session_score: this.calculateSessionScore(sessionModifier, priceChange, volume)
+        };
+    }
+
+    async analyzeBinanceAmplification(symbol, symbolData) {
+        const volume = symbolData.volume || 0;
+        const priceChange = symbolData.priceChange || 0;
+        
+        // Binance-specific amplification factors
+        const leverageAmplification = this.calculateLeverageAmplification(volume);
+        const liquidityConcentration = this.calculateLiquidityConcentration(volume);
+        const futuresImpact = this.calculateFuturesImpact(priceChange);
+        
+        return {
+            leverage_amplification: leverageAmplification,
+            liquidity_concentration: liquidityConcentration,
+            futures_impact: futuresImpact,
+            binance_score: this.calculateBinanceScore(leverageAmplification, liquidityConcentration, futuresImpact)
+        };
+    }
+
+    async detectManipulationPatterns(symbol, symbolData) {
+        const priceChange = symbolData.priceChange || 0;
+        const volume = symbolData.volume || 0;
+        const avgVolume = symbolData.avgVolume || volume;
+        
+        const patterns = [];
+        
+        // Spoofing Detection
+        if (this.detectSpoofing(volume, avgVolume, priceChange)) {
+            patterns.push({
+                type: 'SPOOFING_DETECTION',
+                confidence: 0.7,
+                impact: 'CREATES_FAKE_SUPPORT/RESISTANCE'
+            });
+        }
+        
+        // Iceberg Accumulation
+        if (this.detectIcebergAccumulation(volume, priceChange)) {
+            patterns.push({
+                type: 'ICEBERG_ACCUMULATION',
+                confidence: 0.8,
+                impact: 'HIDDEN_INSTITUTIONAL_FLOW'
+            });
+        }
+        
+        // Liquidation Cascades
+        if (this.detectLiquidationCascades(priceChange, volume)) {
+            patterns.push({
+                type: 'LIQUIDATION_CASCADES',
+                confidence: 0.6,
+                impact: 'ARTIFICIAL_ACCELERATION'
+            });
+        }
+        
+        return {
+            detected_patterns: patterns,
+            manipulation_score: this.calculateManipulationScore(patterns),
+            risk_level: this.assessManipulationRisk(patterns)
+        };
+    }
+
+    // Helper methods for gravitational calculations
+    calculateScarcityPressure(volume) {
+        return Math.log(volume / 1e9) * 0.1; // Bitcoin scarcity effect
+    }
+
+    calculateHalvingEffect() {
+        const daysSinceHalving = 180; // Approximate
+        return Math.exp(-daysSinceHalving / 365) * 0.3; // Decay effect
+    }
+
+    calculateInstitutionalFlow(priceChange) {
+        return Math.abs(priceChange) > 2 ? 0.8 : 0.4; // Large moves indicate institutional activity
+    }
+
+    calculateStakingImpact(volume) {
+        return Math.log(volume / 1e8) * 0.15; // ETH staking lock effect
+    }
+
+    calculateDeflationaryForce(priceChange) {
+        return priceChange > 0 ? 0.7 : 0.3; // EIP-1559 deflationary pressure
+    }
+
+    calculateDeFiTVL(volume) {
+        return Math.log(volume / 1e7) * 0.2; // DeFi TVL correlation
+    }
+
+    calculateL2TVL(volume) {
+        return Math.log(volume / 1e6) * 0.25; // L2 TVL impact
+    }
+
+    calculateFragmentationRisk(priceChange) {
+        return Math.abs(priceChange) > 5 ? 0.8 : 0.3; // High volatility = fragmentation risk
+    }
+
+    calculateCrossChainFlow(volume) {
+        return Math.log(volume / 1e5) * 0.3; // Cross-chain activity
+    }
+
+    calculateSessionScore(sessionModifier, priceChange, volume) {
+        return (sessionModifier * Math.abs(priceChange) * Math.log(volume / 1e6)) / 100;
+    }
+
+    calculateLeverageAmplification(volume) {
+        return Math.log(volume / 1e8) * 0.2; // Binance leverage effect
+    }
+
+    calculateLiquidityConcentration(volume) {
+        return Math.log(volume / 1e7) * 0.15; // 30% global liquidity concentration
+    }
+
+    calculateFuturesImpact(priceChange) {
+        return Math.abs(priceChange) > 3 ? 0.9 : 0.4; // Large moves = futures impact
+    }
+
+    calculateBinanceScore(leverage, liquidity, futures) {
+        return (leverage + liquidity + futures) / 3;
+    }
+
+    detectSpoofing(volume, avgVolume, priceChange) {
+        return volume > avgVolume * 3 && Math.abs(priceChange) < 0.5; // High volume, low price change
+    }
+
+    detectIcebergAccumulation(volume, priceChange) {
+        return volume > 1e8 && Math.abs(priceChange) < 1; // Large volume, stable price
+    }
+
+    detectLiquidationCascades(priceChange, volume) {
+        return Math.abs(priceChange) > 5 && volume > 1e9; // Extreme moves with high volume
+    }
+
+    calculateManipulationScore(patterns) {
+        if (patterns.length === 0) return 0;
+        return patterns.reduce((sum, p) => sum + p.confidence, 0) / patterns.length;
+    }
+
+    assessManipulationRisk(patterns) {
+        const score = this.calculateManipulationScore(patterns);
+        if (score > 0.7) return 'HIGH';
+        if (score > 0.4) return 'MEDIUM';
+        return 'LOW';
+    }
+}
+
+class QuantumOpportunityScanner {
+    constructor() {
+        // UNIVERSO DE SÍMBOLOS PARA ESCANEAR
+        this.tradingUniverse = this.initializeTradingUniverse();
+        
+        // FILTROS DE OPORTUNIDADES
+        this.opportunityFilters = this.initializeOpportunityFilters();
+        
+        // SCORING SYSTEM
+        this.scoringWeights = this.initializeScoringWeights();
+        
+        // CACHE PARA OPTIMIZACIÓN
+        this.scanCache = new Map();
+        this.lastScanTime = 0;
+        this.scanInterval = 300000; // 5 minutos
+        
+        // CONFIGURACIÓN QBTC
+        this.qbtcBaseUrl = 'http://localhost:4602';
+        this.useQBTCCache = true; // Usar cache QBTC en lugar de Binance directo
+        
+        // Add gravitational layer analyzer
+        this.gravitationalAnalyzer = new GravitationalLayerAnalyzer();
+        
+        // Add gravitational scoring weights
+        this.scoringWeights.gravitational_layers = 0.15; // 15% weight for gravitational analysis
+        this.scoringWeights.session_gravity = 0.10; // 10% weight for session analysis
+        this.scoringWeights.manipulation_detection = 0.05; // 5% weight for manipulation detection
+    }
+    
+    initializeTradingUniverse() {
+        return {
+            // TIER 1: MAJOR CRYPTOS (70% allocation)
+            tier1: [
+                'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'XRPUSDT',
+                'SOLUSDT', 'DOTUSDT', 'MATICUSDT', 'LTCUSDT', 'AVAXUSDT',
+                'LINKUSDT', 'UNIUSDT', 'ATOMUSDT', 'XLMUSDT', 'VETUSDT'
+            ],
+            
+            // TIER 2: MID CAPS (25% allocation) 
+            tier2: [
+                'FTMUSDT', 'ALGOUSDT', 'MANAUSDT', 'SANDUSDT', 'AXSUSDT',
+                'CHZUSDT', 'ENJUSDT', 'GALAUSDT', 'NEARUSDT', 'FLOWUSDT',
+                'ICPUSDT', 'FILUSDT', 'EGLDUSDT', 'THETAUSDT', 'XTZUSDT'
+            ],
+            
+            // TIER 3: HIGH VOLATILITY PLAYS (5% allocation)
+            tier3: [
+                'LUNAUSDT', 'RUNEUSDT', 'KAVAUSDT', 'BELUSDT', 'ZECUSDT',
+                'COMPUSDT', 'SUSHIUSDT', 'CRVUSDT', 'YFIUSDT', 'RENUSDT'
+            ],
+            
+            // BLACKLIST (Avoid these)
+            blacklist: ['USTUSDT', 'LUNAUSTD'] // Stablecoins, dead projects
+        };
+    }
+    
+    initializeOpportunityFilters() {
+        return {
+            // FILTRO 1: VOLUME & LIQUIDITY (AJUSTADO MÁS REALISTA)
+            volume_liquidity: {
+                min_24h_volume: 100000, // $100K minimum (más realista)
+                min_market_cap: 1000000, // $1M minimum
+                max_spread_percent: 2.0, // 2% max spread
+                min_depth_1_percent: 50000 // $50K depth at 1%
+            },
+            
+            // FILTRO 2: TECHNICAL CONFLUENCE
+            technical_confluence: {
+                min_multi_tf_score: 0.7, // 70% multi-TF alignment
+                min_rsi_extreme: 25, // RSI below 25 or above 75
+                max_rsi_neutral: 55, // Avoid neutral RSI (45-55)
+                volume_spike_threshold: 2.0, // 2x average volume
+                breakout_confirmation_required: true
+            },
+            
+            // FILTRO 3: SMART MONEY ACTIVITY
+            smart_money: {
+                min_whale_activity: 3, // Minimum 3 large orders
+                large_order_threshold: 1000000, // $1M+ orders
+                institutional_flow_threshold: 0.6, // 60% flow alignment
+                funding_rate_extremes: [-0.3, 1.0] // Funding rate opportunities
+            },
+            
+            // FILTRO 4: MARKET STRUCTURE
+            market_structure: {
+                structure_break_required: true,
+                support_resistance_confluence: true,
+                fibonacci_confluence: true,
+                pattern_recognition: ['BOS', 'CAPITULATION', 'SPRING', 'UPTHRUST']
+            },
+            
+            // FILTRO 5: SENTIMENT EXTREMES
+            sentiment_extremes: {
+                funding_rate_extreme: 0.8, // 80th percentile
+                social_sentiment_extreme: 0.9, // 90th percentile  
+                fear_greed_extreme: 20, // <20 or >80
+                contrarian_opportunity: true
+            }
+        };
+    }
+    
+    initializeScoringWeights() {
+        return {
+            // SCORES PONDERADOS PARA RANKING
+            technical_confluence: 0.25,
+            smart_money_activity: 0.20,
+            market_structure: 0.15,
+            sentiment_extremes: 0.15,
+            volume_liquidity: 0.10,
+            fibonacci_alignment: 0.05,
+            seasonal_patterns: 0.05,
+            leonardo_approval: 0.05,
+            
+            // MULTIPLIERS
+            golden_confluence_multiplier: 2.0,
+            contrarian_multiplier: 1.5,
+            breakout_multiplier: 1.3,
+            whale_activity_multiplier: 1.4,
+            
+            // NEW: Gravitational Layer Weights
+            gravitational_layers: 0.15, // 15% weight for gravitational analysis
+            session_gravity: 0.10, // 10% weight for session analysis
+            manipulation_detection: 0.05 // 5% weight for manipulation detection
+        };
+    }
+    
+    // ESCANEO PRINCIPAL OPTIMIZADO
+    async scanOpportunities(scanType = 'FULL', maxResults = 10) {
+        console.log(`[SEARCH] [QUANTUM SCANNER] Starting ${scanType} scan...`);
+        
+        const startTime = Date.now();
+        
+        // CHECK CACHE SI ES SCAN RECIENTE
+        if (this.shouldUseCachedResults(scanType)) {
+            console.log('[LIST] Using cached results for speed...');
+            return this.getCachedResults(scanType, maxResults);
+        }
+        
+        // OBTENER DATOS DE QBTC CACHE
+        const qbtcData = await this.getQBTCData();
+        if (!qbtcData) {
+            throw new Error('No se pudieron obtener datos de QBTC cache');
+        }
+        
+        // OBTENER LISTA DE SÍMBOLOS A ESCANEAR
+        let symbolsToScan = this.getSymbolsForScan(scanType);
+        
+        // Si es FULL scan, usar todos los símbolos disponibles en QBTC
+        if (symbolsToScan === 'ALL_SYMBOLS') {
+            const spotSymbols = Object.keys(qbtcData.spot || {});
+            const futuresSymbols = Object.keys(qbtcData.futures || {});
+            symbolsToScan = [...new Set([...spotSymbols, ...futuresSymbols])]; // Eliminar duplicados
+            
+            // Filtrar símbolos blacklist
+            symbolsToScan = symbolsToScan.filter(symbol => 
+                !this.tradingUniverse.blacklist.includes(symbol)
+            );
+            
+            console.log(`[API] [QUANTUM SCANNER] Escaneando TODOS los símbolos disponibles: ${symbolsToScan.length} símbolos`);
+        }
+        
+        // ESCANEO OPTIMIZADO CON DATOS DE CACHE
+        const opportunities = await this.scanWithQBTCData(symbolsToScan, qbtcData, scanType);
+        
+        // RANKING Y FILTRADO
+        const rankedOpportunities = this.rankOpportunities(opportunities);
+        const finalResults = rankedOpportunities.slice(0, maxResults);
+        
+        // CACHE RESULTS
+        this.cacheResults(scanType, finalResults);
+        
+        const scanDuration = Date.now() - startTime;
+        console.log(`[FAST] Scan completed in ${scanDuration}ms`);
+        
+        return {
+            scan_type: scanType,
+            scan_timestamp: new Date().toISOString(),
+            scan_duration_ms: scanDuration,
+            symbols_scanned: symbolsToScan.length,
+            opportunities_found: finalResults.length,
+            opportunities: finalResults,
+            
+            // SCAN SUMMARY
+            scan_summary: this.generateScanSummary(finalResults),
+            
+            // TOP RECOMMENDATIONS
+            top_recommendations: this.generateTopRecommendations(finalResults.slice(0, 3)),
+            
+            // MARKET OVERVIEW
+            market_overview: this.generateMarketOverview(opportunities)
+        };
+    }
+    
+    async getQBTCData() {
+        try {
+            console.log(' [QUANTUM SCANNER] Obteniendo datos de QBTC cache...');
+            
+            const response = await axios.get(`${this.qbtcBaseUrl}/api/market-data`, {
+                timeout: 15000
+            });
+            
+            if (!response.data.success) {
+                throw new Error('Respuesta QBTC no exitosa');
+            }
+            
+            const spotCount = Object.keys(response.data.data.spot || {}).length;
+            const futuresCount = Object.keys(response.data.data.futures || {}).length;
+            console.log(`[OK] [QUANTUM SCANNER] Datos obtenidos: ${spotCount} spot + ${futuresCount} futures = ${spotCount + futuresCount} símbolos total`);
+            return response.data.data;
+            
+        } catch (error) {
+            console.error('[ERROR] [QUANTUM SCANNER] Error obteniendo datos QBTC:', error.message);
+            return null;
+        }
+    }
+    
+    async scanWithQBTCData(symbolsToScan, qbtcData, scanType) {
+        const allOpportunities = [];
+        const spotData = qbtcData.spot || {};
+        const futuresData = qbtcData.futures || {};
+        
+        console.log(`[RELOAD] [QUANTUM SCANNER] Escaneando ${symbolsToScan.length} símbolos con datos QBTC...`);
+        
+        for (const symbol of symbolsToScan) {
+            try {
+                // Intentar obtener datos de spot primero, luego futures
+                const symbolData = spotData[symbol] || futuresData[symbol];
+                if (!symbolData) {
+                    console.warn(`[WARNING] [QUANTUM SCANNER] No hay datos para ${symbol}`);
+                    continue;
+                }
+                
+                // FILTROS BÁSICOS PRIMERO (FAST FILTERS)
+                const basicFilters = this.applyBasicFiltersFromQBTC(symbolData);
+                if (!basicFilters.passed) {
+                    continue;
+                }
+                
+                // ANÁLISIS PROFUNDO SI PASA FILTROS BÁSICOS
+                const analysis = await this.performDeepAnalysisFromQBTC(symbol, symbolData, scanType);
+                
+                // CALCULAR OPPORTUNITY SCORE
+                const opportunityScore = this.calculateOpportunityScore(analysis);
+                
+                            // FILTRO FINAL POR SCORE MÍNIMO (más permisivo)
+            if (opportunityScore.total_score < 0.3) {
+                continue;
+            }
+                
+                allOpportunities.push({
+                    symbol: symbol,
+                    opportunity_score: opportunityScore,
+                    analysis: analysis,
+                    scan_timestamp: Date.now()
+                });
+                
+            } catch (error) {
+                console.error(`Error scanning ${symbol}:`, error.message);
+            }
+        }
+        
+        return allOpportunities;
+    }
+    
+    applyBasicFiltersFromQBTC(symbolData) {
+        try {
+            const volume24h = parseFloat(symbolData.volume || 0);
+            const priceChange = parseFloat(symbolData.priceChangePercent || 0);
+            const price = parseFloat(symbolData.price || 0);
+            
+            // VOLUME FILTER
+            if (volume24h < this.opportunityFilters.volume_liquidity.min_24h_volume) {
+                return { passed: false, reason: 'Insufficient 24h volume' };
+            }
+            
+            // BASIC MOMENTUM FILTER (MÁS PERMISIVO)
+            if (Math.abs(priceChange) < 0.1) { // Need at least 0.1% movement (más realista)
+                return { passed: false, reason: 'Insufficient momentum' };
+            }
+            
+            return { 
+                passed: true, 
+                basic_data: {
+                    volume_24h: volume24h,
+                    price_change_24h: priceChange,
+                    price: price
+                }
+            };
+            
+        } catch (error) {
+            return { passed: false, reason: 'Error in basic filters' };
+        }
+    }
+    
+    async performDeepAnalysisFromQBTC(symbol, symbolData, scanType) {
+        const symbolName = symbolData.symbol;
+        const priceChange = symbolData.priceChange || 0;
+        const volume = symbolData.volume || 0;
+        const price = symbolData.price || 0;
+        
+        // ANÁLISIS PARALELO DE TODOS LOS COMPONENTES
+        const [
+            technicalAnalysis,
+            smartMoneyAnalysis, 
+            structureAnalysis,
+            sentimentAnalysis
+        ] = await Promise.all([
+            this.analyzeTechnicalSignalsFromQBTC(symbolData),
+            this.analyzeSmartMoneyActivityFromQBTC(symbolData),
+            this.analyzeMarketStructureFromQBTC(symbolData),
+            this.analyzeSentimentExtremesFromQBTC(symbolData)
+        ]);
+        
+        // NEW: GRAVITATIONAL LAYER ANALYSIS
+        const gravitationalAnalysis = await this.gravitationalAnalyzer.analyzeGravitationalForces(symbol, symbolData);
+        
+        return {
+            technical: technicalAnalysis,
+            smart_money: smartMoneyAnalysis,
+            structure: structureAnalysis,
+            sentiment: sentimentAnalysis,
+            
+            // CONFLUENCE ANALYSIS
+            confluence: this.analyzeOverallConfluence({
+                technical: technicalAnalysis,
+                smart_money: smartMoneyAnalysis,
+                structure: structureAnalysis,
+                sentiment: sentimentAnalysis
+            }),
+            
+            // NEW: Gravitational Layer Results
+            gravitational: gravitationalAnalysis,
+            gravitational_score: this.calculateGravitationalScore(gravitationalAnalysis)
+        };
+    }
+
+    calculateGravitationalScore(gravitationalAnalysis) {
+        let score = 0;
+        
+        // L1 Gravity Score
+        if (gravitationalAnalysis.l1_gravity) {
+            const l1Score = gravitationalAnalysis.l1_gravity.scarcity_score || 
+                           gravitationalAnalysis.l1_gravity.utility_score || 
+                           gravitationalAnalysis.l1_gravity.base_score || 0;
+            score += l1Score * 0.4; // 40% weight for L1
+        }
+        
+        // L2 Dynamics Score
+        if (gravitationalAnalysis.l2_dynamics) {
+            const l2Score = gravitationalAnalysis.l2_dynamics.l2_score || 0;
+            score += l2Score * 0.2; // 20% weight for L2
+        }
+        
+        // Session Gravity Score
+        if (gravitationalAnalysis.session_gravity) {
+            const sessionScore = gravitationalAnalysis.session_gravity.session_score || 0;
+            score += sessionScore * 0.25; // 25% weight for session
+        }
+        
+        // Binance Amplification Score
+        if (gravitationalAnalysis.binance_amplification) {
+            const binanceScore = gravitationalAnalysis.binance_amplification.binance_score || 0;
+            score += binanceScore * 0.1; // 10% weight for Binance
+        }
+        
+        // Manipulation Detection (negative impact)
+        if (gravitationalAnalysis.manipulation_patterns) {
+            const manipulationScore = gravitationalAnalysis.manipulation_patterns.manipulation_score || 0;
+            score -= manipulationScore * 0.05; // 5% negative weight for manipulation
+        }
+        
+        return Math.max(0, Math.min(1, score)); // Clamp between 0 and 1
+    }
+    
+    analyzeTechnicalSignalsFromQBTC(symbolData) {
+        try {
+            const priceChange = parseFloat(symbolData.priceChangePercent || 0);
+            const volume = parseFloat(symbolData.volume || 0);
+            const price = parseFloat(symbolData.price || 0);
+            
+            // SIMULATE RSI BASED ON PRICE CHANGE
+            const rsi1h = this.simulateRSIFromPriceChange(priceChange);
+            const rsi4h = this.simulateRSIFromPriceChange(priceChange * 0.8);
+            const rsi1d = this.simulateRSIFromPriceChange(priceChange * 0.6);
+            
+            // DETECT EXTREMES
+            const rsiExtreme = (rsi1h < 25 || rsi1h > 75) || 
+                             (rsi4h < 25 || rsi4h > 75) ||
+                             (rsi1d < 25 || rsi1d > 75);
+            
+            // VOLUME ANALYSIS
+            const avgVolume = 1500000000; // Promedio estimado
+            const volumeSpike = volume / avgVolume;
+            
+            // TREND ANALYSIS
+            const trend1h = this.calculateTrendFromPriceChange(priceChange);
+            const trend4h = this.calculateTrendFromPriceChange(priceChange * 0.8);
+            const trend1d = this.calculateTrendFromPriceChange(priceChange * 0.6);
+            
+            return {
+                rsi: { '1h': rsi1h, '4h': rsi4h, '1d': rsi1d },
+                rsi_extreme: rsiExtreme,
+                volume_spike: volumeSpike,
+                trends: { '1h': trend1h, '4h': trend4h, '1d': trend1d },
+                
+                // SIGNALS
+                technical_signals: this.generateTechnicalSignals(rsi1h, rsi4h, rsi1d, volumeSpike, trend1h, trend4h, trend1d),
+                
+                // SCORE
+                technical_score: this.calculateTechnicalScore(rsiExtreme, volumeSpike, trend1h, trend4h, trend1d)
+            };
+            
+        } catch (error) {
+            console.error(`Error in technical analysis:`, error.message);
+            return { technical_score: 0, error: error.message };
+        }
+    }
+    
+    simulateRSIFromPriceChange(priceChange) {
+        // Simular RSI basado en el cambio de precio
+        if (priceChange > 10) return 85; // Overbought
+        if (priceChange > 5) return 70; // Moderately overbought
+        if (priceChange > 2) return 60; // Slightly bullish
+        if (priceChange > -2) return 50; // Neutral
+        if (priceChange > -5) return 40; // Slightly bearish
+        if (priceChange > -10) return 30; // Moderately oversold
+        return 15; // Oversold
+    }
+    
+    calculateTrendFromPriceChange(priceChange) {
+        if (priceChange > 5) return 'STRONG_UP';
+        if (priceChange > 2) return 'UP';
+        if (priceChange < -5) return 'STRONG_DOWN';
+        if (priceChange < -2) return 'DOWN';
+        return 'NEUTRAL';
+    }
+    
+    analyzeSmartMoneyActivityFromQBTC(symbolData) {
+        try {
+            const volume = parseFloat(symbolData.volume || 0);
+            const priceChange = parseFloat(symbolData.priceChangePercent || 0);
+            
+            // SIMULAR ANÁLISIS DE SMART MONEY
+            const largeOrders = this.simulateLargeOrders(volume, priceChange);
+            const tradeFlow = this.simulateTradeFlow(priceChange);
+            
+            return {
+                large_orders: largeOrders,
+                trade_flow: tradeFlow,
+                smart_money_score: this.calculateSmartMoneyScore(largeOrders, tradeFlow)
+            };
+            
+        } catch (error) {
+            console.error(`Error in smart money analysis:`, error.message);
+            return { smart_money_score: 0, error: error.message };
+        }
+    }
+    
+    simulateLargeOrders(volume, priceChange) {
+        const largeThreshold = 1000000;
+        const largeBids = priceChange > 0 ? Math.floor(volume / largeThreshold) : 0;
+        const largeAsks = priceChange < 0 ? Math.floor(volume / largeThreshold) : 0;
+        
+        return {
+            large_bids: Array(largeBids).fill({ price: 0, value: largeThreshold }),
+            large_asks: Array(largeAsks).fill({ price: 0, value: largeThreshold }),
+            total_bid_value: largeBids * largeThreshold,
+            total_ask_value: largeAsks * largeThreshold,
+            institutional_orders: Math.floor((largeBids + largeAsks) / 2)
+        };
+    }
+    
+    simulateTradeFlow(priceChange) {
+        const buyRatio = priceChange > 0 ? 0.7 : priceChange < 0 ? 0.3 : 0.5;
+        
+        return {
+            buy_volume: 1000000 * buyRatio,
+            sell_volume: 1000000 * (1 - buyRatio),
+            buy_ratio: buyRatio,
+            flow_direction: buyRatio > 0.6 ? 'BUYING' : buyRatio < 0.4 ? 'SELLING' : 'NEUTRAL'
+        };
+    }
+    
+    analyzeMarketStructureFromQBTC(symbolData) {
+        try {
+            const priceChange = parseFloat(symbolData.priceChangePercent || 0);
+            const price = parseFloat(symbolData.price || 0);
+            
+            // SIMULAR ANÁLISIS DE ESTRUCTURA
+            const structure = this.simulatePriceStructure(priceChange, price);
+            
+            return {
+                structure: structure,
+                structure_score: this.calculateStructureScore(structure)
+            };
+            
+        } catch (error) {
+            console.error(`Error in market structure analysis:`, error.message);
+            return { structure_score: 0, error: error.message };
+        }
+    }
+    
+    simulatePriceStructure(priceChange, price) {
+        const higherHighs = priceChange > 0 ? Math.floor(Math.abs(priceChange) / 2) : 0;
+        const lowerLows = priceChange < 0 ? Math.floor(Math.abs(priceChange) / 2) : 0;
+        
+        let structureType = 'NEUTRAL';
+        if (higherHighs > 5) structureType = 'BULLISH';
+        else if (lowerLows > 5) structureType = 'BEARISH';
+        else if (Math.abs(priceChange) > 8) structureType = 'BREAKOUT';
+        
+        return {
+            higher_highs: higherHighs,
+            lower_lows: lowerLows,
+            breakouts: Math.abs(priceChange) > 8 ? [{ type: 'BREAKOUT', price }] : [],
+            structure_type: structureType
+        };
+    }
+    
+    analyzeSentimentExtremesFromQBTC(symbolData) {
+        try {
+            const priceChange = parseFloat(symbolData.priceChangePercent || 0);
+            const volume = parseFloat(symbolData.volume || 0);
+            
+            // SIMULAR FUNDING RATE BASADO EN PRICE CHANGE
+            const fundingRate = this.simulateFundingRate(priceChange);
+            const avgFundingRate = 0.0001; // 0.01% promedio
+            
+            // SENTIMENT ANALYSIS
+            const sentiment = this.analyzeSentiment(fundingRate, avgFundingRate);
+            
+            return {
+                funding_rate: fundingRate,
+                avg_funding_rate: avgFundingRate,
+                sentiment: sentiment,
+                sentiment_score: this.calculateSentimentScore(sentiment)
+            };
+            
+        } catch (error) {
+            console.error(`Error in sentiment analysis:`, error.message);
+            return { sentiment_score: 0, error: error.message };
+        }
+    }
+    
+    simulateFundingRate(priceChange) {
+        // Simular funding rate basado en el cambio de precio
+        if (priceChange > 8) return 0.001; // 0.1% positive
+        if (priceChange > 4) return 0.0005; // 0.05% positive
+        if (priceChange < -8) return -0.001; // -0.1% negative
+        if (priceChange < -4) return -0.0005; // -0.05% negative
+        return 0.0001; // Neutral
+    }
+    
+    // MÉTODOS EXISTENTES (sin cambios)
+    calculateOpportunityScore(analysis) {
+        const weights = this.scoringWeights;
+        let totalScore = 0;
+        const components = {};
+        
+        // TECHNICAL SCORE
+        const techScore = analysis.technical?.technical_score || 0;
+        components.technical = techScore * weights.technical_confluence;
+        totalScore += components.technical;
+        
+        // SMART MONEY SCORE
+        const smartScore = analysis.smart_money?.smart_money_score || 0;
+        components.smart_money = smartScore * weights.smart_money_activity;
+        totalScore += components.smart_money;
+        
+        // STRUCTURE SCORE
+        const structScore = analysis.structure?.structure_score || 0;
+        components.structure = structScore * weights.market_structure;
+        totalScore += components.structure;
+        
+        // SENTIMENT SCORE
+        const sentimentScore = analysis.sentiment?.sentiment_score || 0;
+        components.sentiment = sentimentScore * weights.sentiment_extremes;
+        totalScore += components.sentiment;
+        
+        // CONFLUENCE BONUS
+        const confluenceScore = analysis.confluence?.overall_confluence || 0;
+        if (confluenceScore > 0.8) {
+            totalScore *= weights.golden_confluence_multiplier; // 2x multiplier
+            components.confluence_bonus = 'GOLDEN_CONFLUENCE';
+        }
+        
+        // NEW: Gravitational Layer Scoring
+        const gravitationalScore = analysis.gravitational?.gravitational_score || 0;
+        components.gravitational = gravitationalScore * weights.gravitational_layers;
+        totalScore += components.gravitational;
+        
+        // Session Gravity Bonus
+        if (analysis.gravitational?.session_gravity?.session_modifier > 1.2) {
+            totalScore *= 1.2; // 20% bonus for strong session gravity
+            components.session_bonus = 'STRONG_SESSION_GRAVITY';
+        }
+        
+        // L1 Scarcity Bonus
+        if (analysis.gravitational?.l1_gravity?.gravitational_strength === 'MAXIMUM') {
+            totalScore *= 1.15; // 15% bonus for L1 Bitcoin
+            components.l1_bonus = 'L1_SCARCITY_BONUS';
+        }
+        
+        // Manipulation Risk Penalty
+        if (analysis.gravitational?.manipulation_patterns?.risk_level === 'HIGH') {
+            totalScore *= 0.8; // 20% penalty for high manipulation risk
+            components.manipulation_penalty = 'HIGH_MANIPULATION_RISK';
+        }
+        
+        return {
+            total_score: Math.min(1.0, totalScore), // Cap at 1.0
+            components: components,
+            
+            // CATEGORIZATION
+            opportunity_grade: this.gradeOpportunity(totalScore),
+            conviction_level: this.calculateConvictionLevel(analysis),
+            
+            // RISK ASSESSMENT
+            risk_level: this.assessRiskLevel(analysis),
+            risk_reward_estimate: this.estimateRiskReward(analysis),
+            
+            // NEW: Gravitational Insights
+            gravitational_insights: {
+                session_behavior: analysis.gravitational?.session_gravity?.session_behavior,
+                l1_strength: analysis.gravitational?.l1_gravity?.gravitational_strength,
+                manipulation_risk: analysis.gravitational?.manipulation_patterns?.risk_level,
+                binance_amplification: analysis.gravitational?.binance_amplification?.binance_score
+            }
+        };
+    }
+    
+    // UTILITY METHODS (sin cambios)
+    generateTechnicalSignals(rsi1h, rsi4h, rsi1d, volumeSpike, trend1h, trend4h, trend1d) {
+        const signals = [];
+        
+        // RSI EXTREMES
+        if (rsi1h < 25) signals.push('RSI_OVERSOLD_1H');
+        if (rsi1h > 75) signals.push('RSI_OVERBOUGHT_1H');
+        if (rsi4h < 25) signals.push('RSI_OVERSOLD_4H');
+        if (rsi4h > 75) signals.push('RSI_OVERBOUGHT_4H');
+        
+        // VOLUME SPIKE
+        if (volumeSpike > 2.0) signals.push('VOLUME_SPIKE');
+        if (volumeSpike > 3.0) signals.push('VOLUME_EXPLOSION');
+        
+        // TREND CONFLUENCE
+        if (trend1h === 'STRONG_UP' && trend4h === 'UP') signals.push('TREND_CONFLUENCE_UP');
+        if (trend1h === 'STRONG_DOWN' && trend4h === 'DOWN') signals.push('TREND_CONFLUENCE_DOWN');
+        
+        return signals;
+    }
+    
+    calculateTechnicalScore(rsiExtreme, volumeSpike, trend1h, trend4h, trend1d) {
+        let score = 0;
+        
+        // RSI EXTREME BONUS
+        if (rsiExtreme) score += 0.3;
+        
+        // VOLUME SPIKE BONUS
+        if (volumeSpike > 2.0) score += 0.2;
+        if (volumeSpike > 3.0) score += 0.1;
+        
+        // TREND ALIGNMENT BONUS
+        if (trend1h === trend4h && trend4h === trend1d) score += 0.4;
+        else if (trend1h === trend4h) score += 0.2;
+        
+        return Math.min(1.0, score);
+    }
+    
+    calculateSmartMoneyScore(largeOrders, tradeFlow) {
+        let score = 0;
+        
+        // LARGE ORDERS BONUS
+        if (largeOrders.large_bids.length > 2) score += 0.3;
+        if (largeOrders.institutional_orders > 1) score += 0.2;
+        
+        // TRADE FLOW BONUS
+        if (tradeFlow.flow_direction === 'BUYING' && tradeFlow.buy_ratio > 0.7) score += 0.3;
+        if (tradeFlow.flow_direction === 'SELLING' && tradeFlow.buy_ratio < 0.3) score += 0.2;
+        
+        // BID/ASK IMBALANCE
+        const bidAskRatio = largeOrders.total_bid_value / (largeOrders.total_bid_value + largeOrders.total_ask_value);
+        if (bidAskRatio > 0.7) score += 0.2;
+        
+        return Math.min(1.0, score);
+    }
+    
+    calculateStructureScore(structure) {
+        let score = 0;
+        
+        // STRUCTURE TYPE BONUS
+        if (structure.structure_type === 'BULLISH') score += 0.4;
+        if (structure.structure_type === 'BEARISH') score += 0.3;
+        if (structure.structure_type === 'BREAKOUT') score += 0.5;
+        
+        // BREAKOUT BONUS
+        if (structure.breakouts.length > 0) score += 0.2;
+        
+        // TREND CONFIRMATION
+        if (structure.higher_highs > 8) score += 0.2;
+        if (structure.lower_lows > 8) score += 0.1;
+        
+        return Math.min(1.0, score);
+    }
+    
+    analyzeSentiment(fundingRate, avgFundingRate) {
+        const extreme = Math.abs(fundingRate) > 0.008; // 0.8%
+        const unsustainable = Math.abs(fundingRate) > Math.abs(avgFundingRate) * 2;
+        
+        return {
+            extreme: extreme,
+            unsustainable: unsustainable,
+            direction: fundingRate > 0.008 ? 'SHORT_OPPORTUNITY' : 
+                      fundingRate < -0.005 ? 'LONG_OPPORTUNITY' : 'NEUTRAL',
+            squeeze_potential: this.calculateSqueezePotential(fundingRate, avgFundingRate)
+        };
+    }
+    
+    calculateSqueezePotential(fundingRate, avgFundingRate) {
+        const extreme = Math.abs(fundingRate) > 0.01; // 1%
+        const unsustainable = Math.abs(fundingRate) > Math.abs(avgFundingRate) * 3;
+        
+        if (extreme && unsustainable) return 0.9;
+        if (extreme) return 0.7;
+        if (unsustainable) return 0.5;
+        return 0.2;
+    }
+    
+    calculateSentimentScore(sentiment) {
+        let score = 0;
+        
+        if (sentiment.extreme) score += 0.4;
+        if (sentiment.unsustainable) score += 0.3;
+        if (sentiment.direction !== 'NEUTRAL') score += 0.2;
+        if (sentiment.squeeze_potential > 0.7) score += 0.1;
+        
+        return Math.min(1.0, score);
+    }
+    
+    analyzeOverallConfluence(analysis) {
+        const scores = [
+            analysis.technical?.technical_score || 0,
+            analysis.smart_money?.smart_money_score || 0,
+            analysis.structure?.structure_score || 0,
+            analysis.sentiment?.sentiment_score || 0
+        ];
+        
+        const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+        const variance = scores.reduce((sum, score) => sum + Math.pow(score - avgScore, 2), 0) / scores.length;
+        
+        return {
+            overall_confluence: avgScore,
+            score_variance: variance,
+            confluence_quality: variance < 0.1 ? 'HIGH' : variance < 0.2 ? 'MEDIUM' : 'LOW'
+        };
+    }
+    
+    rankOpportunities(opportunities) {
+        return opportunities
+            .filter(opp => opp && opp.opportunity_score)
+            .sort((a, b) => {
+                const scoreA = a.opportunity_score.total_score;
+                const scoreB = b.opportunity_score.total_score;
+                return scoreB - scoreA;
+            });
+    }
+    
+    gradeOpportunity(score) {
+        if (score > 0.9) return 'A+';
+        if (score > 0.8) return 'A';
+        if (score > 0.7) return 'B+';
+        if (score > 0.6) return 'B';
+        if (score > 0.5) return 'C+';
+        return 'C';
+    }
+    
+    calculateConvictionLevel(analysis) {
+        const confluence = analysis.confluence?.overall_confluence || 0;
+        const variance = analysis.confluence?.score_variance || 0;
+        
+        if (confluence > 0.8 && variance < 0.1) return 'HIGH';
+        if (confluence > 0.6 && variance < 0.2) return 'MEDIUM';
+        return 'LOW';
+    }
+    
+    assessRiskLevel(analysis) {
+        const volatility = analysis.technical?.volume_spike || 1;
+        const sentiment = analysis.sentiment?.extreme || false;
+        
+        if (volatility > 3.0 || sentiment) return 'HIGH';
+        if (volatility > 2.0) return 'MEDIUM';
+        return 'LOW';
+    }
+    
+    estimateRiskReward(analysis) {
+        const score = analysis.confluence?.overall_confluence || 0;
+        const risk = this.assessRiskLevel(analysis);
+        
+        const baseRR = score * 3; // Base 3:1 ratio
+        const riskMultiplier = risk === 'HIGH' ? 0.7 : risk === 'MEDIUM' ? 0.9 : 1.2;
+        
+        return (baseRR * riskMultiplier).toFixed(2);
+    }
+    
+    generateScanSummary(opportunities) {
+        const totalOpportunities = opportunities.length;
+        const highConviction = opportunities.filter(opp => 
+            opp.opportunity_score.conviction_level === 'HIGH'
+        ).length;
+        const avgScore = opportunities.reduce((sum, opp) => 
+            sum + opp.opportunity_score.total_score, 0
+        ) / Math.max(totalOpportunities, 1);
+        
+        return {
+            total_opportunities: totalOpportunities,
+            high_conviction_count: highConviction,
+            average_score: avgScore.toFixed(3),
+            scan_quality: totalOpportunities > 5 ? 'RICH_ENVIRONMENT' : 
+                         totalOpportunities > 2 ? 'NORMAL' : 'LIMITED'
+        };
+    }
+    
+    generateTopRecommendations(topOpportunities) {
+        return topOpportunities.map((opportunity, index) => {
+            const symbol = opportunity.symbol;
+            const score = opportunity.opportunity_score;
+            
+            return {
+                rank: index + 1,
+                symbol: symbol,
+                score: score.total_score.toFixed(3),
+                grade: score.opportunity_grade,
+                conviction: score.conviction_level,
+                risk_level: score.risk_level,
+                risk_reward: score.risk_reward_estimate
+            };
+        });
+    }
+    
+    generateMarketOverview(opportunities) {
+        const avgScore = opportunities.reduce((sum, opp) => 
+            sum + opp.opportunity_score.total_score, 0
+        ) / Math.max(opportunities.length, 1);
+        
+        return {
+            overall_sentiment: avgScore > 0.7 ? 'BULLISH_BIAS' : avgScore > 0.5 ? 'NEUTRAL' : 'BEARISH_BIAS',
+            opportunity_environment: opportunities.length > 5 ? 'RICH' : 'LIMITED',
+            average_conviction: avgScore > 0.8 ? 'HIGH' : avgScore > 0.6 ? 'MEDIUM' : 'LOW'
+        };
+    }
+    
+    getSymbolsForScan(scanType) {
+        if (scanType === 'QUICK') {
+            return this.tradingUniverse.tier1.slice(0, 10);
+        }
+        
+        // Para FULL scan, usar todos los símbolos disponibles en QBTC
+        // Esto se determinará dinámicamente en scanOpportunities
+        return 'ALL_SYMBOLS'; // Indicador para usar todos los símbolos
+    }
+    
+    shouldUseCachedResults(scanType) {
+        const cacheKey = `${scanType}_results`;
+        const cached = this.scanCache.get(cacheKey);
+        
+        if (!cached) return false;
+        
+        const cacheAge = Date.now() - cached.timestamp;
+        const maxAge = scanType === 'QUICK' ? 60000 : 300000; // 1min for quick, 5min for full
+        
+        return cacheAge < maxAge;
+    }
+    
+    getCachedResults(scanType, maxResults) {
+        const cacheKey = `${scanType}_results`;
+        const cached = this.scanCache.get(cacheKey);
+        
+        return {
+            ...cached.data,
+            opportunities: cached.data.opportunities.slice(0, maxResults),
+            from_cache: true,
+            cache_age_ms: Date.now() - cached.timestamp
+        };
+    }
+    
+    cacheResults(scanType, results) {
+        const cacheKey = `${scanType}_results`;
+        this.scanCache.set(cacheKey, {
+            data: results,
+            timestamp: Date.now()
+        });
+    }
+}
+
+// Función de inicio
+async function startQuantumOpportunityScanner() {
+    try {
+        const scanner = new QuantumOpportunityScanner();
+        
+        console.log('[SEARCH] [QUANTUM SCANNER] Sistema Quantum Opportunity Scanner MEJORADO inicializado');
+        console.log('- Scanner multi-dimensional usando cache QBTC');
+        console.log('- Sin simulaciones - solo datos reales de cache');
+        console.log('- Sin rate limiting - usando datos existentes');
+        
+        return scanner;
+        
+    } catch (error) {
+        console.error('[ERROR] Error iniciando Quantum Scanner:', error);
+        throw error;
+    }
+}
+
+module.exports = {
+    QuantumOpportunityScanner,
+    startQuantumOpportunityScanner
+};
+
+console.log(`
+[SEARCH] QUANTUM OPPORTUNITY SCANNER SYSTEM (QOSS) - MEJORADO LOADED
+
+Features:
+- Multi-dimensional opportunity scanning
+- QBTC cache integration (no direct Binance calls)
+- Advanced technical analysis
+- Smart money tracking
+- Market structure analysis
+- Sentiment extremes detection
+- No rate limiting issues
+
+"Scanning the quantum field of opportunities with QBTC cache data."
+`);

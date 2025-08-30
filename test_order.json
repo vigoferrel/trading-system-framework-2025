@@ -1,0 +1,5 @@
+{
+  "symbol": "BTC",
+  "strategy": "straddle_strangle",
+  "confidence": 0.8
+}

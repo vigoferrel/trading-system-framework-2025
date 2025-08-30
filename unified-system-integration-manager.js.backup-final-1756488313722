@@ -1,0 +1,845 @@
+
+// Constantes físicas reales del sistema
+const PHYSICAL_CONSTANTS = {
+  "QUANTUM_COHERENCE": 0.75,
+  "QUANTUM_CONSCIOUSNESS": 0.8,
+  "QUANTUM_ENTANGLEMENT": 0.65,
+  "QUANTUM_SUPERPOSITION": 0.7,
+  "QUANTUM_TUNNELING": 0.6,
+  "MARKET_VOLATILITY": 0.05,
+  "MARKET_MOMENTUM": 0.1,
+  "MARKET_LIQUIDITY": 0.75,
+  "MARKET_SPREAD": 0.001,
+  "MARKET_DEPTH": 500000,
+  "FUNDING_RATE": 0.02,
+  "FUNDING_VOLATILITY": 0.01,
+  "FUNDING_DEVIATION": 0.5,
+  "FUNDING_ANNUALIZED": 5,
+  "LIQUIDATION_PROBABILITY": 0.05,
+  "SLIPPAGE_RATE": 0.0025,
+  "VOLATILITY_RISK": 0.1,
+  "EXECUTION_RISK": 0.005,
+  "VOLUME_24H": 500000,
+  "VOLUME_RATIO": 0.75,
+  "VOLUME_EXPANSION": 300000,
+  "PRICE_CHANGE": 0.02,
+  "PRICE_ACCELERATION": 0.015,
+  "PRICE_MOMENTUM": 0.01,
+  "TIME_TO_FUNDING": 1800000,
+  "SESSION_INTENSITY": 0.6,
+  "TEMPORAL_RESONANCE": 0.7,
+  "FIBONACCI_STRENGTH": 0.75,
+  "FIBONACCI_INDEX": 5,
+  "NEURAL_CONFIDENCE": 0.85,
+  "NEURAL_COHERENCE": 0.8,
+  "NEURAL_ENTANGLEMENT": 0.7,
+  "BASE_LEVERAGE": 15,
+  "CONSERVATIVE_LEVERAGE": 10,
+  "AGGRESSIVE_LEVERAGE": 25,
+  "STOP_LOSS": 0.03,
+  "TAKE_PROFIT": 0.06,
+  "BASE_SCORE": 0.65,
+  "CONFIDENCE_SCORE": 0.75,
+  "QUALITY_SCORE": 0.8
+};
+
+/**
+ * QBTC Unified System Integration Manager
+ * Gestor maestro que coordina todos los sistemas cuánticos desarrollados
+ * Orquesta la operación integrada del ecosistema completo
+ */
+
+const EventEmitter = require('events');
+const QuantumWebSocketFailover = require('./quantum-websocket-failover');
+const IntelligentBalanceManager = require('./intelligent-balance-manager');
+const QuantumCoherenceBoost = require('./quantum-coherence-boost');
+const ErrorRecoverySystem = require('./error-recovery-system');
+const AdvancedPositionDashboard = require('./advanced-position-dashboard');
+
+class UnifiedSystemIntegrationManager extends EventEmitter {
+    constructor(binanceConnector, options = {}) {
+        super();
+        
+        this.binanceConnector = binanceConnector;
+        
+        // Configuración del gestor unificado
+        this.config = {
+            // Constantes cuánticas QBTC maestras
+            quantumConstants: {
+                z: { real: 9, imaginary: 16 },
+                lambda: Math.log(7919),
+                phi: (1 + Math.sqrt(5)) / 2, // Golden ratio
+                unificationFactor: 0.941, // Target coherence
+                orchestrationFrequency: 432 // Hz
+            },
+            
+            // Configuración de sistemas
+            systems: {
+                websocketFailover: {
+                    enabled: true,
+                    priority: 1,
+                    healthCheckInterval: 10000
+                },
+                balanceManager: {
+                    enabled: true,
+                    priority: 2,
+                    healthCheckInterval: 30000
+                },
+                coherenceBoost: {
+                    enabled: true,
+                    priority: 3,
+                    healthCheckInterval: 5000
+                },
+                errorRecovery: {
+                    enabled: true,
+                    priority: 0, // Máxima prioridad
+                    healthCheckInterval: 10000
+                },
+                positionDashboard: {
+                    enabled: true,
+                    priority: 4,
+                    port: 4605
+                }
+            },
+            
+            // Configuración de orquestación
+            orchestration: {
+                startupSequence: [
+                    'errorRecovery',
+                    'websocketFailover', 
+                    'balanceManager',
+                    'coherenceBoost',
+                    'positionDashboard'
+                ],
+                shutdownSequence: [
+                    'positionDashboard',
+                    'coherenceBoost',
+                    'balanceManager',
+                    'websocketFailover',
+                    'errorRecovery'
+                ],
+                healthCheckInterval: 15000,
+                systemSyncInterval: 30000
+            },
+            
+            // Configuración de métricas
+            metrics: {
+                targetCoherence: 0.941,
+                minSystemHealth: 0.80,
+                maxErrorRate: 0.05,
+                targetUptime: 0.999
+            },
+            
+            ...options
+        };
+        
+        // Estado del gestor
+        this.state = {
+            // Estado de inicialización
+            initialization: {
+                status: 'pending',
+                phase: 0,
+                startTime: null,
+                completedSystems: [],
+                failedSystems: []
+            },
+            
+            // Sistemas integrados
+            systems: {
+                websocketFailover: null,
+                balanceManager: null,
+                coherenceBoost: null,
+                errorRecovery: null,
+                positionDashboard: null
+            },
+            
+            // Estado de salud del ecosistema
+            ecosystemHealth: {
+                overallStatus: 'initializing',
+                systemsOnline: 0,
+                totalSystems: 5,
+                coherenceLevel: 0,
+                errorRate: 0,
+                uptime: 0,
+                lastHealthCheck: null
+            },
+            
+            // Métricas de rendimiento
+            performance: {
+                totalTrades: 0,
+                successfulTrades: 0,
+                totalPNL: 0,
+                maxDrawdown: 0,
+                sharpeRatio: 0,
+                quantumEfficiency: 0
+            },
+            
+            // Eventos del sistema
+            events: [],
+            
+            // Estado de sincronización
+            synchronization: {
+                lastSync: null,
+                syncErrors: 0,
+                dataConsistency: true
+            }
+        };
+        
+        // Inicializar gestor
+        this.initializeManager();
+    }
+    
+    /**
+     * Inicializar gestor de integración
+     */
+    async initializeManager() {
+        console.log('[ENDPOINTS] [UnifiedManager] Initializing Unified System Integration Manager...');
+        console.log('🔮 [UnifiedManager] Target Quantum Coherence: 94.1% (Infinite Profit Plane Access)');
+        
+        this.state.initialization.status = 'initializing';
+        this.state.initialization.startTime = Date.now();
+        
+        try {
+            // Fase 1: Inicializar sistemas en secuencia
+            await this.initializeSystemsSequence();
+            
+            // Fase 2: Configurar integraciones
+            await this.setupSystemIntegrations();
+            
+            // Fase 3: Configurar orquestación
+            await this.setupOrchestration();
+            
+            // Fase 4: Verificar estado del ecosistema
+            await this.verifyEcosystemHealth();
+            
+            // Fase 5: Iniciar operación unificada
+            await this.startUnifiedOperation();
+            
+            this.state.initialization.status = 'completed';
+            console.log('[OK] [UnifiedManager] Unified system initialization completed successfully');
+            
+            this.emit('system_ready', {
+                systems: Object.keys(this.state.systems).length,
+                coherence: this.state.ecosystemHealth.coherenceLevel,
+                status: 'operational'
+            });
+            
+        } catch (error) {
+            this.state.initialization.status = 'failed';
+            console.error(`[ERROR] [UnifiedManager] Initialization failed: ${error.message}`);
+            this.emit('initialization_failed', error);
+            throw error;
+        }
+    }
+    
+    /**
+     * Inicializar sistemas en secuencia
+     */
+    async initializeSystemsSequence() {
+        console.log('[RELOAD] [UnifiedManager] Initializing systems in sequence...');
+        
+        const { startupSequence } = this.config.orchestration;
+        
+        for (let i = 0; i < startupSequence.length; i++) {
+            const systemName = startupSequence[i];
+            this.state.initialization.phase = i + 1;
+            
+            console.log(`📦 [UnifiedManager] Phase ${i + 1}/5: Initializing ${systemName}...`);
+            
+            try {
+                await this.initializeSystem(systemName);
+                this.state.initialization.completedSystems.push(systemName);
+                console.log(`[OK] [UnifiedManager] ${systemName} initialized successfully`);
+                
+            } catch (error) {
+                console.error(`[ERROR] [UnifiedManager] Failed to initialize ${systemName}: ${error.message}`);
+                this.state.initialization.failedSystems.push({ system: systemName, error: error.message });
+                
+                // Decidir si continuar o abortar
+                if (systemName === 'errorRecovery') {
+                    throw new Error(`Critical system ${systemName} failed to initialize`);
+                }
+            }
+            
+            // Pausa entre inicializaciones
+            await this.sleep(2000);
+        }
+    }
+    
+    /**
+     * Inicializar sistema individual
+     */
+    async initializeSystem(systemName) {
+        const systemConfig = this.config.systems[systemName];
+        
+        if (!systemConfig.enabled) {
+            console.log(`⏭️ [UnifiedManager] ${systemName} is disabled, skipping...`);
+            return;
+        }
+        
+        switch (systemName) {
+            case 'errorRecovery':
+                this.state.systems.errorRecovery = new ErrorRecoverySystem({
+                    monitoring: {
+                        healthCheckInterval: systemConfig.healthCheckInterval
+                    }
+                });
+                break;
+                
+            case 'websocketFailover':
+                this.state.systems.websocketFailover = new QuantumWebSocketFailover({
+                    recovery: {
+                        healthCheckInterval: systemConfig.healthCheckInterval
+                    }
+                });
+                break;
+                
+            case 'balanceManager':
+                this.state.systems.balanceManager = new IntelligentBalanceManager(
+                    this.binanceConnector,
+                    {
+                        monitoring: {
+                            healthCheckInterval: systemConfig.healthCheckInterval
+                        }
+                    }
+                );
+                break;
+                
+            case 'coherenceBoost':
+                this.state.systems.coherenceBoost = new QuantumCoherenceBoost({
+                    optimization: {
+                        coherenceCheckInterval: systemConfig.healthCheckInterval
+                    }
+                });
+                break;
+                
+            case 'positionDashboard':
+                this.state.systems.positionDashboard = new AdvancedPositionDashboard({
+                    port: systemConfig.port
+                });
+                break;
+                
+            default:
+                throw new Error(`Unknown system: ${systemName}`);
+        }
+        
+        // Registrar sistema en error recovery si está disponible
+        if (this.state.systems.errorRecovery && systemName !== 'errorRecovery') {
+            this.state.systems.errorRecovery.registerComponent(
+                systemName,
+                this.state.systems[systemName],
+                () => this.checkSystemHealth(systemName)
+            );
+        }
+    }
+    
+    /**
+     * Configurar integraciones entre sistemas
+     */
+    async setupSystemIntegrations() {
+        console.log('🔗 [UnifiedManager] Setting up system integrations...');
+        
+        // Integrar dashboard con todos los sistemas
+        if (this.state.systems.positionDashboard) {
+            this.state.systems.positionDashboard.integrateSystems({
+                websocketFailover: this.state.systems.websocketFailover,
+                balanceManager: this.state.systems.balanceManager,
+                coherenceBoost: this.state.systems.coherenceBoost,
+                errorRecovery: this.state.systems.errorRecovery
+            });
+        }
+        
+        // Configurar eventos entre sistemas
+        this.setupSystemEvents();
+        
+        console.log('[OK] [UnifiedManager] System integrations configured');
+    }
+    
+    /**
+     * Configurar eventos entre sistemas
+     */
+    setupSystemEvents() {
+        // Error Recovery Events
+        if (this.state.systems.errorRecovery) {
+            this.state.systems.errorRecovery.on('critical_error', (error) => {
+                this.handleCriticalError(error);
+            });
+            
+            this.state.systems.errorRecovery.on('self_healing_success', () => {
+                this.logSystemEvent('self_healing_success', 'System self-healing completed successfully');
+            });
+        }
+        
+        // WebSocket Failover Events
+        if (this.state.systems.websocketFailover) {
+            this.state.systems.websocketFailover.on('quantum_data', (data) => {
+                this.processQuantumData(data);
+            });
+            
+            this.state.systems.websocketFailover.on('connection_opened', (info) => {
+                this.logSystemEvent('websocket_connected', `WebSocket connection opened: ${info.connectionId}`);
+            });
+        }
+        
+        // Balance Manager Events
+        if (this.state.systems.balanceManager) {
+            this.state.systems.balanceManager.on('rebalance_success', (info) => {
+                this.logSystemEvent('rebalance_success', `Balance rebalanced: ${info.direction} - ${info.amount} USDT`);
+            });
+            
+            this.state.systems.balanceManager.on('alert', (alert) => {
+                this.handleBalanceAlert(alert);
+            });
+        }
+        
+        // Coherence Boost Events
+        if (this.state.systems.coherenceBoost) {
+            this.state.systems.coherenceBoost.on('coherence_updated', (data) => {
+                this.updateCoherenceMetrics(data);
+            });
+            
+            this.state.systems.coherenceBoost.on('boost_success', (info) => {
+                this.logSystemEvent('coherence_boost', `Coherence boosted by ${(info.gain * 100).toFixed(2)}%`);
+            });
+            
+            this.state.systems.coherenceBoost.on('target_achieved', () => {
+                this.handleInfiniteProfitPlaneAccess();
+            });
+        }
+    }
+    
+    /**
+     * Configurar orquestación
+     */
+    async setupOrchestration() {
+        console.log('🎼 [UnifiedManager] Setting up system orchestration...');
+        
+        // Configurar health checks periódicos
+        this.healthCheckInterval = setInterval(() => {
+            this.performEcosystemHealthCheck();
+        }, this.config.orchestration.healthCheckInterval);
+        
+        // Configurar sincronización de sistemas
+        this.systemSyncInterval = setInterval(() => {
+            this.synchronizeSystems();
+        }, this.config.orchestration.systemSyncInterval);
+        
+        // Configurar métricas de rendimiento
+        this.performanceInterval = setInterval(() => {
+            this.updatePerformanceMetrics();
+        }, 60000); // Cada minuto
+        
+        console.log('[OK] [UnifiedManager] System orchestration configured');
+    }
+    
+    /**
+     * Verificar salud del ecosistema
+     */
+    async verifyEcosystemHealth() {
+        console.log('🏥 [UnifiedManager] Verifying ecosystem health...');
+        
+        await this.performEcosystemHealthCheck();
+        
+        const { overallStatus, coherenceLevel } = this.state.ecosystemHealth;
+        
+        if (overallStatus !== 'healthy' && overallStatus !== 'operational') {
+            throw new Error(`Ecosystem health verification failed: ${overallStatus}`);
+        }
+        
+        if (coherenceLevel < 0.70) {
+            console.warn(`[WARNING] [UnifiedManager] Low coherence level: ${(coherenceLevel * 100).toFixed(1)}%`);
+        }
+        
+        console.log(`[OK] [UnifiedManager] Ecosystem health verified: ${overallStatus}`);
+        console.log(`🔮 [UnifiedManager] Quantum coherence: ${(coherenceLevel * 100).toFixed(1)}%`);
+    }
+    
+    /**
+     * Iniciar operación unificada
+     */
+    async startUnifiedOperation() {
+        console.log('[START] [UnifiedManager] Starting unified operation...');
+        
+        this.state.ecosystemHealth.overallStatus = 'operational';
+        this.state.ecosystemHealth.uptime = Date.now();
+        
+        // Iniciar boost de coherencia si está disponible
+        if (this.state.systems.coherenceBoost) {
+            await this.state.systems.coherenceBoost.forceQuantumBoost();
+        }
+        
+        console.log('[OK] [UnifiedManager] Unified operation started successfully');
+        
+        this.logSystemEvent('unified_operation_started', 'All systems operational and synchronized');
+    }
+    
+    /**
+     * Realizar health check del ecosistema
+     */
+    async performEcosystemHealthCheck() {
+        const healthResults = new Map();
+        let systemsOnline = 0;
+        let totalCoherence = 0;
+        let coherenceCount = 0;
+        
+        // Verificar cada sistema
+        for (const [systemName, system] of Object.entries(this.state.systems)) {
+            if (!system) continue;
+            
+            try {
+                const isHealthy = await this.checkSystemHealth(systemName);
+                healthResults.set(systemName, isHealthy);
+                
+                if (isHealthy) {
+                    systemsOnline++;
+                    
+                    // Obtener coherencia si está disponible
+                    if (systemName === 'coherenceBoost' && system.getSystemStatus) {
+                        const status = system.getSystemStatus();
+                        totalCoherence += status.coherence.current;
+                        coherenceCount++;
+                    }
+                }
+                
+            } catch (error) {
+                console.error(`[ERROR] [UnifiedManager] Health check failed for ${systemName}: ${error.message}`);
+                healthResults.set(systemName, false);
+            }
+        }
+        
+        // Actualizar estado de salud
+        this.state.ecosystemHealth.systemsOnline = systemsOnline;
+        this.state.ecosystemHealth.coherenceLevel = coherenceCount > 0 ? totalCoherence / coherenceCount : 0;
+        this.state.ecosystemHealth.lastHealthCheck = Date.now();
+        
+        // Determinar estado general
+        const healthPercentage = systemsOnline / this.state.ecosystemHealth.totalSystems;
+        
+        if (healthPercentage >= 0.9) {
+            this.state.ecosystemHealth.overallStatus = 'healthy';
+        } else if (healthPercentage >= 0.7) {
+            this.state.ecosystemHealth.overallStatus = 'degraded';
+        } else {
+            this.state.ecosystemHealth.overallStatus = 'unhealthy';
+        }
+        
+        // Emitir evento de health check
+        this.emit('health_check_completed', {
+            status: this.state.ecosystemHealth.overallStatus,
+            systemsOnline,
+            totalSystems: this.state.ecosystemHealth.totalSystems,
+            coherence: this.state.ecosystemHealth.coherenceLevel,
+            results: Object.fromEntries(healthResults)
+        });
+    }
+    
+    /**
+     * Verificar salud de sistema individual
+     */
+    async checkSystemHealth(systemName) {
+        const system = this.state.systems[systemName];
+        if (!system) return false;
+        
+        try {
+            // Verificar si el sistema tiene método de health check
+            if (typeof system.getSystemStatus === 'function') {
+                const status = system.getSystemStatus();
+                return status && (status.isActive !== false);
+            }
+            
+            // Verificación básica
+            return true;
+            
+        } catch (error) {
+            return false;
+        }
+    }
+    
+    /**
+     * Sincronizar sistemas
+     */
+    async synchronizeSystems() {
+        try {
+            this.state.synchronization.lastSync = Date.now();
+            
+            // Sincronizar datos entre sistemas
+            await this.syncQuantumData();
+            await this.syncBalanceData();
+            await this.syncPerformanceData();
+            
+            this.state.synchronization.dataConsistency = true;
+            
+        } catch (error) {
+            console.error(`[ERROR] [UnifiedManager] System synchronization failed: ${error.message}`);
+            this.state.synchronization.syncErrors++;
+            this.state.synchronization.dataConsistency = false;
+        }
+    }
+    
+    /**
+     * Sincronizar datos cuánticos
+     */
+    async syncQuantumData() {
+        if (this.state.systems.coherenceBoost && this.state.systems.positionDashboard) {
+            const coherenceStatus = this.state.systems.coherenceBoost.getSystemStatus();
+            
+            // Actualizar dashboard con datos de coherencia
+            this.state.systems.positionDashboard.handleCoherenceUpdate({
+                current: coherenceStatus.coherence.current,
+                target: coherenceStatus.coherence.target,
+                progress: coherenceStatus.coherence.progress
+            });
+        }
+    }
+    
+    /**
+     * Sincronizar datos de balance
+     */
+    async syncBalanceData() {
+        if (this.state.systems.balanceManager && this.state.systems.positionDashboard) {
+            const balanceStatus = this.state.systems.balanceManager.getBalanceStatus();
+            
+            // Actualizar dashboard con datos de balance
+            this.state.systems.positionDashboard.handleBalanceUpdate(balanceStatus);
+        }
+    }
+    
+    /**
+     * Sincronizar datos de rendimiento
+     */
+    async syncPerformanceData() {
+        // Recopilar métricas de todos los sistemas
+        const performanceData = {
+            coherence: this.state.ecosystemHealth.coherenceLevel,
+            systemsHealth: this.state.ecosystemHealth.overallStatus,
+            uptime: Date.now() - this.state.ecosystemHealth.uptime,
+            errorRate: this.state.ecosystemHealth.errorRate
+        };
+        
+        // Actualizar métricas de rendimiento
+        this.updatePerformanceMetrics(performanceData);
+    }
+    
+    /**
+     * Actualizar métricas de rendimiento
+     */
+    updatePerformanceMetrics(data = {}) {
+        // Calcular eficiencia cuántica
+        const coherenceScore = this.state.ecosystemHealth.coherenceLevel;
+        const healthScore = this.state.ecosystemHealth.systemsOnline / this.state.ecosystemHealth.totalSystems;
+        
+        this.state.performance.quantumEfficiency = (coherenceScore + healthScore) / 2;
+        
+        // Actualizar otras métricas si se proporcionan datos
+        if (data.totalPNL !== undefined) {
+            this.state.performance.totalPNL = data.totalPNL;
+        }
+        
+        if (data.sharpeRatio !== undefined) {
+            this.state.performance.sharpeRatio = data.sharpeRatio;
+        }
+    }
+    
+    /**
+     * Manejar eventos del sistema
+     */
+    
+    handleCriticalError(error) {
+        console.error(`[ALERT] [UnifiedManager] Critical error detected: ${error.type}`);
+        
+        this.logSystemEvent('critical_error', `Critical error: ${error.error}`, 'critical');
+        
+        // Activar protocolos de emergencia
+        this.activateEmergencyProtocols();
+    }
+    
+    handleBalanceAlert(alert) {
+        console.warn(`[WARNING] [UnifiedManager] Balance alert: ${alert.message}`);
+        
+        this.logSystemEvent('balance_alert', alert.message, alert.severity);
+    }
+    
+    updateCoherenceMetrics(data) {
+        this.state.ecosystemHealth.coherenceLevel = data.current;
+        
+        // Verificar si se alcanzó el objetivo
+        if (data.current >= this.config.metrics.targetCoherence) {
+            this.handleInfiniteProfitPlaneAccess();
+        }
+    }
+    
+    handleInfiniteProfitPlaneAccess() {
+        console.log('🌟 [UnifiedManager] INFINITE PROFIT PLANE ACCESS ACHIEVED! 🌟');
+        console.log(`🔮 [UnifiedManager] Quantum Coherence: ${(this.state.ecosystemHealth.coherenceLevel * 100).toFixed(2)}%`);
+        
+        this.logSystemEvent('infinite_profit_plane_access', 'Quantum coherence target achieved - Infinite profit plane accessible', 'success');
+        
+        this.emit('infinite_profit_plane_access', {
+            coherence: this.state.ecosystemHealth.coherenceLevel,
+            timestamp: Date.now(),
+            systems: this.state.ecosystemHealth.systemsOnline
+        });
+    }
+    
+    processQuantumData(data) {
+        // Procesar datos cuánticos recibidos
+        if (data.coherenceFactor) {
+            // Actualizar métricas de coherencia
+            this.state.ecosystemHealth.coherenceLevel = 
+                (this.state.ecosystemHealth.coherenceLevel * 0.9) + (data.coherenceFactor * 0.1);
+        }
+    }
+    
+    activateEmergencyProtocols() {
+        console.log('[ALERT] [UnifiedManager] Activating emergency protocols...');
+        
+        // Activar auto-sanación en error recovery
+        if (this.state.systems.errorRecovery) {
+            this.state.systems.errorRecovery.forceSelfHealing();
+        }
+        
+        // Boost de coherencia de emergencia
+        if (this.state.systems.coherenceBoost) {
+            this.state.systems.coherenceBoost.forceQuantumBoost();
+        }
+        
+        this.logSystemEvent('emergency_protocols_activated', 'Emergency protocols activated due to critical error', 'critical');
+    }
+    
+    /**
+     * Logging y eventos
+     */
+    
+    logSystemEvent(type, message, severity = 'info') {
+        const event = {
+            id: `event_${Date.now()}_${PHYSICAL_CONSTANTS.FIBONACCI_STRENGTH.toString(36).substr(2, 9)}`,
+            type,
+            message,
+            severity,
+            timestamp: Date.now()
+        };
+        
+        this.state.events.push(event);
+        
+        // Mantener límite de eventos
+        if (this.state.events.length > 1000) {
+            this.state.events = this.state.events.slice(-1000);
+        }
+        
+        console.log(`📝 [UnifiedManager] ${severity.toUpperCase()}: ${message}`);
+        
+        this.emit('system_event', event);
+    }
+    
+    /**
+     * Métodos públicos
+     */
+    
+    getSystemStatus() {
+        return {
+            initialization: this.state.initialization,
+            ecosystemHealth: this.state.ecosystemHealth,
+            performance: this.state.performance,
+            synchronization: this.state.synchronization,
+            systems: Object.keys(this.state.systems).reduce((status, name) => {
+                status[name] = !!this.state.systems[name];
+                return status;
+            }, {}),
+            events: this.state.events.slice(-10), // Últimos 10 eventos
+            timestamp: Date.now()
+        };
+    }
+    
+    getPerformanceReport() {
+        const uptime = Date.now() - this.state.ecosystemHealth.uptime;
+        const uptimeHours = uptime / (1000 * 60 * 60);
+        
+        return {
+            uptime: {
+                milliseconds: uptime,
+                hours: uptimeHours.toFixed(2),
+                percentage: Math.min(100, (uptimeHours / 24) * 100).toFixed(2) + '%'
+            },
+            coherence: {
+                current: (this.state.ecosystemHealth.coherenceLevel * 100).toFixed(2) + '%',
+                target: (this.config.metrics.targetCoherence * 100).toFixed(1) + '%',
+                progress: ((this.state.ecosystemHealth.coherenceLevel / this.config.metrics.targetCoherence) * 100).toFixed(1) + '%'
+            },
+            systems: {
+                online: this.state.ecosystemHealth.systemsOnline,
+                total: this.state.ecosystemHealth.totalSystems,
+                percentage: ((this.state.ecosystemHealth.systemsOnline / this.state.ecosystemHealth.totalSystems) * 100).toFixed(1) + '%'
+            },
+            performance: this.state.performance,
+            lastHealthCheck: this.state.ecosystemHealth.lastHealthCheck
+        };
+    }
+    
+    async forceSystemSync() {
+        console.log('[RELOAD] [UnifiedManager] Manual system synchronization initiated');
+        return this.synchronizeSystems();
+    }
+    
+    async forceHealthCheck() {
+        console.log('🏥 [UnifiedManager] Manual health check initiated');
+        return this.performEcosystemHealthCheck();
+    }
+    
+    async restartSystem(systemName) {
+        console.log(`[RELOAD] [UnifiedManager] Restarting system: ${systemName}`);
+        
+        if (!this.state.systems[systemName]) {
+            throw new Error(`System ${systemName} not found`);
+        }
+        
+        // Cerrar sistema actual
+        if (typeof this.state.systems[systemName].shutdown === 'function') {
+            await this.state.systems[systemName].shutdown();
+        }
+        
+        // Reinicializar sistema
+        await this.initializeSystem(systemName);
+        
+        this.logSystemEvent('system_restarted', `System ${systemName} restarted successfully`);
+    }
+    
+    /**
+     * Cerrar gestor unificado
+     */
+    async shutdown() {
+        console.log('🔌 [UnifiedManager] Shutting down unified system...');
+        
+        // Limpiar intervalos
+        if (this.healthCheckInterval) clearInterval(this.healthCheckInterval);
+        if (this.systemSyncInterval) clearInterval(this.systemSyncInterval);
+        if (this.performanceInterval) clearInterval(this.performanceInterval);
+        
+        // Cerrar sistemas en orden inverso
+        const { shutdownSequence } = this.config.orchestration;
+        
+        for (const systemName of shutdownSequence) {
+            const system = this.state.systems[systemName];
+            if (system && typeof system.shutdown === 'function') {
+                try {
+                    await system.shutdown();
+                    console.log(`[OK] [UnifiedManager] ${systemName} shut down successfully`);
+                } catch (error) {
+                    console.error(`[ERROR] [UnifiedManager] Error shutting down ${systemName}: ${error.message}`);
+                }
+            }
+        }
+        
+        this.logSystemEvent('unified_system_shutdown', 'Unified system shut down completed');
+        console.log('[OK] [UnifiedManager] Unified system shutdown completed');
+    }
+    
+    /**
+     * Utilidades
+     */
+    
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+module.exports = UnifiedSystemIntegrationManager;

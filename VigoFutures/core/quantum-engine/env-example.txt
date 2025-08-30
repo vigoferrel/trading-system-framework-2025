@@ -1,0 +1,13 @@
+# VigoFutures Environment Configuration Example
+# Copy this file to .env and modify as needed
+
+# Quantum Core Server Configuration
+UNIFIED_SERVER_PORT=18020
+
+# Coordinator Configuration
+SINGLE_SERVER_MODE=true
+COORDINATOR_PORT=3000
+
+# Additional configuration options can be added here
+# LOG_LEVEL=info
+# DEBUG_MODE=false

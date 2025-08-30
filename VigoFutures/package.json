@@ -1,0 +1,16 @@
+{
+  "name": "vigofutures",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lanzador unificado de Quantum Core + Coordinator para VigoFutures",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}

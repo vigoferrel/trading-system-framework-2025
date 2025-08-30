@@ -1,0 +1,5 @@
+<svg width="384" height="384" xmlns="http://www.w3.org/2000/svg">
+        <rect width="384" height="384" fill="#00d4ff"/>
+        <circle cx="192" cy="192" r="128" fill="#ffffff" opacity="0.8"/>
+        <text x="192" y="224" text-anchor="middle" font-family="Arial" font-size="64" fill="#006699">Q</text>
+    </svg>

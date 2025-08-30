@@ -1,0 +1,226 @@
+# 🚫 QBTC Trading System - .gitignore
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+.vite/
+.nuxt/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+
+# API Keys & Secrets
+api-keys.json
+secrets.json
+credentials.json
+.secrets/
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.npm/
+.yarn/
+.pnpm-debug.log
+.eslintcache
+
+# IDE & Editor files
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Runtime logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pino-pretty.log
+
+# Trading specific
+trading-data/
+market-data-cache/
+backtest-results/
+historical-data/
+*.csv
+*.xlsx
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+*.tmp
+
+# Performance monitoring
+.trace/
+profile.json
+
+# Documentation build
+docs/_build/
+site/
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Local development
+.local/
+local-config.json
+dev-config.json
+
+# Webpack
+.webpack/
+webpack-stats.json
+
+# Storybook
+storybook-static/
+chromatic-build/
+
+# ESLint
+.eslintcache
+
+# Stylelint
+.stylelintcache
+
+# Prettier
+.prettiercache
+
+# Package managers
+package-lock.json.bak
+yarn.lock.bak
+
+# Docker
+Dockerfile.local
+docker-compose.override.yml
+.dockerignore.local
+
+# Terraform (si usas infrastructure as code)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Kubernetes
+*.kubeconfig
+k8s-secrets.yaml
+
+# CI/CD específicos
+.github/workflows/*.local.yml
+.gitignore.local
+
+# Monitoring & Analytics
+.analytics/
+.monitoring/
+newrelic_agent.log
+
+# Machine Learning models (si aplica)
+*.pkl
+*.joblib
+models/
+checkpoints/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Python (si tienes scripts de análisis)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+ENV/
+
+# R (si usas R para análisis)
+.Rhistory
+.RData
+.Ruserdata
+
+# Logs específicos del trading bot
+bot-logs/
+trade-logs/
+error-logs/
+performance-logs/
+
+# Configuration overrides
+config.local.js
+config.local.json
+config.override.*
+
+# Reports que no deben versionarse
+reports/private/
+reports/sensitive/
+reports/production/
+
+# Keep important directories but ignore content
+data/.gitkeep
+logs/.gitkeep
+reports/.gitkeep
+
+# Allow specific files that should be versioned
+!.env.example
+!.env.template
+!config.example.js
+!docker-compose.example.yml
+
+# Final catch-all for any sensitive data
+*secret*
+*private*
+*confidential*
+*key*
+*password*
+*token*
+*credential*

@@ -1,0 +1,22 @@
+[
+  {
+    "label": "tests",
+    "message": "28/28 passing",
+    "color": "brightgreen"
+  },
+  {
+    "label": "coverage",
+    "message": "96.49%",
+    "color": "brightgreen"
+  },
+  {
+    "label": "performance",
+    "message": "needs-work",
+    "color": "orange"
+  },
+  {
+    "label": "quality",
+    "message": "excellent",
+    "color": "brightgreen"
+  }
+]

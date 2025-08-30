@@ -1,0 +1,274 @@
+{
+  "mcp_crypto_configuration": {
+    "server_name": "brave-crypto-neural-mcp",
+    "version": "2.0.0",
+    "description": "Configuración MCP Brave optimizada para análisis neural crypto y tasas de cambio psicológicas",
+    "port": 9847,
+    "api_key_env": "BRAVE_SEARCH_API_KEY",
+    
+    "search_automation": {
+      "enabled": true,
+      "base_interval": 300000,
+      "adaptive_frequency": true,
+      "volatility_boost": true,
+      "psychological_triggers": true
+    },
+    
+    "crypto_queries": {
+      "core_assets": {
+        "bitcoin": [
+          "Bitcoin BTC precio análisis técnico hoy",
+          "Bitcoin whales movimientos grandes carteras",
+          "BTC dominance market cap tendencia",
+          "Bitcoin funding rate perpetual futures",
+          "BTC fear greed index sentiment análisis",
+          "Bitcoin institutional adoption noticias",
+          "BTC halving impact mercado crypto",
+          "Bitcoin mining hashrate difficulty"
+        ],
+        
+        "ethereum": [
+          "Ethereum ETH precio predicción análisis",
+          "ETH gas fees network congestion",
+          "Ethereum DeFi TVL total value locked",
+          "ETH 2.0 staking rewards yield",
+          "Ethereum NFT market volume trends",
+          "ETH burn rate EIP-1559 deflación",
+          "Ethereum Layer 2 adoption scaling",
+          "ETH merge proof of stake impact"
+        ],
+        
+        "binance": [
+          "Binance BNB token price analysis",
+          "BNB burn quarterly token destruction",
+          "Binance Smart Chain BSC activity",
+          "BNB staking rewards validator",
+          "Binance exchange volume dominance",
+          "BNB ecosystem projects development",
+          "Binance regulatory news compliance",
+          "BNB launchpad new projects"
+        ]
+      },
+      
+      "market_sentiment": [
+        "crypto market sentiment fear greed",
+        "cryptocurrency market psychology analysis",
+        "crypto FOMO euphoria market tops",
+        "crypto panic selling market bottoms",
+        "institutional crypto adoption news",
+        "crypto market manipulation pump dump",
+        "cryptocurrency retail vs institutional",
+        "crypto market cycles bull bear patterns"
+      ],
+      
+      "technical_analysis": [
+        "crypto technical analysis patterns",
+        "cryptocurrency support resistance levels",
+        "crypto RSI MACD indicators signals",
+        "cryptocurrency volume analysis breakout",
+        "crypto Fibonacci retracement levels",
+        "cryptocurrency momentum oscillators",
+        "crypto chart patterns head shoulders",
+        "cryptocurrency trend analysis moving averages"
+      ],
+      
+      "macroeconomic": [
+        "Federal Reserve interest rates crypto",
+        "inflation impact cryptocurrency prices",
+        "DXY dollar strength crypto correlation",
+        "stock market crypto correlation analysis",
+        "global economic recession crypto impact",
+        "central bank digital currency CBDC",
+        "cryptocurrency regulation government policy",
+        "traditional finance crypto adoption"
+      ],
+      
+      "on_chain": [
+        "Bitcoin blockchain whale movements",
+        "Ethereum whale transactions large transfers",
+        "crypto exchange inflows outflows",
+        "cryptocurrency stablecoin market cap",
+        "crypto derivatives funding rates",
+        "cryptocurrency futures open interest",
+        "crypto options max pain levels",
+        "blockchain network activity metrics"
+      ]
+    },
+    
+    "search_filters": {
+      "time_ranges": {
+        "ultra_fresh": "1h",
+        "very_fresh": "6h", 
+        "fresh": "24h",
+        "recent": "3d",
+        "weekly": "7d"
+      },
+      
+      "priority_sources": [
+        "cointelegraph.com",
+        "coindesk.com",
+        "decrypt.co",
+        "theblock.co",
+        "cryptoslate.com",
+        "cryptonews.com",
+        "ambcrypto.com",
+        "cryptopotato.com",
+        "binance.com/blog",
+        "ethereum.org/blog",
+        "bitcoin.org/blog",
+        "blog.coinbase.com",
+        "kraken.com/blog",
+        "gemini.com/blog"
+      ],
+      
+      "social_sources": [
+        "twitter.com",
+        "reddit.com/r/cryptocurrency",
+        "reddit.com/r/bitcoin",
+        "reddit.com/r/ethereum",
+        "reddit.com/r/binance"
+      ],
+      
+      "languages": ["es", "en"],
+      "content_types": ["news", "analysis", "market_data", "social"],
+      "quality_threshold": 0.7
+    },
+    
+    "psychological_integration": {
+      "enabled": true,
+      "sentiment_analysis": true,
+      "emotional_triggers": [
+        "FOMO",
+        "fear",
+        "greed", 
+        "panic",
+        "euphoria",
+        "optimism",
+        "pessimism",
+        "anxiety",
+        "confidence",
+        "uncertainty"
+      ],
+      
+      "market_phases": {
+        "accumulation": {
+          "keywords": ["bottom", "accumulation", "buy opportunity", "undervalued"],
+          "queries_boost": 1.5
+        },
+        "markup": {
+          "keywords": ["bullish", "breakout", "rally", "moon", "pump"],
+          "queries_boost": 2.0
+        },
+        "distribution": {
+          "keywords": ["top", "resistance", "overbought", "sell signal"],
+          "queries_boost": 1.8
+        },
+        "decline": {
+          "keywords": ["crash", "dump", "bearish", "collapse", "panic"],
+          "queries_boost": 2.5
+        }
+      }
+    },
+    
+    "adaptive_scheduling": {
+      "base_intervals": {
+        "ultra_high_volatility": 60000,
+        "high_volatility": 180000,
+        "normal_volatility": 300000,
+        "low_volatility": 600000,
+        "minimal_volatility": 900000
+      },
+      
+      "session_multipliers": {
+        "asian_session": 1.2,
+        "european_session": 1.5,
+        "american_session": 1.8,
+        "overlap_sessions": 2.0
+      },
+      
+      "event_triggers": {
+        "fed_announcements": 0.5,
+        "earnings_releases": 0.8,
+        "crypto_listings": 0.3,
+        "regulatory_news": 0.4,
+        "whale_movements": 0.6
+      }
+    },
+    
+    "neural_integration": {
+      "quantum_enhancement": true,
+      "feedback_loop": true,
+      "learning_rate": 0.1,
+      "adaptation_speed": 0.05,
+      
+      "data_mapping": {
+        "sentiment_to_psychological": {
+          "very_positive": "EUFORIA",
+          "positive": "OPTIMISMO", 
+          "neutral": "NEUTRAL",
+          "negative": "PESIMISMO",
+          "very_negative": "PANICO"
+        },
+        
+        "news_impact_scoring": {
+          "regulatory": 0.9,
+          "institutional_adoption": 0.8,
+          "technical_development": 0.6,
+          "market_analysis": 0.7,
+          "social_sentiment": 0.5
+        }
+      }
+    },
+    
+    "output_formatting": {
+      "response_format": "json",
+      "include_metadata": true,
+      "include_confidence_scores": true,
+      "include_source_quality": true,
+      
+      "data_structure": {
+        "timestamp": "iso_string",
+        "query_id": "uuid",
+        "search_query": "string",
+        "results_count": "number",
+        "psychological_state": "enum",
+        "sentiment_score": "float_0_1",
+        "confidence_level": "float_0_1",
+        "quantum_enhancement": "float_0_1",
+        "results": "array",
+        "metadata": "object"
+      }
+    },
+    
+    "performance_optimization": {
+      "cache_enabled": true,
+      "cache_duration": 300000,
+      "parallel_requests": 5,
+      "rate_limiting": {
+        "requests_per_minute": 60,
+        "burst_allowance": 10
+      },
+      
+      "error_handling": {
+        "retry_attempts": 3,
+        "backoff_strategy": "exponential",
+        "fallback_responses": true,
+        "circuit_breaker": true
+      }
+    },
+    
+    "monitoring": {
+      "health_checks": true,
+      "performance_metrics": true,
+      "usage_statistics": true,
+      "error_logging": true,
+      
+      "alerts": {
+        "api_failures": true,
+        "rate_limit_exceeded": true,
+        "low_data_quality": true,
+        "unusual_patterns": true
+      }
+    }
+  }
+}
