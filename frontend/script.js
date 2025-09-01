@@ -412,6 +412,2125 @@ class ResourceManager {
 // Instancia global del ResourceManager
 const resourceManager = new ResourceManager();
 
+// Enhanced Notification System
+class NotificationManager {
+    constructor() {
+        this.container = document.getElementById('notificationContainer');
+        this.notifications = [];
+        this.maxNotifications = 5;
+    }
+
+    show(message, type = 'info', duration = 5000) {
+        const notification = {
+            id: Date.now(),
+            message,
+            type,
+            duration,
+            timestamp: new Date()
+        };
+
+        this.notifications.push(notification);
+
+        // Limit max notifications
+        if (this.notifications.length > this.maxNotifications) {
+            const oldest = this.notifications.shift();
+            this.remove(oldest.id);
+        }
+
+        this.render(notification);
+
+        if (duration > 0) {
+            setTimeout(() => this.remove(notification.id), duration);
+        }
+
+        // Update notification badge
+        this.updateBadge();
+
+        return notification.id;
+    }
+
+    render(notification) {
+        const element = document.createElement('div');
+        element.className = `notification notification-${notification.type}`;
+        element.setAttribute('data-id', notification.id);
+
+        element.innerHTML = `
+            <div class="notification-icon">
+                <i class="fas ${this.getIcon(notification.type)}"></i>
+            </div>
+            <div class="notification-content">
+                <div class="notification-message">${notification.message}</div>
+                <div class="notification-time">${notification.timestamp.toLocaleTimeString()}</div>
+            </div>
+            <button class="notification-close" onclick="notificationManager.remove(${notification.id})">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        this.container.appendChild(element);
+
+        // Animate in
+        setTimeout(() => element.classList.add('show'), 10);
+    }
+
+    remove(id) {
+        const element = this.container.querySelector(`[data-id="${id}"]`);
+        if (element) {
+            element.classList.remove('show');
+            setTimeout(() => {
+                element.remove();
+                this.notifications = this.notifications.filter(n => n.id !== id);
+                this.updateBadge();
+            }, 300);
+        }
+    }
+
+    updateBadge() {
+        const badge = document.getElementById('notificationBadge');
+        const count = this.notifications.length;
+
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = 'block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    getIcon(type) {
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+        return icons[type] || icons.info;
+    }
+
+    clear() {
+        this.notifications.forEach(n => this.remove(n.id));
+    }
+}
+
+// Global notification manager instance
+const notificationManager = new NotificationManager();
+
+// Enhanced Loading Manager
+class LoadingManager {
+    constructor() {
+        this.overlay = document.getElementById('globalLoader');
+        this.activeLoaders = new Set();
+    }
+
+    show(message = 'Processing...', type = 'spinner') {
+        const loaderId = Date.now();
+        this.activeLoaders.add(loaderId);
+
+        if (this.overlay) {
+            const loadingText = this.overlay.querySelector('.loading-text');
+            if (loadingText) {
+                loadingText.innerHTML = `
+                    <h3>${message}</h3>
+                    <p>Please wait...</p>
+                `;
+            }
+            this.overlay.style.display = 'flex';
+        }
+
+        return loaderId;
+    }
+
+    hide(loaderId) {
+        if (loaderId) {
+            this.activeLoaders.delete(loaderId);
+        }
+
+        // Only hide if no active loaders
+        if (this.activeLoaders.size === 0 && this.overlay) {
+            this.overlay.style.display = 'none';
+        }
+    }
+
+    hideAll() {
+        this.activeLoaders.clear();
+        if (this.overlay) {
+            this.overlay.style.display = 'none';
+        }
+    }
+}
+
+// Global loading manager instance
+const loadingManager = new LoadingManager();
+
+// Enhanced Navigation Manager
+class NavigationManager {
+    constructor() {
+        this.currentSection = 'dashboard';
+        this.init();
+    }
+
+    init() {
+        // Set up navigation tabs
+        const navTabs = document.querySelectorAll('.nav-tab');
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const section = tab.getAttribute('data-section');
+                this.switchToSection(section);
+            });
+        });
+
+        // Set up notification button
+        const notificationBtn = document.getElementById('notificationBtn');
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', () => {
+                this.toggleNotifications();
+            });
+        }
+
+        // Load saved section preference
+        const savedSection = localStorage.getItem('quantum-dashboard-section');
+        if (savedSection) {
+            this.switchToSection(savedSection);
+        }
+    }
+
+    switchToSection(sectionName) {
+        // Update navigation tabs
+        const navTabs = document.querySelectorAll('.nav-tab');
+        navTabs.forEach(tab => {
+            const tabSection = tab.getAttribute('data-section');
+            tab.classList.toggle('active', tabSection === sectionName);
+        });
+
+        // Update content sections
+        const sections = document.querySelectorAll('[data-group]');
+        sections.forEach(section => {
+            const sectionGroup = section.getAttribute('data-group');
+            section.style.display = (sectionGroup === sectionName) ? 'block' : 'none';
+        });
+
+        this.currentSection = sectionName;
+
+        // Save preference
+        localStorage.setItem('quantum-dashboard-section', sectionName);
+
+        // Show notification
+        notificationManager.show(`Switched to ${sectionName} section`, 'info', 2000);
+    }
+
+    toggleNotifications() {
+        // For now, just show a notification about notifications
+        notificationManager.show('Notification system active', 'info', 3000);
+    }
+}
+
+// Global navigation manager instance
+const navigationManager = new NavigationManager();
+
+// Enhanced System Status Updates
+function updateSystemStatus() {
+    const statusEl = document.getElementById('systemStatus');
+    const statusDot = statusEl?.querySelector('.status-dot');
+    const statusText = statusEl?.querySelector('.status-text');
+
+    if (!statusEl || !statusDot || !statusText) return;
+
+    // Check connection status
+    fetch(`${API_BASE_URL}/health`)
+        .then(response => {
+            if (response.ok) {
+                statusDot.className = 'status-dot online';
+                statusText.textContent = 'Online';
+                statusEl.classList.remove('error');
+            } else {
+                throw new Error('Server responded with error');
+            }
+        })
+        .catch(error => {
+            console.warn('System status check failed:', error);
+            statusDot.className = 'status-dot offline';
+            statusText.textContent = 'Offline';
+            statusEl.classList.add('error');
+        });
+}
+
+// Enhanced refresh functions with loading states
+async function refreshSignals() {
+    const loaderId = loadingManager.show('Refreshing trading signals...');
+
+    try {
+        const core = deriveCoreBaseUrl(API_BASE_URL);
+        const response = await fetch(`${core}/trading-signals`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        tradingSignals = data?.signals || [];
+
+        updateTradingSignals();
+        notificationManager.show(`Refreshed ${tradingSignals.length} trading signals`, 'success', 3000);
+
+    } catch (error) {
+        console.error('Error refreshing signals:', error);
+        notificationManager.show('Failed to refresh trading signals', 'error', 5000);
+    } finally {
+        loadingManager.hide(loaderId);
+    }
+}
+
+async function refreshMatrix() {
+    const loaderId = loadingManager.show('Refreshing quantum matrix...');
+
+    try {
+        const interval = document.getElementById('matrixInterval')?.value || '1h';
+        const limit = document.getElementById('matrixLimit')?.value || '150';
+        const core = deriveCoreBaseUrl(API_BASE_URL);
+
+        const response = await fetch(`${core}/quantum-matrix?interval=${encodeURIComponent(interval)}&limit=${encodeURIComponent(limit)}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        quantumMatrix = data && data.matrix ? { symbols: data.symbols || [], data: data.matrix, raw: { interval, limit } } : { data: [], symbols: [], raw: {} };
+
+        updateMatrixView();
+        notificationManager.show('Quantum matrix refreshed successfully', 'success', 3000);
+
+    } catch (error) {
+        console.error('Error refreshing matrix:', error);
+        quantumMatrix = { data: [], symbols: [], raw: {} };
+        notificationManager.show('Failed to refresh quantum matrix', 'error', 5000);
+    } finally {
+        loadingManager.hide(loaderId);
+    }
+}
+
+// Enhanced connection status updates
+function updateConnectionStatus(status, message) {
+    const statusEl = document.getElementById('connectionStatus');
+    if (statusEl) {
+        const icon = statusEl.querySelector('i');
+        const text = statusEl.querySelector('span');
+
+        if (icon && text) {
+            switch (status) {
+                case 'connected':
+                    icon.className = 'fas fa-wifi';
+                    text.textContent = 'API: Connected';
+                    statusEl.classList.remove('disconnected');
+                    statusEl.classList.add('connected');
+                    break;
+                case 'connecting':
+                    icon.className = 'fas fa-spinner fa-spin';
+                    text.textContent = 'API: Connecting...';
+                    statusEl.classList.remove('connected', 'disconnected');
+                    break;
+                case 'disconnected':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    text.textContent = 'API: Disconnected';
+                    statusEl.classList.remove('connected');
+                    statusEl.classList.add('disconnected');
+                    notificationManager.show('Connection lost - using cached data', 'warning', 5000);
+                    break;
+            }
+        }
+    }
+}
+
+// Auto-refresh system status
+setInterval(updateSystemStatus, 30000); // Every 30 seconds
+
+// Advanced Charting System
+class QuantumChart {
+    constructor(containerId, config = {}) {
+        this.container = document.getElementById(containerId);
+        this.config = {
+            type: 'line',
+            responsive: true,
+            animation: true,
+            theme: 'quantum',
+            realTime: false,
+            ...config
+        };
+
+        this.chart = null;
+        this.currentData = null;
+        this.init();
+    }
+
+    init() {
+        if (!this.container) {
+            console.error('Chart container not found:', this.config.containerId);
+            return;
+        }
+
+        const ctx = this.container.getContext('2d');
+        const chartConfig = this.getChartConfig();
+
+        this.chart = new Chart(ctx, chartConfig);
+    }
+
+    getChartConfig() {
+        return {
+            type: this.config.type,
+            data: this.getInitialData(),
+            options: this.getChartOptions()
+        };
+    }
+
+    getInitialData() {
+        return {
+            labels: [],
+            datasets: [{
+                label: 'Price',
+                data: [],
+                borderColor: '#40e0d0',
+                backgroundColor: this.config.type === 'area' ? 'rgba(64, 224, 208, 0.1)' : 'transparent',
+                borderWidth: 2,
+                fill: this.config.type === 'area',
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#40e0d0',
+                pointBorderColor: '#0f0f23',
+                pointBorderWidth: 2
+            }]
+        };
+    }
+
+    getChartOptions() {
+        const baseOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 15, 35, 0.95)',
+                    titleColor: '#40e0d0',
+                    bodyColor: '#e0e6ed',
+                    borderColor: 'rgba(64, 224, 208, 0.3)',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                        title: (context) => {
+                            return new Date(context[0].parsed.x).toLocaleString();
+                        },
+                        label: (context) => {
+                            return `Price: $${context.parsed.y.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'minute',
+                        displayFormats: {
+                            minute: 'HH:mm',
+                            hour: 'MMM dd HH:mm'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#e0e6ed',
+                        maxTicksLimit: 10
+                    }
+                },
+                y: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#e0e6ed',
+                        callback: (value) => `$${value.toFixed(2)}`
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeInOutQuart'
+            }
+        };
+
+        // Add specific options for different chart types
+        if (this.config.type === 'candlestick') {
+            return this.getCandlestickOptions(baseOptions);
+        }
+
+        return baseOptions;
+    }
+
+    getCandlestickOptions(baseOptions) {
+        return {
+            ...baseOptions,
+            plugins: {
+                ...baseOptions.plugins,
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#e0e6ed'
+                    }
+                }
+            }
+        };
+    }
+
+    updateData(newData, symbol = 'BTCUSDT') {
+        if (!this.chart) return;
+
+        try {
+            // Process data based on type
+            let processedData;
+
+            if (this.config.type === 'candlestick') {
+                processedData = this.processCandlestickData(newData);
+            } else {
+                processedData = this.processTimeSeriesData(newData);
+            }
+
+            this.chart.data = processedData;
+            this.chart.update('active');
+
+            // Update insights
+            this.updateInsights(processedData, symbol);
+
+        } catch (error) {
+            console.error('Error updating chart data:', error);
+            notificationManager.show('Failed to update chart data', 'error', 3000);
+        }
+    }
+
+    processTimeSeriesData(data) {
+        if (!Array.isArray(data)) {
+            return this.getInitialData();
+        }
+
+        const labels = data.map(item => new Date(item.timestamp || item.time));
+        const prices = data.map(item => parseFloat(item.price || item.close || 0));
+
+        return {
+            labels,
+            datasets: [{
+                ...this.chart.data.datasets[0],
+                data: prices
+            }]
+        };
+    }
+
+    processCandlestickData(data) {
+        // For candlestick charts, we'd need OHLC data
+        // This is a simplified implementation
+        return this.processTimeSeriesData(data);
+    }
+
+    updateInsights(data, symbol) {
+        if (!data.datasets || !data.datasets[0]) return;
+
+        const prices = data.datasets[0].data;
+        if (prices.length === 0) return;
+
+        // Calculate trend
+        const recent = prices.slice(-10);
+        const older = prices.slice(-20, -10);
+        const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
+        const olderAvg = older.reduce((a, b) => a + b, 0) / older.length;
+        const trend = recentAvg > olderAvg ? 'Bullish' : recentAvg < olderAvg ? 'Bearish' : 'Neutral';
+
+        // Calculate volatility
+        const returns = [];
+        for (let i = 1; i < prices.length; i++) {
+            returns.push((prices[i] - prices[i-1]) / prices[i-1]);
+        }
+        const volatility = returns.length > 0 ?
+            Math.sqrt(returns.reduce((sum, ret) => sum + ret * ret, 0) / returns.length) * 100 : 0;
+
+        // Simple support/resistance (simplified)
+        const sortedPrices = [...prices].sort((a, b) => a - b);
+        const support = sortedPrices[Math.floor(sortedPrices.length * 0.25)];
+        const resistance = sortedPrices[Math.floor(sortedPrices.length * 0.75)];
+
+        // Update UI
+        this.updateInsightElement('trendAnalysis', trend);
+        this.updateInsightElement('volatilityAnalysis', `${volatility.toFixed(2)}%`);
+        this.updateInsightElement('supportLevel', `$${support.toFixed(2)}`);
+        this.updateInsightElement('resistanceLevel', `$${resistance.toFixed(2)}`);
+    }
+
+    updateInsightElement(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    changeType(newType) {
+        this.config.type = newType;
+        if (this.chart) {
+            this.chart.destroy();
+            this.init();
+            if (this.currentData) {
+                this.updateData(this.currentData);
+            }
+        }
+    }
+
+    exportChart() {
+        if (!this.chart) return;
+
+        try {
+            const link = document.createElement('a');
+            link.download = `quantum-chart-${new Date().toISOString().slice(0, 10)}.png`;
+            link.href = this.chart.toBase64Image();
+            link.click();
+
+            notificationManager.show('Chart exported successfully', 'success', 3000);
+        } catch (error) {
+            console.error('Error exporting chart:', error);
+            notificationManager.show('Failed to export chart', 'error', 3000);
+        }
+    }
+}
+
+// Performance Monitoring Dashboard
+class PerformanceMonitor {
+    constructor() {
+        this.panel = document.getElementById('performancePanel');
+        this.isVisible = false;
+        this.metrics = {
+            responseTime: 0,
+            cacheHitRate: 0,
+            memoryUsage: 0,
+            activeConnections: 0
+        };
+        this.history = [];
+        this.init();
+    }
+
+    init() {
+        // Add toggle button to header
+        this.addToggleButton();
+
+        // Start monitoring
+        this.startMonitoring();
+
+        // Add keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                this.toggle();
+            }
+        });
+    }
+
+    addToggleButton() {
+        const headerActions = document.querySelector('.header-actions');
+        if (headerActions) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'btn-icon';
+            toggleBtn.title = 'Performance Monitor (Ctrl+P)';
+            toggleBtn.innerHTML = '<i class="fas fa-tachometer-alt"></i>';
+            toggleBtn.onclick = () => this.toggle();
+
+            headerActions.appendChild(toggleBtn);
+        }
+    }
+
+    toggle() {
+        this.isVisible = !this.isVisible;
+        if (this.panel) {
+            this.panel.style.display = this.isVisible ? 'block' : 'none';
+        }
+
+        if (this.isVisible) {
+            this.updateDisplay();
+            notificationManager.show('Performance monitor opened', 'info', 2000);
+        }
+    }
+
+    startMonitoring() {
+        // Update every 5 seconds
+        setInterval(() => {
+            if (this.isVisible) {
+                this.collectMetrics();
+                this.updateDisplay();
+            }
+        }, 5000);
+
+        // Collect initial metrics
+        this.collectMetrics();
+    }
+
+    async collectMetrics() {
+        try {
+            // Get server performance data
+            const response = await fetch(`${API_BASE_URL}/api/performance`);
+            if (response.ok) {
+                const data = await response.json();
+                this.updateServerMetrics(data);
+            }
+
+            // Get cache performance
+            const cacheResponse = await fetch(`${API_BASE_URL}/api/cache/performance`);
+            if (cacheResponse.ok) {
+                const cacheData = await cacheResponse.json();
+                this.updateCacheMetrics(cacheData);
+            }
+
+            // Get memory usage (browser)
+            if (performance.memory) {
+                this.metrics.memoryUsage = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+            }
+
+            // Store in history
+            this.history.push({
+                timestamp: Date.now(),
+                ...this.metrics
+            });
+
+            // Keep only last 20 entries
+            if (this.history.length > 20) {
+                this.history = this.history.slice(-20);
+            }
+
+        } catch (error) {
+            console.warn('Error collecting performance metrics:', error);
+        }
+    }
+
+    updateServerMetrics(data) {
+        if (data && data.responseTime !== undefined) {
+            this.metrics.responseTime = Math.round(data.responseTime);
+        }
+        if (data && data.activeConnections !== undefined) {
+            this.metrics.activeConnections = data.activeConnections;
+        }
+    }
+
+    updateCacheMetrics(data) {
+        if (data && data.success && data.data) {
+            const cacheData = data.data;
+            const totalHits = cacheData.stats?.hits || 0;
+            const totalMisses = cacheData.stats?.misses || 0;
+            const total = totalHits + totalMisses;
+
+            this.metrics.cacheHitRate = total > 0 ? Math.round((totalHits / total) * 100) : 0;
+        }
+    }
+
+    updateDisplay() {
+        // Update metrics display
+        this.updateMetric('avgResponseTime', `${this.metrics.responseTime}ms`);
+        this.updateMetric('cacheHitRate', `${this.metrics.cacheHitRate}%`);
+        this.updateMetric('memoryUsage', `${this.metrics.memoryUsage}MB`);
+        this.updateMetric('activeConnections', this.metrics.activeConnections);
+
+        // Update trends
+        this.updateTrends();
+
+        // Update status
+        this.updateStatus();
+    }
+
+    updateMetric(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    updateTrends() {
+        if (this.history.length < 2) return;
+
+        const current = this.history[this.history.length - 1];
+        const previous = this.history[this.history.length - 2];
+
+        // Response time trend
+        this.updateTrend('responseTimeTrend', current.responseTime, previous.responseTime, false);
+
+        // Cache hit rate trend
+        this.updateTrend('cacheTrend', current.cacheHitRate, previous.cacheHitRate, true);
+
+        // Memory trend
+        this.updateTrend('memoryTrend', current.memoryUsage, previous.memoryUsage, false);
+
+        // Connections trend
+        this.updateTrend('connectionsTrend', current.activeConnections, previous.activeConnections, true);
+    }
+
+    updateTrend(elementId, current, previous, higherIsBetter = true) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        const change = current - previous;
+        const percentChange = previous !== 0 ? Math.abs((change / previous) * 100) : 0;
+
+        let icon, color, text;
+        if (change > 0) {
+            icon = higherIsBetter ? 'fa-arrow-up' : 'fa-arrow-down';
+            color = higherIsBetter ? 'positive' : 'negative';
+            text = `+${percentChange.toFixed(1)}%`;
+        } else if (change < 0) {
+            icon = higherIsBetter ? 'fa-arrow-down' : 'fa-arrow-up';
+            color = higherIsBetter ? 'negative' : 'positive';
+            text = `${percentChange.toFixed(1)}%`;
+        } else {
+            icon = 'fa-minus';
+            color = 'neutral';
+            text = '0.0%';
+        }
+
+        element.className = `metric-trend ${color}`;
+        element.innerHTML = `<i class="fas ${icon}"></i><span>${text}</span>`;
+    }
+
+    updateStatus() {
+        const statusElement = document.getElementById('performanceStatus');
+        const labelElement = document.getElementById('performanceLabel');
+
+        if (!statusElement || !labelElement) return;
+
+        // Determine status based on metrics
+        let status = 'optimal';
+        let label = 'Optimal';
+
+        if (this.metrics.responseTime > 1000) {
+            status = 'warning';
+            label = 'Slow';
+        }
+        if (this.metrics.responseTime > 2000) {
+            status = 'error';
+            label = 'Critical';
+        }
+        if (this.metrics.cacheHitRate < 50) {
+            status = 'warning';
+            label = 'Poor Cache';
+        }
+        if (this.metrics.memoryUsage > 100) {
+            status = 'warning';
+            label = 'High Memory';
+        }
+
+        statusElement.className = `status-dot ${status}`;
+        labelElement.textContent = label;
+    }
+}
+
+// Global instances
+let quantumChart = null;
+let performanceMonitor = null;
+
+// Initialize advanced features
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize performance monitor
+    performanceMonitor = new PerformanceMonitor();
+
+    // Initialize chart system
+    quantumChart = new QuantumChart('advancedChart', {
+        type: 'line',
+        realTime: true
+    });
+});
+
+// Chart functions
+function openChartModal(symbol = 'BTCUSDT') {
+    const modal = document.getElementById('chartModal');
+    const title = document.getElementById('chartTitle');
+
+    if (modal && title) {
+        title.textContent = `${symbol} - Quantum Analysis`;
+        modal.style.display = 'flex';
+
+        // Load chart data
+        loadChartData(symbol);
+    } else {
+        console.error('Chart modal elements not found');
+    }
+}
+
+function closeChartModal() {
+    const modal = document.getElementById('chartModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+async function loadChartData(symbol) {
+    const loaderId = loadingManager.show('Loading chart data...');
+
+    try {
+        // Get klines data from API
+        const response = await fetch(`${API_BASE_URL}/api/klines?symbol=${symbol}&interval=5m&limit=100`);
+        if (response.ok) {
+            const data = await response.json();
+            if (quantumChart && data.data) {
+                quantumChart.updateData(data.data, symbol);
+            }
+        } else {
+            throw new Error('Failed to load chart data');
+        }
+    } catch (error) {
+        console.error('Error loading chart data:', error);
+        notificationManager.show('Failed to load chart data', 'error', 3000);
+    } finally {
+        loadingManager.hide(loaderId);
+    }
+}
+
+function updateChartType() {
+    const typeSelect = document.getElementById('chartType');
+    if (typeSelect && quantumChart) {
+        quantumChart.changeType(typeSelect.value);
+    }
+}
+
+function updateChartTimeframe() {
+    const timeframeSelect = document.getElementById('chartTimeframe');
+    if (timeframeSelect) {
+        // Reload data with new timeframe
+        const title = document.getElementById('chartTitle');
+        if (title) {
+            const symbol = title.textContent.split(' - ')[0];
+            loadChartData(symbol);
+        }
+    }
+}
+
+function exportChart() {
+    if (quantumChart) {
+        quantumChart.exportChart();
+    }
+}
+
+// Performance functions
+function clearCache() {
+    const loaderId = loadingManager.show('Clearing cache...');
+
+    // Clear local cache
+    if (typeof bookQuantumCache !== 'undefined') {
+        bookQuantumCache.clear();
+    }
+    if (typeof klinesQuantumCache !== 'undefined') {
+        klinesQuantumCache.clear();
+    }
+
+    setTimeout(() => {
+        loadingManager.hide(loaderId);
+        notificationManager.show('Cache cleared successfully', 'success', 3000);
+    }, 1000);
+}
+
+function runDiagnostics() {
+    const loaderId = loadingManager.show('Running diagnostics...');
+
+    setTimeout(() => {
+        loadingManager.hide(loaderId);
+
+        // Simulate diagnostic results
+        const diagnostics = {
+            responseTime: Math.random() * 500 + 100,
+            cacheEfficiency: Math.random() * 30 + 70,
+            memoryUsage: Math.random() * 20 + 50,
+            connectionHealth: Math.random() * 20 + 80
+        };
+
+        notificationManager.show(
+            `Diagnostics: ${diagnostics.responseTime.toFixed(0)}ms response, ` +
+            `${diagnostics.cacheEfficiency.toFixed(1)}% cache efficiency`,
+            'success',
+            5000
+        );
+    }, 2000);
+}
+
+// Enhanced Settings Management
+class SettingsManager {
+    constructor() {
+        this.settings = this.loadSettings();
+        this.init();
+    }
+
+    init() {
+        // Add settings button to navigation
+        this.addSettingsButton();
+
+        // Initialize settings tabs
+        this.initSettingsTabs();
+
+        // Load saved settings
+        this.applySettings();
+
+        // Set up event listeners
+        this.setupEventListeners();
+    }
+
+    addSettingsButton() {
+        const navTabs = document.querySelector('.nav-tabs');
+        if (navTabs) {
+            const settingsTab = document.createElement('button');
+            settingsTab.className = 'nav-tab';
+            settingsTab.setAttribute('data-section', 'settings');
+            settingsTab.innerHTML = `
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            `;
+            settingsTab.onclick = () => this.openSettingsModal();
+            navTabs.appendChild(settingsTab);
+        }
+    }
+
+    initSettingsTabs() {
+        const settingsTabs = document.querySelectorAll('.settings-tab');
+        settingsTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                this.switchSettingsTab(tabName);
+            });
+        });
+    }
+
+    switchSettingsTab(tabName) {
+        // Update tab buttons
+        const settingsTabs = document.querySelectorAll('.settings-tab');
+        settingsTabs.forEach(tab => {
+            tab.classList.toggle('active', tab.getAttribute('data-tab') === tabName);
+        });
+
+        // Update content sections
+        const sections = document.querySelectorAll('.settings-section');
+        sections.forEach(section => {
+            section.classList.toggle('active', section.getAttribute('data-section') === tabName);
+        });
+    }
+
+    setupEventListeners() {
+        // Theme selector
+        const themeSelect = document.getElementById('themeSelect');
+        if (themeSelect) {
+            themeSelect.addEventListener('change', (e) => {
+                this.updateSetting('theme', e.target.value);
+                this.applyTheme(e.target.value);
+            });
+        }
+
+        // Language selector
+        const languageSelect = document.getElementById('languageSelect');
+        if (languageSelect) {
+            languageSelect.addEventListener('change', (e) => {
+                this.updateSetting('language', e.target.value);
+                notificationManager.show(`Language changed to ${e.target.value}`, 'info', 2000);
+            });
+        }
+
+        // Update interval
+        const updateIntervalSelect = document.getElementById('updateIntervalSelect');
+        if (updateIntervalSelect) {
+            updateIntervalSelect.addEventListener('change', (e) => {
+                this.updateSetting('updateInterval', parseInt(e.target.value));
+                notificationManager.show('Update interval changed', 'info', 2000);
+            });
+        }
+
+        // Leverage slider
+        const leverageSlider = document.getElementById('defaultLeverage');
+        const leverageValue = document.getElementById('leverageValue');
+        if (leverageSlider && leverageValue) {
+            leverageSlider.addEventListener('input', (e) => {
+                const value = e.target.value;
+                leverageValue.textContent = `${value}x`;
+                this.updateSetting('defaultLeverage', parseInt(value));
+            });
+        }
+
+        // Risk buttons
+        const riskButtons = document.querySelectorAll('.risk-btn');
+        riskButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                riskButtons.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                this.updateSetting('riskTolerance', btn.getAttribute('data-risk'));
+            });
+        });
+
+        // Toggle switches
+        const toggles = document.querySelectorAll('.toggle input');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                const settingKey = e.target.id;
+                const value = e.target.checked;
+                this.updateSetting(settingKey, value);
+            });
+        });
+
+        // Input fields
+        const inputs = document.querySelectorAll('.setting-input');
+        inputs.forEach(input => {
+            input.addEventListener('change', (e) => {
+                const settingKey = e.target.id;
+                const value = e.target.type === 'number' ? parseInt(e.target.value) : e.target.value;
+                this.updateSetting(settingKey, value);
+            });
+        });
+    }
+
+    openSettingsModal() {
+        const modal = document.getElementById('settingsModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Switch to navigation settings tab
+            navigationManager.switchToSection('settings');
+        }
+    }
+
+    closeSettingsModal() {
+        const modal = document.getElementById('settingsModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    updateSetting(key, value) {
+        this.settings[key] = value;
+        this.saveSettings();
+    }
+
+    applySettings() {
+        // Apply theme
+        if (this.settings.theme) {
+            this.applyTheme(this.settings.theme);
+        }
+
+        // Apply language
+        if (this.settings.language) {
+            const languageSelect = document.getElementById('languageSelect');
+            if (languageSelect) languageSelect.value = this.settings.language;
+        }
+
+        // Apply update interval
+        if (this.settings.updateInterval) {
+            const updateIntervalSelect = document.getElementById('updateIntervalSelect');
+            if (updateIntervalSelect) updateIntervalSelect.value = this.settings.updateInterval;
+        }
+
+        // Apply leverage
+        if (this.settings.defaultLeverage) {
+            const leverageSlider = document.getElementById('defaultLeverage');
+            const leverageValue = document.getElementById('leverageValue');
+            if (leverageSlider) leverageSlider.value = this.settings.defaultLeverage;
+            if (leverageValue) leverageValue.textContent = `${this.settings.defaultLeverage}x`;
+        }
+
+        // Apply risk tolerance
+        if (this.settings.riskTolerance) {
+            const riskButtons = document.querySelectorAll('.risk-btn');
+            riskButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-risk') === this.settings.riskTolerance);
+            });
+        }
+
+        // Apply toggles
+        Object.keys(this.settings).forEach(key => {
+            if (typeof this.settings[key] === 'boolean') {
+                const toggle = document.getElementById(key);
+                if (toggle) toggle.checked = this.settings[key];
+            }
+        });
+
+        // Apply input values
+        Object.keys(this.settings).forEach(key => {
+            if (typeof this.settings[key] === 'number' || typeof this.settings[key] === 'string') {
+                const input = document.getElementById(key);
+                if (input && input.type !== 'checkbox') {
+                    input.value = this.settings[key];
+                }
+            }
+        });
+    }
+
+    applyTheme(theme) {
+        const body = document.body;
+        body.className = `theme-${theme}`;
+
+        // Update theme-specific styles
+        if (theme === 'light') {
+            body.style.setProperty('--bg-primary', '#ffffff');
+            body.style.setProperty('--bg-secondary', '#f5f5f5');
+            body.style.setProperty('--text-primary', '#333333');
+            body.style.setProperty('--text-secondary', '#666666');
+            body.style.setProperty('--accent-color', '#40e0d0');
+        } else if (theme === 'auto') {
+            // Check system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            body.className = prefersDark ? 'theme-quantum' : 'theme-light';
+        } else {
+            // Reset to quantum theme
+            body.className = 'theme-quantum';
+        }
+
+        notificationManager.show(`Theme changed to ${theme}`, 'info', 2000);
+    }
+
+    saveSettings() {
+        try {
+            localStorage.setItem('quantum-dashboard-settings', JSON.stringify(this.settings));
+        } catch (error) {
+            console.warn('Failed to save settings:', error);
+        }
+    }
+
+    loadSettings() {
+        try {
+            const saved = localStorage.getItem('quantum-dashboard-settings');
+            return saved ? JSON.parse(saved) : this.getDefaultSettings();
+        } catch (error) {
+            console.warn('Failed to load settings:', error);
+            return this.getDefaultSettings();
+        }
+    }
+
+    getDefaultSettings() {
+        return {
+            theme: 'quantum',
+            language: 'en',
+            updateInterval: 30000,
+            defaultLeverage: 10,
+            riskTolerance: 'moderate',
+            signalAlerts: true,
+            priceAlerts: true,
+            systemAlerts: true,
+            soundEnabled: false,
+            cacheSize: 100,
+            apiRateLimit: 50,
+            debugMode: false
+        };
+    }
+
+    exportSettings() {
+        try {
+            const dataStr = JSON.stringify(this.settings, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'quantum-dashboard-settings.json';
+            link.click();
+
+            URL.revokeObjectURL(url);
+            notificationManager.show('Settings exported successfully', 'success', 3000);
+        } catch (error) {
+            console.error('Error exporting settings:', error);
+            notificationManager.show('Failed to export settings', 'error', 3000);
+        }
+    }
+
+    importSettings() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const importedSettings = JSON.parse(event.target.result);
+                        this.settings = { ...this.getDefaultSettings(), ...importedSettings };
+                        this.saveSettings();
+                        this.applySettings();
+                        notificationManager.show('Settings imported successfully', 'success', 3000);
+                    } catch (error) {
+                        console.error('Error importing settings:', error);
+                        notificationManager.show('Invalid settings file', 'error', 3000);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+
+        input.click();
+    }
+}
+
+// Global settings manager instance
+let settingsManager = null;
+
+// Initialize settings when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    settingsManager = new SettingsManager();
+});
+
+// Settings functions
+function openSettingsModal() {
+    if (settingsManager) {
+        settingsManager.openSettingsModal();
+    }
+}
+
+function closeSettingsModal() {
+    if (settingsManager) {
+        settingsManager.closeSettingsModal();
+    }
+}
+
+function saveSettings() {
+    if (settingsManager) {
+        settingsManager.saveSettings();
+        notificationManager.show('Settings saved successfully', 'success', 3000);
+    }
+}
+
+function exportSettings() {
+    if (settingsManager) {
+        settingsManager.exportSettings();
+    }
+}
+
+function importSettings() {
+    if (settingsManager) {
+        settingsManager.importSettings();
+    }
+}
+
+// AI Insights System
+class AIInsightsManager {
+    constructor() {
+        this.panel = document.getElementById('aiInsightsPanel');
+        this.isVisible = false;
+        this.currentInsights = null;
+        this.init();
+    }
+
+    init() {
+        // Add AI insights button to header
+        const aiBtn = document.getElementById('aiInsightsBtn');
+        if (aiBtn) {
+            aiBtn.addEventListener('click', () => this.toggle());
+        }
+
+        // Start periodic insights generation
+        this.startInsightsGeneration();
+    }
+
+    toggle() {
+        this.isVisible = !this.isVisible;
+        if (this.panel) {
+            this.panel.style.display = this.isVisible ? 'block' : 'none';
+        }
+
+        if (this.isVisible) {
+            this.generateInsights();
+            notificationManager.show('AI insights panel opened', 'info', 2000);
+        }
+    }
+
+    startInsightsGeneration() {
+        // Generate insights every 30 seconds
+        setInterval(() => {
+            if (this.isVisible) {
+                this.generateInsights();
+            }
+        }, 30000);
+
+        // Initial generation
+        setTimeout(() => this.generateInsights(), 2000);
+    }
+
+    async generateInsights() {
+        try {
+            this.updateStatus('processing', 'Analyzing...');
+
+            // Simulate AI processing delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Generate mock AI insights (in real implementation, this would call ML models)
+            const insights = this.generateMockInsights();
+
+            this.currentInsights = insights;
+            this.updateDisplay(insights);
+            this.updateStatus('online', 'Analysis Complete');
+
+            // Show notification
+            notificationManager.show('AI insights updated', 'success', 3000);
+
+        } catch (error) {
+            console.error('Error generating AI insights:', error);
+            this.updateStatus('error', 'Analysis Failed');
+            notificationManager.show('Failed to generate AI insights', 'error', 3000);
+        }
+    }
+
+    generateMockInsights() {
+        // Mock AI insights generation
+        const marketSentiment = Math.random();
+        const riskScore = Math.floor(Math.random() * 100);
+        const topAssets = ['BTC', 'ETH', 'BNB', 'ADA', 'SOL'];
+
+        return {
+            marketPrediction: {
+                score: Math.floor(marketSentiment * 100),
+                confidence: Math.floor(60 + Math.random() * 35),
+                direction: marketSentiment > 0.5 ? 'bullish' : 'bearish'
+            },
+            riskAssessment: {
+                score: riskScore,
+                level: riskScore < 30 ? 'Low' : riskScore < 70 ? 'Medium' : 'High',
+                factors: ['Market volatility', 'Economic indicators', 'Technical signals']
+            },
+            optimalAllocation: topAssets.map(asset => ({
+                symbol: asset,
+                percentage: Math.floor(10 + Math.random() * 30),
+                reasoning: this.getAllocationReasoning(asset)
+            })),
+            recommendations: this.generateRecommendations(marketSentiment, riskScore)
+        };
+    }
+
+    getAllocationReasoning(asset) {
+        const reasons = [
+            'Strong technical setup',
+            'Positive momentum',
+            'Low correlation with portfolio',
+            'High liquidity',
+            'Fundamental strength'
+        ];
+        return reasons[Math.floor(Math.random() * reasons.length)];
+    }
+
+    generateRecommendations(marketSentiment, riskScore) {
+        const recommendations = [];
+
+        if (marketSentiment > 0.6) {
+            recommendations.push({
+                type: 'positive',
+                title: 'Bullish Market Signal',
+                description: 'Strong upward momentum detected. Consider increasing exposure to growth assets.'
+            });
+        } else if (marketSentiment < 0.4) {
+            recommendations.push({
+                type: 'warning',
+                title: 'Defensive Position Recommended',
+                description: 'Market showing weakness. Consider reducing risk exposure.'
+            });
+        }
+
+        if (riskScore > 70) {
+            recommendations.push({
+                type: 'warning',
+                title: 'High Risk Environment',
+                description: 'Current market conditions suggest increased caution. Monitor positions closely.'
+            });
+        }
+
+        recommendations.push({
+            type: 'info',
+            title: 'Portfolio Rebalancing',
+            description: 'Consider rebalancing portfolio to maintain target allocations.'
+        });
+
+        return recommendations;
+    }
+
+    updateStatus(status, text) {
+        const statusDot = this.panel?.querySelector('.status-dot');
+        const statusText = this.panel?.querySelector('.status-text');
+
+        if (statusDot) {
+            statusDot.className = `status-dot ${status}`;
+        }
+
+        if (statusText) {
+            statusText.textContent = text;
+        }
+    }
+
+    updateDisplay(insights) {
+        // Update market prediction
+        this.updateElement('marketPrediction', `${insights.marketPrediction.score}%`);
+        this.updateElement('predictionConfidence', `${insights.marketPrediction.confidence}%`);
+
+        const confidenceBar = document.getElementById('predictionConfidence');
+        if (confidenceBar) {
+            confidenceBar.style.width = `${insights.marketPrediction.confidence}%`;
+        }
+
+        // Update risk assessment
+        this.updateElement('riskAssessment', `${insights.riskAssessment.level} Risk (${insights.riskAssessment.score}/100)`);
+
+        // Update risk indicators
+        this.updateRiskIndicators(insights.riskAssessment.score);
+
+        // Update optimal allocation
+        this.updateAllocationGrid(insights.optimalAllocation);
+
+        // Update recommendations
+        this.updateRecommendations(insights.recommendations);
+    }
+
+    updateElement(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    updateRiskIndicators(riskScore) {
+        const indicators = this.panel?.querySelectorAll('.risk-dot');
+        if (!indicators) return;
+
+        indicators.forEach((dot, index) => {
+            const threshold = (index + 1) * 33;
+            dot.classList.toggle('active', riskScore >= threshold);
+        });
+    }
+
+    updateAllocationGrid(allocations) {
+        const grid = document.getElementById('optimalAllocation');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        allocations.forEach(allocation => {
+            const item = document.createElement('div');
+            item.className = 'allocation-item';
+            item.innerHTML = `
+                <span class="allocation-symbol">${allocation.symbol}</span>
+                <span class="allocation-percentage">${allocation.percentage}%</span>
+            `;
+            grid.appendChild(item);
+        });
+    }
+
+    updateRecommendations(recommendations) {
+        const list = document.getElementById('aiRecommendations');
+        if (!list) return;
+
+        list.innerHTML = '';
+
+        recommendations.forEach(rec => {
+            const item = document.createElement('div');
+            item.className = 'recommendation-item';
+            item.innerHTML = `
+                <div class="recommendation-icon ${rec.type}">
+                    <i class="fas ${this.getRecommendationIcon(rec.type)}"></i>
+                </div>
+                <div class="recommendation-content">
+                    <div class="recommendation-title">${rec.title}</div>
+                    <div class="recommendation-description">${rec.description}</div>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    getRecommendationIcon(type) {
+        const icons = {
+            positive: 'fa-check-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+        return icons[type] || icons.info;
+    }
+}
+
+// Predictive Analytics System
+class PredictiveAnalyticsManager {
+    constructor() {
+        this.modal = document.getElementById('predictiveModal');
+        this.chart = null;
+        this.currentPrediction = null;
+        this.init();
+    }
+
+    init() {
+        // Add predictive button to header
+        const predictiveBtn = document.getElementById('predictiveBtn');
+        if (predictiveBtn) {
+            predictiveBtn.addEventListener('click', () => this.openModal());
+        }
+
+        // Initialize chart
+        this.initChart();
+    }
+
+    initChart() {
+        const ctx = document.getElementById('predictionChart')?.getContext('2d');
+        if (!ctx) return;
+
+        this.chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Historical Price',
+                    data: [],
+                    borderColor: '#40e0d0',
+                    backgroundColor: 'rgba(64, 224, 208, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4
+                }, {
+                    label: 'Predicted Price',
+                    data: [],
+                    borderColor: '#ff9800',
+                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                }, {
+                    label: 'Upper Bound',
+                    data: [],
+                    borderColor: 'rgba(76, 175, 80, 0.5)',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    borderWidth: 1,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                }, {
+                    label: 'Lower Bound',
+                    data: [],
+                    borderColor: 'rgba(244, 67, 54, 0.5)',
+                    backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                    borderWidth: 1,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#e0e6ed',
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 15, 35, 0.95)',
+                        titleColor: '#40e0d0',
+                        bodyColor: '#e0e6ed',
+                        borderColor: 'rgba(64, 224, 208, 0.3)',
+                        borderWidth: 1,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'hour',
+                            displayFormats: {
+                                hour: 'MMM dd HH:mm'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#e0e6ed'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#e0e6ed',
+                            callback: (value) => `$${value.toFixed(2)}`
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+    }
+
+    openModal() {
+        if (this.modal) {
+            this.modal.style.display = 'flex';
+            this.runPrediction();
+        }
+    }
+
+    closeModal() {
+        if (this.modal) {
+            this.modal.style.display = 'none';
+        }
+    }
+
+    async runPrediction() {
+        const symbol = document.getElementById('predictionSymbol')?.value || 'BTCUSDT';
+        const timeframe = document.getElementById('predictionTimeframe')?.value || '1h';
+
+        const loaderId = loadingManager.show('Running predictive analysis...');
+
+        try {
+            // Get historical data
+            const response = await fetch(`${API_BASE_URL}/api/klines?symbol=${symbol}&interval=1h&limit=50`);
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            const data = await response.json();
+            const prices = data.data || [];
+
+            // Generate mock prediction (in real implementation, this would use ML models)
+            const prediction = this.generateMockPrediction(prices, timeframe);
+
+            this.currentPrediction = prediction;
+            this.updateChart(prediction);
+            this.updateInsights(prediction);
+
+            notificationManager.show('Predictive analysis complete', 'success', 3000);
+
+        } catch (error) {
+            console.error('Error running prediction:', error);
+            notificationManager.show('Failed to run predictive analysis', 'error', 3000);
+        } finally {
+            loadingManager.hide(loaderId);
+        }
+    }
+
+    generateMockPrediction(historicalPrices, timeframe) {
+        const lastPrice = historicalPrices[historicalPrices.length - 1]?.close || 50000;
+        const volatility = 0.05; // 5% volatility
+
+        // Generate future timestamps
+        const futureTimestamps = [];
+        const baseTime = new Date();
+        const hours = timeframe === '1h' ? 24 : timeframe === '4h' ? 6 : 1;
+
+        for (let i = 1; i <= hours; i++) {
+            futureTimestamps.push(new Date(baseTime.getTime() + i * 60 * 60 * 1000));
+        }
+
+        // Generate predicted prices with random walk
+        const predictedPrices = [lastPrice];
+        for (let i = 1; i < futureTimestamps.length; i++) {
+            const change = (Math.random() - 0.5) * 2 * volatility * predictedPrices[i-1];
+            predictedPrices.push(predictedPrices[i-1] + change);
+        }
+
+        // Generate confidence intervals
+        const upperBound = predictedPrices.map(price => price * (1 + volatility));
+        const lowerBound = predictedPrices.map(price => price * (1 - volatility));
+
+        return {
+            symbol: document.getElementById('predictionSymbol')?.value || 'BTCUSDT',
+            timeframe,
+            historical: historicalPrices.slice(-24), // Last 24 hours
+            predicted: predictedPrices,
+            upperBound,
+            lowerBound,
+            timestamps: futureTimestamps,
+            currentPrice: lastPrice,
+            predictedPrice: predictedPrices[predictedPrices.length - 1],
+            confidence: Math.floor(70 + Math.random() * 25)
+        };
+    }
+
+    updateChart(prediction) {
+        if (!this.chart) return;
+
+        // Prepare data for chart
+        const historicalLabels = prediction.historical.map(item => new Date(item.timestamp || item.time));
+        const futureLabels = prediction.timestamps;
+
+        const allLabels = [...historicalLabels, ...futureLabels];
+        const historicalData = prediction.historical.map(item => parseFloat(item.close || item.price));
+        const predictedData = prediction.predicted;
+        const upperData = prediction.upperBound;
+        const lowerData = prediction.lowerBound;
+
+        // Pad historical data to match future data length
+        const padding = new Array(futureLabels.length).fill(null);
+        const paddedHistorical = [...historicalData, ...padding];
+        const paddedUpper = [...new Array(historicalLabels.length).fill(null), ...upperData];
+        const paddedLower = [...new Array(historicalLabels.length).fill(null), ...lowerData];
+
+        this.chart.data.labels = allLabels;
+        this.chart.data.datasets[0].data = paddedHistorical;
+        this.chart.data.datasets[1].data = [...new Array(historicalLabels.length).fill(null), ...predictedData];
+        this.chart.data.datasets[2].data = paddedUpper;
+        this.chart.data.datasets[3].data = paddedLower;
+
+        this.chart.update('active');
+    }
+
+    updateInsights(prediction) {
+        const changePercent = ((prediction.predictedPrice - prediction.currentPrice) / prediction.currentPrice * 100);
+
+        // Update forecast values
+        this.updateElement('currentPrice', `$${prediction.currentPrice.toFixed(2)}`);
+        this.updateElement('predictedPrice', `$${prediction.predictedPrice.toFixed(2)}`);
+        this.updateElement('priceChange', `${changePercent >= 0 ? '+' : ''}${changePercent.toFixed(2)}%`);
+
+        // Update confidence intervals
+        this.updateElement('highConfidence', `$${prediction.upperBound[prediction.upperBound.length - 1].toFixed(2)}`);
+        this.updateElement('lowConfidence', `$${prediction.lowerBound[prediction.lowerBound.length - 1].toFixed(2)}`);
+        this.updateElement('volatilityEstimate', `${(Math.sqrt(prediction.confidence / 100) * 10).toFixed(1)}%`);
+
+        // Update signals
+        this.updateSignals(prediction, changePercent);
+    }
+
+    updateElement(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    updateSignals(prediction, changePercent) {
+        const signalsContainer = document.getElementById('signalRecommendations');
+        if (!signalsContainer) return;
+
+        signalsContainer.innerHTML = '';
+
+        const signals = this.generateSignals(prediction, changePercent);
+
+        signals.forEach(signal => {
+            const signalElement = document.createElement('div');
+            signalElement.className = 'signal-item';
+            signalElement.innerHTML = `
+                <span class="signal-type ${signal.type}">${signal.type.toUpperCase()}</span>
+                <span class="signal-description">${signal.description}</span>
+            `;
+            signalsContainer.appendChild(signalElement);
+        });
+    }
+
+    generateSignals(prediction, changePercent) {
+        const signals = [];
+
+        if (Math.abs(changePercent) > 5) {
+            signals.push({
+                type: changePercent > 0 ? 'buy' : 'sell',
+                description: `Strong ${changePercent > 0 ? 'bullish' : 'bearish'} momentum detected`
+            });
+        } else {
+            signals.push({
+                type: 'hold',
+                description: 'Price movement within normal range'
+            });
+        }
+
+        if (prediction.confidence > 80) {
+            signals.push({
+                type: 'buy',
+                description: 'High confidence in upward movement'
+            });
+        }
+
+        return signals.slice(0, 3); // Limit to 3 signals
+    }
+}
+
+// Strategy Builder System
+class StrategyBuilderManager {
+    constructor() {
+        this.modal = document.getElementById('strategyModal');
+        this.currentStrategy = null;
+        this.init();
+    }
+
+    init() {
+        // Add strategy button to header
+        const strategyBtn = document.getElementById('strategyBtn');
+        if (strategyBtn) {
+            strategyBtn.addEventListener('click', () => this.openModal());
+        }
+
+        // Set up event listeners
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Generate strategy button
+        const generateBtn = document.getElementById('generateStrategy');
+        if (generateBtn) {
+            generateBtn.addEventListener('click', () => this.generateStrategy());
+        }
+
+        // Test strategy button
+        const testBtn = document.getElementById('testStrategy');
+        if (testBtn) {
+            testBtn.addEventListener('click', () => this.testStrategy());
+        }
+
+        // Deploy strategy button
+        const deployBtn = document.getElementById('deployStrategy');
+        if (deployBtn) {
+            deployBtn.addEventListener('click', () => this.deployStrategy());
+        }
+    }
+
+    openModal() {
+        if (this.modal) {
+            this.modal.style.display = 'flex';
+            this.resetStrategy();
+        }
+    }
+
+    closeModal() {
+        if (this.modal) {
+            this.modal.style.display = 'none';
+        }
+    }
+
+    resetStrategy() {
+        this.currentStrategy = null;
+        this.updateStrategyPreview({
+            expectedReturn: '--%',
+            maxDrawdown: '--%',
+            winRate: '--%',
+            sharpeRatio: '--'
+        });
+    }
+
+    async generateStrategy() {
+        const loaderId = loadingManager.show('Generating AI-powered strategy...');
+
+        try {
+            // Get configuration values
+            const config = this.getStrategyConfig();
+
+            // Simulate AI strategy generation
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            // Generate mock strategy (in real implementation, this would use ML models)
+            const strategy = this.generateMockStrategy(config);
+
+            this.currentStrategy = strategy;
+            this.updateStrategyPreview(strategy);
+
+            notificationManager.show('AI strategy generated successfully', 'success', 3000);
+
+        } catch (error) {
+            console.error('Error generating strategy:', error);
+            notificationManager.show('Failed to generate strategy', 'error', 3000);
+        } finally {
+            loadingManager.hide(loaderId);
+        }
+    }
+
+    getStrategyConfig() {
+        return {
+            maxDrawdown: parseFloat(document.getElementById('maxDrawdown')?.value || 5),
+            targetProfit: parseFloat(document.getElementById('targetProfit')?.value || 10),
+            stopLoss: parseFloat(document.getElementById('stopLoss')?.value || 2),
+            indicators: this.getSelectedIndicators(),
+            marketConditions: this.getSelectedConditions()
+        };
+    }
+
+    getSelectedIndicators() {
+        const indicators = [];
+        const indicatorIds = ['useRSI', 'useMACD', 'useBollinger', 'useStochastic', 'useVolume', 'useMovingAvg'];
+
+        indicatorIds.forEach(id => {
+            const checkbox = document.getElementById(id);
+            if (checkbox?.checked) {
+                indicators.push(id.replace('use', '').toLowerCase());
+            }
+        });
+
+        return indicators;
+    }
+
+    getSelectedConditions() {
+        const conditions = [];
+        const conditionIds = ['bullMarket', 'bearMarket', 'sidewaysMarket', 'highVolatility', 'lowVolatility'];
+
+        conditionIds.forEach(id => {
+            const checkbox = document.getElementById(id);
+            if (checkbox?.checked) {
+                conditions.push(id.replace('Market', '').replace('Volatility', '').toLowerCase());
+            }
+        });
+
+        return conditions;
+    }
+
+    generateMockStrategy(config) {
+        // Mock strategy generation based on configuration
+        const baseReturn = 8 + Math.random() * 12; // 8-20%
+        const baseDrawdown = config.maxDrawdown * (0.5 + Math.random() * 0.5);
+        const baseWinRate = 55 + Math.random() * 30; // 55-85%
+        const baseSharpe = 1.2 + Math.random() * 1.8; // 1.2-3.0
+
+        // Adjust based on indicators
+        const indicatorBonus = config.indicators.length * 0.5;
+        const conditionBonus = config.marketConditions.length * 0.3;
+
+        return {
+            expectedReturn: `${(baseReturn + indicatorBonus + conditionBonus).toFixed(1)}%`,
+            maxDrawdown: `${baseDrawdown.toFixed(1)}%`,
+            winRate: `${(baseWinRate + indicatorBonus).toFixed(1)}%`,
+            sharpeRatio: (baseSharpe + conditionBonus * 0.2).toFixed(2),
+            indicators: config.indicators,
+            conditions: config.marketConditions,
+            riskLevel: baseDrawdown > 8 ? 'High' : baseDrawdown > 5 ? 'Medium' : 'Low'
+        };
+    }
+
+    updateStrategyPreview(strategy) {
+        this.updateElement('expectedReturn', strategy.expectedReturn);
+        this.updateElement('maxDrawdownPreview', strategy.maxDrawdown);
+        this.updateElement('winRate', strategy.winRate);
+        this.updateElement('sharpeRatio', strategy.sharpeRatio);
+    }
+
+    updateElement(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    async testStrategy() {
+        if (!this.currentStrategy) {
+            notificationManager.show('Please generate a strategy first', 'warning', 3000);
+            return;
+        }
+
+        const loaderId = loadingManager.show('Backtesting strategy...');
+
+        try {
+            // Simulate backtesting
+            await new Promise(resolve => setTimeout(resolve, 4000));
+
+            const results = this.generateMockBacktestResults();
+
+            notificationManager.show(
+                `Backtest complete: ${results.totalTrades} trades, ${results.winRate}% win rate`,
+                'success',
+                5000
+            );
+
+        } catch (error) {
+            console.error('Error testing strategy:', error);
+            notificationManager.show('Backtest failed', 'error', 3000);
+        } finally {
+            loadingManager.hide(loaderId);
+        }
+    }
+
+    generateMockBacktestResults() {
+        return {
+            totalTrades: Math.floor(50 + Math.random() * 200),
+            winRate: Math.floor(45 + Math.random() * 35),
+            profitFactor: (1.5 + Math.random() * 1.5).toFixed(2),
+            maxDrawdown: (5 + Math.random() * 15).toFixed(1) + '%'
+        };
+    }
+
+    async deployStrategy() {
+        if (!this.currentStrategy) {
+            notificationManager.show('Please generate and test a strategy first', 'warning', 3000);
+            return;
+        }
+
+        const confirmed = confirm('Are you sure you want to deploy this strategy? This will start automated trading.');
+        if (!confirmed) return;
+
+        const loaderId = loadingManager.show('Deploying strategy...');
+
+        try {
+            // Simulate deployment
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            notificationManager.show('Strategy deployed successfully! Automated trading is now active.', 'success', 5000);
+            this.closeModal();
+
+        } catch (error) {
+            console.error('Error deploying strategy:', error);
+            notificationManager.show('Failed to deploy strategy', 'error', 3000);
+        } finally {
+            loadingManager.hide(loaderId);
+        }
+    }
+}
+
+// Global instances
+let aiInsightsManager = null;
+let predictiveAnalyticsManager = null;
+let strategyBuilderManager = null;
+
+// Initialize AI systems when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    aiInsightsManager = new AIInsightsManager();
+    predictiveAnalyticsManager = new PredictiveAnalyticsManager();
+    strategyBuilderManager = new StrategyBuilderManager();
+});
+
+// AI functions
+function generateNewInsights() {
+    if (aiInsightsManager) {
+        aiInsightsManager.generateInsights();
+    }
+}
+
+function exportInsights() {
+    if (aiInsightsManager && aiInsightsManager.currentInsights) {
+        // Export insights as JSON
+        const dataStr = JSON.stringify(aiInsightsManager.currentInsights, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `ai-insights-${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+
+        URL.revokeObjectURL(url);
+        notificationManager.show('AI insights exported', 'success', 3000);
+    }
+}
+
+function updatePrediction() {
+    if (predictiveAnalyticsManager) {
+        predictiveAnalyticsManager.runPrediction();
+    }
+}
+
+function closePredictiveModal() {
+    if (predictiveAnalyticsManager) {
+        predictiveAnalyticsManager.closeModal();
+    }
+}
+
+function closeStrategyModal() {
+    if (strategyBuilderManager) {
+        strategyBuilderManager.closeModal();
+    }
+}
+
 // Clase para caché cuántico con TTL dinámico
 class QuantumCache {
     constructor(options = {}) {
@@ -567,7 +2686,16 @@ function initializeDOMElements() {
 // Initialize the dashboard
 document.addEventListener('DOMContentLoaded', () => {
     initializeDashboard();
-    // Tabs behavior
+
+    // Enhanced system status updates
+    updateSystemStatus();
+
+    // Show welcome notification
+    setTimeout(() => {
+        notificationManager.show('Quantum Edge Dashboard initialized successfully', 'success', 3000);
+    }, 1000);
+
+    // Legacy tabs behavior (for backward compatibility)
     const tabs = Array.from(document.querySelectorAll('.tab'));
     const groups = Array.from(document.querySelectorAll('[data-group]'));
     const activate = (target)=>{

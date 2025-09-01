@@ -1,0 +1,208 @@
+{
+  "generated": "2025-09-01T01:42:23.112Z",
+  "phases": {
+    "phase1": [
+      {
+        "id": "CONSTANTS_CONSOLIDATION",
+        "title": "Consolidar Constantes Físicas Duplicadas",
+        "description": "Crear archivo único de constantes cuánticas",
+        "impact": "CRÍTICO - Afecta 290+ archivos",
+        "effort": "2-3 días",
+        "risk": "BAJO",
+        "tasks": [
+          "Crear archivo /src/constants/quantum-constants.js",
+          "Extraer todas las constantes físicas del archivo más completo",
+          "Actualizar imports en 290+ archivos",
+          "Verificar que no se rompa funcionalidad",
+          "Eliminar constantes duplicadas de archivos individuales"
+        ]
+      },
+      {
+        "id": "DUPLICATES_CLEANUP",
+        "title": "Eliminar Archivos Completamente Duplicados",
+        "description": "Remover archivos idénticos identificados",
+        "impact": "ALTO - 8 grupos de duplicados",
+        "effort": "1-2 días",
+        "risk": "MEDIO",
+        "tasks": [
+          "Verificar que duplicados no tengan diferencias funcionales",
+          "Crear backups antes de eliminar",
+          "Eliminar archivos duplicados",
+          "Actualizar referencias si existen",
+          "Verificar que sistema siga funcionando"
+        ]
+      }
+    ],
+    "phase2": [
+      {
+        "id": "DIRECTORY_RESTRUCTURING",
+        "title": "Reestructurar Directorios",
+        "description": "Organizar archivos en estructura modular clara",
+        "impact": "MEDIO - 195 directorios a reorganizar",
+        "effort": "3-5 días",
+        "risk": "ALTO",
+        "tasks": [
+          "Analizar estructura actual y definir nueva arquitectura",
+          "Crear nueva estructura de directorios",
+          "Mover archivos sistemáticamente",
+          "Actualizar todas las rutas de import",
+          "Eliminar directorios vacíos",
+          "Actualizar documentación"
+        ]
+      },
+      {
+        "id": "LARGE_FILES_OPTIMIZATION",
+        "title": "Optimizar Archivos Grandes",
+        "description": "Implementar rotación y compresión",
+        "impact": "MEDIO - 7 archivos >5MB",
+        "effort": "1-2 días",
+        "risk": "BAJO",
+        "tasks": [
+          "Implementar rotación automática de logs",
+          "Comprimir archivos de datos históricos",
+          "Configurar límites de tamaño de archivos",
+          "Crear script de limpieza automática",
+          "Configurar backup de datos importantes"
+        ]
+      },
+      {
+        "id": "DEPENDENCY_AUDIT",
+        "title": "Auditar y Optimizar Dependencias",
+        "description": "Revisar dependencias duplicadas y no utilizadas",
+        "impact": "MEDIO - 17 dependencias totales",
+        "effort": "1 día",
+        "risk": "BAJO",
+        "tasks": [
+          "Analizar uso real de dependencias",
+          "Identificar dependencias no utilizadas",
+          "Unificar librerías duplicadas (axios vs node-fetch)",
+          "Actualizar versiones desactualizadas",
+          "Documentar dependencias críticas"
+        ]
+      }
+    ],
+    "phase3": [
+      {
+        "id": "TESTING_ENHANCEMENT",
+        "title": "Mejorar Cobertura de Testing",
+        "description": "Implementar tests más profundos",
+        "impact": "BAJO - Cobertura actual 96.49%",
+        "effort": "3-5 días",
+        "risk": "BAJO",
+        "tasks": [
+          "Implementar mutation testing",
+          "Agregar tests de integración real",
+          "Crear tests de performance",
+          "Implementar CI/CD completo",
+          "Documentar casos de prueba"
+        ]
+      },
+      {
+        "id": "CODE_QUALITY",
+        "title": "Implementar Análisis de Calidad de Código",
+        "description": "Agregar linting y análisis estático",
+        "impact": "BAJO - Mejor mantenibilidad",
+        "effort": "2-3 días",
+        "risk": "BAJO",
+        "tasks": [
+          "Configurar ESLint con reglas estrictas",
+          "Implementar Prettier para formato",
+          "Agregar análisis de complejidad ciclomática",
+          "Configurar hooks de pre-commit",
+          "Documentar estándares de código"
+        ]
+      },
+      {
+        "id": "DOCUMENTATION_UPDATE",
+        "title": "Actualizar y Consolidar Documentación",
+        "description": "Unificar documentación dispersa",
+        "impact": "BAJO - Mejor comprensión del sistema",
+        "effort": "2-3 días",
+        "risk": "BAJO",
+        "tasks": [
+          "Consolidar archivos README duplicados",
+          "Crear documentación técnica unificada",
+          "Documentar arquitectura refactorizada",
+          "Crear guías de contribución",
+          "Actualizar diagramas de flujo"
+        ]
+      }
+    ]
+  },
+  "metrics": {
+    "baseline": {
+      "totalFiles": 1643,
+      "totalLines": 568232,
+      "duplicateGroups": 39,
+      "constantDuplicates": 3,
+      "largeFiles": 7,
+      "emptyDirectories": 7
+    },
+    "targets": {
+      "totalFiles": 1150,
+      "duplicateGroups": 0,
+      "constantDuplicates": 0,
+      "largeFiles": 4,
+      "emptyDirectories": 0
+    }
+  },
+  "timeline": [
+    {
+      "phase": "Fase 1",
+      "duration": "Semana 1",
+      "tasks": "Consolidación crítica",
+      "status": "🔴 URGENTE"
+    },
+    {
+      "phase": "Fase 2",
+      "duration": "Semanas 2-3",
+      "tasks": "Optimización estructural",
+      "status": "🟡 IMPORTANTE"
+    },
+    {
+      "phase": "Fase 3",
+      "duration": "Semanas 4-6",
+      "tasks": "Mejora continua",
+      "status": "🟢 MEJORA"
+    },
+    {
+      "phase": "Monitoreo",
+      "duration": "Semanas 7-8",
+      "tasks": "Seguimiento y ajustes",
+      "status": "🔍 CONTROL"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Funcionalidad rota durante refactorización",
+      "probability": "ALTA",
+      "impact": "CRÍTICO",
+      "mitigation": "Crear suite de tests completa antes de cambios, implementar cambios graduales, mantener backups"
+    },
+    {
+      "risk": "Pérdida de archivos importantes",
+      "probability": "MEDIA",
+      "impact": "ALTO",
+      "mitigation": "Crear backups completos, verificar integridad antes de eliminar, usar control de versiones"
+    },
+    {
+      "risk": "Dependencias incompatibles",
+      "probability": "BAJA",
+      "impact": "MEDIO",
+      "mitigation": "Auditar dependencias primero, actualizar gradualmente, probar compatibilidad"
+    },
+    {
+      "risk": "Sobrecarga de trabajo",
+      "probability": "MEDIA",
+      "impact": "BAJO",
+      "mitigation": "Dividir trabajo en fases pequeñas, priorizar por impacto, involucrar equipo gradualmente"
+    }
+  ],
+  "summary": {
+    "totalEffort": "8-16 semanas",
+    "totalTasks": 8,
+    "criticalIssues": 2,
+    "mediumIssues": 3,
+    "lowIssues": 3
+  }
+}

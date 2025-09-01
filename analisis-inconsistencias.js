@@ -6,72 +6,21 @@
 const fs = require('fs');
 const path = require('path');
 
-// Constantes físicas reales del sistema
-const PHYSICAL_CONSTANTS = {
-    // Constantes cuánticas
-    QUANTUM_COHERENCE: 0.75,
-    QUANTUM_CONSCIOUSNESS: 0.8,
-    QUANTUM_ENTANGLEMENT: 0.65,
-    QUANTUM_SUPERPOSITION: 0.7,
-    QUANTUM_TUNNELING: 0.6,
-    
-    // Constantes de mercado
-    MARKET_VOLATILITY: 0.05,
-    MARKET_MOMENTUM: 0.1,
-    MARKET_LIQUIDITY: 0.75,
-    MARKET_SPREAD: 0.001,
-    MARKET_DEPTH: 500000,
-    
-    // Constantes de funding
-    FUNDING_RATE: 0.02,
-    FUNDING_VOLATILITY: 0.01,
-    FUNDING_DEVIATION: 0.5,
-    FUNDING_ANNUALIZED: 5.0,
-    
-    // Constantes de riesgo
-    LIQUIDATION_PROBABILITY: 0.05,
-    SLIPPAGE_RATE: 0.0025,
-    VOLATILITY_RISK: 0.1,
-    EXECUTION_RISK: 0.005,
-    
-    // Constantes de volumen
-    VOLUME_24H: 500000,
-    VOLUME_RATIO: 0.75,
-    VOLUME_EXPANSION: 300000,
-    
-    // Constantes de precio
-    PRICE_CHANGE: 0.02,
-    PRICE_ACCELERATION: 0.015,
-    PRICE_MOMENTUM: 0.01,
-    
-    // Constantes temporales
-    TIME_TO_FUNDING: 1800000,
-    SESSION_INTENSITY: 0.6,
-    TEMPORAL_RESONANCE: 0.7,
-    
-    // Constantes de Fibonacci
-    FIBONACCI_STRENGTH: 0.75,
-    FIBONACCI_INDEX: 5,
-    
-    // Constantes neurales
-    NEURAL_CONFIDENCE: 0.85,
-    NEURAL_COHERENCE: 0.8,
-    NEURAL_ENTANGLEMENT: 0.7,
-    
-    // Constantes de leverage
-    BASE_LEVERAGE: 15,
-    CONSERVATIVE_LEVERAGE: 10,
-    AGGRESSIVE_LEVERAGE: 25,
-    
-    // Constantes de gestión de riesgo
-    STOP_LOSS: 0.03,
-    TAKE_PROFIT: 0.06,
-    
-    // Constantes de scoring
-    BASE_SCORE: 0.65,
-    CONFIDENCE_SCORE: 0.75,
-    QUALITY_SCORE: 0.8
-};
+// ==========================================
+// IMPORTACIÓN DE CONSTANTES UNIFICADAS
+// ==========================================
+// ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
+// ✅ Fuente única de verdad para todas las constantes del sistema
+
+const {
+  QUANTUM_CONSTANTS,
+  getConstant,
+  getPhysicalConstants,
+  getQuantumConstants
+} = require('./src/constants/quantum-constants');
+
+// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
+const PHYSICAL_CONSTANTS = getPhysicalConstants();
 
 // Análisis de inconsistencias identificadas
 const INCONSISTENCIES = {

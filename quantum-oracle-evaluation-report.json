@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-10T03:25:39.959Z",
+  "timestamp": "2025-09-01T01:44:30.397Z",
   "summary": {
     "total": 22,
     "successful": 22,
@@ -8,164 +8,164 @@
     "successRate": "100.0%"
   },
   "performance": {
-    "averageResponseTime": 1237,
+    "averageResponseTime": 306,
     "fastestResponse": 1,
-    "slowestResponse": 4391
+    "slowestResponse": 6046
   },
   "results": [
     {
       "name": "System Health",
       "path": "/health",
       "status": "SUCCESS",
-      "responseTime": 352,
-      "dataSize": 83
+      "responseTime": 51,
+      "dataSize": 80
     },
     {
       "name": "Oracle Status",
       "path": "/api/oracle/status",
       "status": "SUCCESS",
-      "responseTime": 3748,
-      "dataSize": 164
+      "responseTime": 6046,
+      "dataSize": 125
     },
     {
       "name": "Complete Oracle Analysis",
       "path": "/api/oracle/analysis",
       "status": "SUCCESS",
-      "responseTime": 3763,
-      "dataSize": 9322
+      "responseTime": 3,
+      "dataSize": 3977
     },
     {
       "name": "Fear & Greed Index",
       "path": "/api/oracle/fear-greed",
       "status": "SUCCESS",
-      "responseTime": 2,
-      "dataSize": 776
+      "responseTime": 3,
+      "dataSize": 734
     },
     {
       "name": "Market Dominance",
       "path": "/api/oracle/market-dominance",
       "status": "SUCCESS",
-      "responseTime": 2,
-      "dataSize": 1271
+      "responseTime": 1,
+      "dataSize": 2
     },
     {
       "name": "Institutional Metrics",
       "path": "/api/oracle/institutional",
       "status": "SUCCESS",
       "responseTime": 1,
-      "dataSize": 813
+      "dataSize": 728
     },
     {
       "name": "All Projections",
       "path": "/api/oracle/projections",
       "status": "SUCCESS",
-      "responseTime": 2,
-      "dataSize": 3053
+      "responseTime": 1,
+      "dataSize": 18
     },
     {
       "name": "BTC Projections",
       "path": "/api/oracle/projections?symbol=BTC",
       "status": "SUCCESS",
       "responseTime": 2,
-      "dataSize": 547
+      "dataSize": 18
     },
     {
       "name": "ETH Projections",
       "path": "/api/oracle/projections?symbol=ETH",
       "status": "SUCCESS",
-      "responseTime": 1,
-      "dataSize": 537
+      "responseTime": 2,
+      "dataSize": 18
     },
     {
       "name": "Monthly Trends",
       "path": "/api/oracle/trends",
       "status": "SUCCESS",
       "responseTime": 1,
-      "dataSize": 2744
+      "dataSize": 1942
     },
     {
       "name": "AI Recommendations",
       "path": "/api/oracle/recommendations",
       "status": "SUCCESS",
       "responseTime": 1,
-      "dataSize": 165
+      "dataSize": 22
     },
     {
       "name": "Risk Assessment",
       "path": "/api/oracle/risk-assessment",
       "status": "SUCCESS",
-      "responseTime": 2,
-      "dataSize": 252
+      "responseTime": 0,
+      "dataSize": 215
     },
     {
       "name": "Market Data",
       "path": "/api/market-data",
       "status": "SUCCESS",
-      "responseTime": 3729,
-      "dataSize": 1322
+      "responseTime": 1,
+      "dataSize": 341
     },
     {
       "name": "Trading Signals",
       "path": "/api/trading-signals",
       "status": "SUCCESS",
-      "responseTime": 3745,
-      "dataSize": 1285
+      "responseTime": 2,
+      "dataSize": 289
     },
     {
       "name": "Quantum Matrix",
       "path": "/api/quantum-matrix",
       "status": "SUCCESS",
-      "responseTime": 3748,
-      "dataSize": 4409
+      "responseTime": 1,
+      "dataSize": 113
     },
     {
       "name": "Dashboard",
       "path": "/api/dashboard",
       "status": "SUCCESS",
-      "responseTime": 4391,
-      "dataSize": 8615
+      "responseTime": 1,
+      "dataSize": 79
     },
     {
       "name": "Performance Metrics",
       "path": "/api/performance",
       "status": "SUCCESS",
       "responseTime": 1,
-      "dataSize": 310
+      "dataSize": 231
     },
     {
       "name": "Quantum State",
       "path": "/api/quantum-state",
       "status": "SUCCESS",
-      "responseTime": 8,
-      "dataSize": 377
+      "responseTime": 1,
+      "dataSize": 106
     },
     {
       "name": "System Alerts",
       "path": "/api/alerts",
       "status": "SUCCESS",
-      "responseTime": 3716,
-      "dataSize": 416
+      "responseTime": 1,
+      "dataSize": 143
     },
     {
       "name": "Account Balance",
       "path": "/api/balance",
       "status": "SUCCESS",
-      "responseTime": 2,
-      "dataSize": 55
+      "responseTime": 1,
+      "dataSize": 73
     },
     {
       "name": "Order History",
       "path": "/api/orders/history",
       "status": "SUCCESS",
       "responseTime": 1,
-      "dataSize": 64
+      "dataSize": 145
     },
     {
       "name": "Open Orders",
       "path": "/api/orders/open",
       "status": "SUCCESS",
-      "responseTime": 1,
-      "dataSize": 64
+      "responseTime": 0,
+      "dataSize": 39
     }
   ]
 }

@@ -577,6 +577,17 @@ class QuantumFrontendAPI {
             }
         });
 
+        // Global status endpoint for LLM Master Controller integration
+        this.app.get('/api/llm/global-status', async (req, res) => {
+            try {
+                const globalStatus = await this.getGlobalStatus();
+                res.json(globalStatus);
+            } catch (error) {
+                console.error('Error getting global status:', error);
+                res.status(500).json({ error: 'Failed to get global status' });
+            }
+        });
+
         // Test endpoint para verificar datos
         this.app.get('/api/test-data', async (req, res) => {
             try {
@@ -1708,6 +1719,97 @@ class QuantumFrontendAPI {
         } catch (error) {
             console.error('Error getting unified auto-exec status:', error);
             return {};
+        }
+    }
+
+    // Global status method for LLM Master Controller integration
+    async getGlobalStatus() {
+        try {
+            // Get current system metrics
+            const marketData = await this.getMarketData();
+            const quantumState = await this.getQuantumState();
+            const performance = await this.getPerformanceMetrics();
+            const alerts = await this.getAlerts();
+
+            // Calculate system health based on various factors
+            const marketHealth = Object.keys(marketData.data || {}).length > 0 ? 0.8 : 0.3;
+            const quantumHealth = quantumState.data?.coherence || 0;
+            const performanceHealth = performance.metrics?.totalTrades > 0 ? 0.9 : 0.5;
+            const alertHealth = alerts.length === 0 ? 1.0 : 0.7;
+
+            const overallHealth = (marketHealth + quantumHealth + performanceHealth + alertHealth) / 4;
+
+            // Get active modules status
+            const modules = {
+                market: { status: 'ACTIVE', health: marketHealth },
+                portfolio: { status: 'ACTIVE', health: 0.85 },
+                options: { status: 'ACTIVE', health: 0.75 },
+                oracle: { status: 'ACTIVE', health: quantumHealth },
+                logs: { status: 'ACTIVE', health: 0.9 }
+            };
+
+            return {
+                system: {
+                    name: 'Quantum Trading Dashboard Unificado',
+                    version: '2.0.0',
+                    status: overallHealth > 0.7 ? 'HEALTHY' : overallHealth > 0.5 ? 'WARNING' : 'CRITICAL',
+                    health: overallHealth,
+                    uptime: process.uptime(),
+                    timestamp: Date.now()
+                },
+                modules: modules,
+                metrics: {
+                    totalSymbols: Object.keys(marketData.data || {}).length,
+                    activeAlerts: alerts.length,
+                    quantumCoherence: quantumState.data?.coherence || 0,
+                    totalTrades: performance.metrics?.totalTrades || 0,
+                    winRate: performance.metrics?.winRate || 0
+                },
+                quantum: {
+                    coherence: quantumState.data?.coherence || 0,
+                    consciousness: quantumState.data?.consciousness || 0,
+                    entanglement: quantumState.data?.entanglement || 0,
+                    isRunning: quantumState.data?.isRunning || true
+                },
+                alerts: alerts.slice(0, 5), // Last 5 alerts
+                recommendations: [
+                    {
+                        id: 'market_monitoring',
+                        title: 'Market Data Integration',
+                        score: marketHealth,
+                        context: 'Real-time market data from Binance API'
+                    },
+                    {
+                        id: 'quantum_optimization',
+                        title: 'Quantum System Optimization',
+                        score: quantumHealth,
+                        context: 'Quantum coherence and entanglement monitoring'
+                    },
+                    {
+                        id: 'performance_tracking',
+                        title: 'Performance Analytics',
+                        score: performanceHealth,
+                        context: 'Trading performance and risk metrics'
+                    }
+                ]
+            };
+        } catch (error) {
+            console.error('Error getting global status:', error);
+            return {
+                system: {
+                    name: 'Quantum Trading Dashboard Unificado',
+                    version: '2.0.0',
+                    status: 'ERROR',
+                    health: 0,
+                    uptime: process.uptime(),
+                    timestamp: Date.now()
+                },
+                modules: {},
+                metrics: {},
+                quantum: {},
+                alerts: [],
+                recommendations: []
+            };
         }
     }
 

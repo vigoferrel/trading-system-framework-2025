@@ -1,0 +1,128 @@
+{
+  "summary": {
+    "totalGroups": 8,
+    "safeDeletions": 0,
+    "requiresReview": 8,
+    "spaceSavedKB": "8.74"
+  },
+  "safeToDelete": [],
+  "requiresReview": [
+    {
+      "hash": "d41d8cd98f00b204e9800998ecf8427e",
+      "files": [
+        "ANALISIS_FODA_COMPLETO.md",
+        "core.error.log",
+        "dashboard-error.log",
+        "enhanced-service-error.log",
+        "frontend.error.log",
+        "INFORME_FINAL_ESTADO_SISTEMA.md",
+        "quantum\\srona-multi-whale-background.log",
+        "quantum\\srona-multi-whale-launch.log",
+        "test-error.log",
+        "VigoFutures\\{"
+      ],
+      "count": 10,
+      "original": ".venv\\Lib\\site-packages\\aiohappyeyeballs\\py.typed",
+      "size": 0,
+      "spaceSaved": 0
+    },
+    {
+      "hash": "81051bcc2cf1bedf378224b0a93e2877",
+      "files": [
+        "check-specific-symbols.js",
+        "ESTADO_FINAL_SISTEMA_CORREGIDO.md"
+      ],
+      "count": 2,
+      "original": "check-specific-symbols.js",
+      "size": 2,
+      "spaceSaved": 2
+    },
+    {
+      "hash": "7967d550a306a50276991b19ddb4d72e",
+      "files": [
+        "quantum\\srona-multi-whale-launch.pid",
+        "quantum\\srona-multi-whale.pid"
+      ],
+      "count": 2,
+      "original": "quantum\\srona-multi-whale-launch.pid",
+      "size": 5,
+      "spaceSaved": 5
+    },
+    {
+      "hash": "0d3932757c0fa62c7c65eaba6d02bde5",
+      "files": [
+        "quantum-vpn.ovpn",
+        "vpn-config\\quantum-vpn.ovpn"
+      ],
+      "count": 2,
+      "original": "quantum-vpn.ovpn",
+      "size": 1010,
+      "spaceSaved": 1010
+    },
+    {
+      "hash": "c81cbc7c37464a69503e7fab569eac2f",
+      "files": [
+        "VigoFutures\\archive\\LAUNCH-QBTC-FEYNMAN.bat",
+        "VigoFutures\\LAUNCH-QBTC-FEYNMAN.bat"
+      ],
+      "count": 2,
+      "original": "VigoFutures\\archive\\LAUNCH-QBTC-FEYNMAN.bat",
+      "size": 535,
+      "spaceSaved": 535
+    },
+    {
+      "hash": "d73277fbc977213d27c1449e6a355ddc",
+      "files": [
+        "VigoFutures\\core\\quantum-engine\\.env",
+        "VigoFutures\\core\\quantum-engine\\env-example.txt",
+        "VigoFutures\\quantum-core\\env-example.txt"
+      ],
+      "count": 3,
+      "original": "VigoFutures\\core\\quantum-engine\\.env",
+      "size": 333,
+      "spaceSaved": 666
+    },
+    {
+      "hash": "6daf2ad7679481c4a23c907312b7a7ab",
+      "files": [
+        "VigoFutures\\core\\quantum-engine\\QuantumUnifiedCore.js",
+        "VigoFutures\\quantum-core\\QuantumUnifiedCore.js"
+      ],
+      "count": 2,
+      "original": "VigoFutures\\core\\quantum-engine\\QuantumUnifiedCore.js",
+      "size": 4839,
+      "spaceSaved": 4839
+    },
+    {
+      "hash": "7209fc0bc6fa2688ee0a564c754ed013",
+      "files": [
+        "VigoFutures\\core\\quantum-engine\\SharedServices.js",
+        "VigoFutures\\quantum-core\\services\\SharedServices.js"
+      ],
+      "count": 2,
+      "original": "VigoFutures\\core\\quantum-engine\\SharedServices.js",
+      "size": 1888,
+      "spaceSaved": 1888
+    }
+  ],
+  "allFilesToDelete": [
+    "ANALISIS_FODA_COMPLETO.md",
+    "core.error.log",
+    "dashboard-error.log",
+    "enhanced-service-error.log",
+    "frontend.error.log",
+    "INFORME_FINAL_ESTADO_SISTEMA.md",
+    "quantum\\srona-multi-whale-background.log",
+    "quantum\\srona-multi-whale-launch.log",
+    "test-error.log",
+    "VigoFutures\\{",
+    "ESTADO_FINAL_SISTEMA_CORREGIDO.md",
+    "quantum\\srona-multi-whale.pid",
+    "vpn-config\\quantum-vpn.ovpn",
+    "VigoFutures\\LAUNCH-QBTC-FEYNMAN.bat",
+    "VigoFutures\\core\\quantum-engine\\env-example.txt",
+    "VigoFutures\\quantum-core\\env-example.txt",
+    "VigoFutures\\quantum-core\\QuantumUnifiedCore.js",
+    "VigoFutures\\quantum-core\\services\\SharedServices.js"
+  ]
+}

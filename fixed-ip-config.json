@@ -1,0 +1,60 @@
+{
+  "description": "Configuración de IP Fija para Binance - Sistema Quantum Trading",
+  "fixedWhitelistIP": "181.43.148.169",
+  "ipCheckInterval": 300000,
+  "ipChangeAlert": true,
+  "ipChangeAutoCorrect": false,
+  "backupIPs": {
+    "primary": "192.168.173.160",
+    "secondary": "10.0.0.1"
+  },
+  "monitoring": {
+    "monitorIPChanges": true,
+    "logIPChanges": true,
+    "alertOnIPChange": true
+  },
+  "network": {
+    "primaryInterface": "Wi-Fi",
+    "vpnInterface": "NordLynx",
+    "primaryDNS": "8.8.8.8",
+    "secondaryDNS": "8.8.4.4"
+  },
+  "proxy": {
+    "useProxy": false,
+    "proxyHost": "",
+    "proxyPort": ""
+  },
+  "timeouts": {
+    "connectionTimeout": 10000,
+    "apiTimeout": 30000
+  },
+  "retries": {
+    "maxRetries": 3,
+    "retryDelay": 5000
+  },
+  "logging": {
+    "logLevel": "info",
+    "logFile": "ip-monitor.log",
+    "maxLogSize": 10485760
+  },
+  "alerts": {
+    "emailAlerts": false,
+    "emailRecipient": "",
+    "smtpServer": "",
+    "smtpPort": 587
+  },
+  "dashboard": {
+    "port": 8080,
+    "host": "localhost"
+  },
+  "security": {
+    "encryptSensitiveData": true,
+    "autoBackupConfig": true,
+    "backupInterval": 86400000
+  },
+  "metadata": {
+    "configCreated": "2025-09-01T21:30:00Z",
+    "configVersion": "1.0.0",
+    "lastModified": "2025-09-01T21:30:00Z"
+  }
+}

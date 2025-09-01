@@ -1,0 +1,199 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    color: #e0e6ed;
+    margin: 0;
+    min-height: 100vh;
+}
+header {
+    background: #222;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+nav {
+    margin-top: 1rem;
+}
+nav button {
+    background: #40e0d0;
+    color: #222;
+    border: none;
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+nav button.active {
+    background: #16213e;
+    color: #40e0d0;
+}
+main {
+    padding: 2rem;
+}
+
+/* Estadísticas del mercado */
+.market-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(64, 224, 208, 0.1);
+    border: 1px solid #40e0d0;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.stat-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #40e0d0;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e0e6ed;
+}
+
+/* Contenedores de gráficos */
+.chart-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(64, 224, 208, 0.3);
+}
+
+/* Tablas mejoradas */
+.table-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+thead {
+    background: rgba(64, 224, 208, 0.1);
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(64, 224, 208, 0.2);
+}
+
+th {
+    font-weight: 600;
+    color: #40e0d0;
+}
+
+tbody tr:hover {
+    background: rgba(64, 224, 208, 0.05);
+}
+
+/* Estados positivos/negativos */
+.positive {
+    color: #40e0d0;
+}
+
+.negative {
+    color: #e04040;
+}
+
+/* Estados de posición */
+.status-open {
+    color: #40e0d0;
+    font-weight: bold;
+}
+
+.status-closed {
+    color: #666;
+}
+
+/* Notificaciones */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.notification-success {
+    background: linear-gradient(135deg, #40e0d0, #48cae4);
+}
+
+.notification-error {
+    background: linear-gradient(135deg, #e04040, #ff6b6b);
+}
+
+.notification-warning {
+    background: linear-gradient(135deg, #ffd93d, #ffb700);
+}
+
+.notification-info {
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .market-stats {
+        grid-template-columns: 1fr;
+    }
+
+    nav button {
+        margin: 0.25rem;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .chart-container {
+        padding: 0.5rem;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    th, td {
+        padding: 0.5rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.stat-card, .chart-container, .table-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Loading state */
+main:empty::after {
+    content: "Cargando...";
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    color: #40e0d0;
+    font-size: 1.2rem;
+}
