@@ -32,16 +32,11 @@ SERVICES = {
     "vigo_futures": "http://localhost:8002"
 }
 
-# ENDPOINTS CRÍTICOS
+# ENDPOINTS CRÍTICOS - CORREGIDOS PARA ORQUESTADOR REAL
 ENDPOINTS = [
-    {"service": "qbtc_core", "name": "health", "url": "/health"},
-    {"service": "qbtc_core", "name": "spot_data", "url": "/api/spot-data"},
-    {"service": "qbtc_core", "name": "futures_data", "url": "/api/futures-data"},
-    {"service": "qbtc_core", "name": "quantum_metrics", "url": "/api/quantum-metrics"},
-    {"service": "qbtc_core", "name": "opportunities", "url": "/api/opportunities"},
-    {"service": "srona_api", "name": "options_data", "url": "/api/options-data"},
-    {"service": "srona_api", "name": "neural_context", "url": "/api/neural-context"},
-    {"service": "frontend_api", "name": "status", "url": "/api/status"}
+    {"service": "qbtc_core", "name": "health", "url": "/health", "method": "GET"},
+    {"service": "qbtc_core", "name": "background_status", "url": "/background/status", "method": "GET"},
+    {"service": "frontend_api", "name": "status", "url": "/api/status", "method": "GET"}
 ]
 
 class BackendRealFixed:
@@ -167,12 +162,17 @@ class BackendRealFixed:
             else:
                 self.metrics["captured"] += 1
     
-    async def capture_endpoint(self, service: str, endpoint: str, url: str):
+    async def capture_endpoint(self, service: str, endpoint: str, url: str, method: str = "GET"):
         """Captura datos de un endpoint específico."""
         start_time = time.time()
-        
+
         try:
-            async with self.session.get(url, timeout=10) as response:
+            if method == "POST":
+                async with self.session.post(url, timeout=10) as response:
+                    pass
+            else:
+                async with self.session.get(url, timeout=10) as response:
+                    pass
                 response_time = time.time() - start_time
                 
                 if response.status == 200:

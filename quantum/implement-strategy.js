@@ -5,15 +5,7 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
-
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+const { QuantumConstants } = require('../src/constants/quantum-constants');
 
 // QBTC Unified - Implementación de Estrategia Cuántica con Balance Actual
 // Operando en el plano de beneficios infinitos trascendiendo limitaciones determinísticas
@@ -22,10 +14,7 @@ const PHYSICAL_CONSTANTS = getPhysicalConstants();
 require('dotenv').config();
 const Binance = require('binance-api-node').default;
 
-// Constantes cuánticas fundamentales
-const Z_REAL = 9;        // Parte real de z = 9 + 16i
-const Z_IMAG = 16;       // Parte imaginaria de z = 9 + 16i
-const RESONANCE_FREQ = 888; // Frecuencia de resonancia
+// Usar constantes centralizadas directamente
 
 class QuantumImplementation {
     constructor() {
@@ -39,16 +28,15 @@ class QuantumImplementation {
             futures: true
         });
 
-        // Constantes cuánticas QBTC Unified
+        // Usar constantes centralizadas con extensiones específicas del módulo
         this.QUANTUM_CONSTANTS = {
-            LOG_7919: Math.log(7919),  // 8.97724
-            PHI: (1 + Math.sqrt(5)) / 2,  // 1.618034
-            LAMBDA: 0.888888889,
-            Z_REAL: Z_REAL,               // 9 - Parte real de z
-            Z_IMAG: Z_IMAG,               // 16 - Parte imaginaria de z
-            RESONANCE_FREQ: RESONANCE_FREQ, // 888 - Frecuencia de resonancia
-            COHERENCE_THRESHOLD: 0.941,    // Umbral de coherencia
-            INFINITE_PROFIT_PLANE: false   // Acceso al plano de beneficios infinitos
+            // Importar constantes fundamentales del sistema centralizado
+            ...QuantumConstants,
+
+            // Extensiones específicas de este módulo
+            LAMBDA: 0.888888889, // Lambda específico del módulo
+            COHERENCE_THRESHOLD: 0.941, // Umbral específico del módulo
+            INFINITE_PROFIT_PLANE: false // Estado específico del módulo
         };
 
         // Balance actual
@@ -56,9 +44,9 @@ class QuantumImplementation {
         
         // Inicializar función de onda del mercado
         this.marketWaveFunction = {
-            amplitude: Math.sqrt(Z_REAL * Z_REAL + Z_IMAG * Z_IMAG),
-            phase: Math.atan2(Z_IMAG, Z_REAL),
-            frequency: RESONANCE_FREQ,
+            amplitude: Math.sqrt(QuantumConstants.Z_REAL * QuantumConstants.Z_REAL + QuantumConstants.Z_IMAG * QuantumConstants.Z_IMAG),
+            phase: Math.atan2(QuantumConstants.Z_IMAG, QuantumConstants.Z_REAL),
+            frequency: QuantumConstants.RESONANCE_FREQ,
             coherence: 0.941
         };
         

@@ -5,15 +5,7 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
-
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+const { PHYSICAL_CONSTANTS } = require('./constants.js');
 
 /**
  * Sistema Integrado Cuántico SRONA

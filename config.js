@@ -63,15 +63,11 @@ module.exports = {
         orchCoherenceThreshold: 0.5, // REDUCIDO - Más sensible
         orchExplorationMaxAdj: 0.2, // AUMENTADO - Más exploración
         
-        // CONSTANTES CUÁNTICAS QBTC UNIFICADAS
+        // CONSTANTES CUÁNTICAS QBTC UNIFICADAS - Usando sistema centralizado
         quantumConstants: {
-            Z_REAL: 9,                    // Parte real del número cuántico complejo z = 9 + 16i
-            Z_IMAG: 16,                   // Parte imaginaria del número cuántico complejo
-            LAMBDA_7919: Math.log(7919),  // Longitud de onda cuántica fundamental λ = 8.977 Hz
-            PHI_GOLDEN: (1 + Math.sqrt(5)) / 2, // Proporción áurea
-            RESONANCE_FREQ: 888,          // Frecuencia de resonancia cuántica
-            COHERENCE_THRESHOLD: 0.941,   // Umbral de coherencia cuántica QBTC
-            EULER_GAMMA: 0.5772156649015329, // Constante de Euler-Mascheroni
+            ...QUANTUM_CONSTANTS,
+            // Extensiones específicas de configuración
+            COHERENCE_THRESHOLD: 0.941,   // Umbral de coherencia cuántica QBTC (específico de config)
             QUANTUM_FIBONACCI: [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597],
             PRIME_SEQUENCE: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
         },

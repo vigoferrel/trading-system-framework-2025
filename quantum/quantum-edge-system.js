@@ -5,15 +5,7 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
-
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+const { QuantumConstants } = require('../src/constants/quantum-constants');
 
 /**
  * QBTC Quantum Edge System v3.0
@@ -48,27 +40,24 @@ class QuantumEdgeSystem extends EventEmitter {
             quantumPrecision: config.quantumPrecision || 1e-12 // picosegundos
         };
         
-        // Constantes cuánticas para edge
+        // Usar constantes centralizadas con extensiones específicas del módulo
         this.QUANTUM_EDGE_CONSTANTS = {
-            // Constantes fundamentales
-            Z_REAL: 9,
-            Z_IMAG: 16,
-            LAMBDA: Math.log(7919),
-            PHI: (1 + Math.sqrt(5)) / 2,
-            
-            // Constantes de edge específicas
-            EDGE_AMPLIFICATION: 1.618033988749895 * Math.sqrt(2), //  × 2
+            // Importar constantes fundamentales del sistema centralizado
+            ...QuantumConstants,
+
+            // Extensiones específicas del sistema de edge
+            EDGE_AMPLIFICATION: QuantumConstants.PHI_GOLDEN * Math.sqrt(2), // φ × √2
             TIMING_PRECISION: 1e-12, // picosegundos
             ARBITRAGE_THRESHOLD: 0.0001, // 0.01%
             PREDICTION_HORIZON: 300, // 5 minutos en segundos
             OPTIMIZATION_CYCLES: 100,
-            
+
             // Factores de ventaja cuántica
             QUANTUM_ADVANTAGE_FACTORS: {
                 SUPERPOSITION: 2.0,    // Ventaja por superposición
-                ENTANGLEMENT: 1.618,   // Ventaja por entrelazamiento
-                COHERENCE: 1.414,      // Ventaja por coherencia
-                TUNNELING: 1.732       // Ventaja por tunelamiento
+                ENTANGLEMENT: QuantumConstants.PHI_GOLDEN,   // Ventaja por entrelazamiento
+                COHERENCE: Math.sqrt(2),      // Ventaja por coherencia
+                TUNNELING: Math.sqrt(3)       // Ventaja por tunelamiento
             }
         };
         

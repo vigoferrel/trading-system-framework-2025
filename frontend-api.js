@@ -1,5 +1,8 @@
 
-// Constantes físicas reales del sistema
+// Importar constantes centralizadas
+const { QuantumConstants } = require('./src/constants/quantum-constants');
+
+// Mantener PHYSICAL_CONSTANTS por compatibilidad backward, pero usar constantes centralizadas
 const PHYSICAL_CONSTANTS = {
   "QUANTUM_COHERENCE": 0.75,
   "QUANTUM_CONSCIOUSNESS": 0.8,

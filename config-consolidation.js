@@ -253,3 +253,4 @@ function consolidateConfiguration() {
 
 // Ejecutar consolidación
 consolidateConfiguration();
+

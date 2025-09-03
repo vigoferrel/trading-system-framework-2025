@@ -5,15 +5,10 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
+const { QuantumConstants } = require('../src/constants/quantum-constants');
 
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+// Para compatibilidad backward - mantener QUANTUM_CONSTANTS disponible
+const QUANTUM_CONSTANTS = QuantumConstants;
 
 // Sistema de Gestión de Opciones Naked con Campos Gravitacionales
 require('dotenv').config();

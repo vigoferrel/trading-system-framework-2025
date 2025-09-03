@@ -4,17 +4,26 @@
  * INTELLIGENCE ADAPTER ULTRA-SIMPLIFICADO
  * Solo los 3 componentes CRÍTICOS para maximizar ganancias en plano z = 9 + 16i:
  * 1. SRONA Unified Master - Coherencia cuántica
- * 2. Cadenas de Markov Primas - Predicción probabilística 
+ * 2. Cadenas de Markov Primas - Predicción probabilística
  * 3. Feynman Path Integrals - Amplificación en plano complejo
  */
 
-// Constantes primas para cadenas de Markov
+// ==========================================
+// IMPORTACIÓN DE CONSTANTES UNIFICADAS
+// ==========================================
+// ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
+// ✅ Fuente única de verdad para todas las constantes del sistema
+
+const { QuantumConstants } = require(process.cwd() + '/src/constants/quantum-constants');
+
+// Usar constantes centralizadas con extensiones específicas del módulo
 const PRIME_CONSTANTS = {
-  Z_REAL: 9,
-  Z_IMAG: 16,
-  LAMBDA_7919: Math.log(7919),
-  PRIMES: [7919, 9973, 1597, 887], // Secuencia prima optimizada
-  Z_MAGNITUDE: Math.hypot(9, 16)    // |z|  18.358
+  // Importar constantes fundamentales del sistema centralizado
+  ...QuantumConstants,
+
+  // Extensiones específicas del orchestrator
+  PRIMES: QuantumConstants.PRIMES, // Usar primos del sistema centralizado
+  Z_MAGNITUDE: QuantumConstants.Z_MAGNITUDE // Usar magnitud del sistema centralizado
 };
 
 class IntelligenceAdapter {

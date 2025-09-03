@@ -14,6 +14,7 @@ import {
   SystemEvent,
   QuantumFactors
 } from './types/quantum-types';
+import { PHYSICAL_CONSTANTS } from './constants.js';
 import { setTimeout, clearTimeout } from 'timers';
 type Timeout = ReturnType<typeof setTimeout>;
 

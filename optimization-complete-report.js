@@ -328,3 +328,4 @@ function generateFinalReport() {
 
 // Ejecutar reporte final
 generateFinalReport();
+

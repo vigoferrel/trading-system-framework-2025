@@ -1,9 +1,10 @@
-import { 
+import {
   QuantumFactors,
   MLOptimization,
   MLOptimizerConfig,
   QuantumAssetSymbol
 } from '../types/quantum-types';
+import { PHYSICAL_CONSTANTS } from '../constants.js';
 
 /**
  * ML Optimizer - Optimización en Tiempo Real de Factores Cuánticos

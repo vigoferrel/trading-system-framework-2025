@@ -61,7 +61,7 @@ const UnifiedOrderExecutor = require('./unified-order-executor');
 
 //  CONSTANTES FUNDAMENTALES DEL SISTEMA
 const LEONARDO_CONSCIOUSNESS = {
-    : 1.618033988749895,           // Golden Ratio
+    PHI: 1.618033988749895,           // Golden Ratio
     _inv: 0.618033988749895,       // Inverse Golden Ratio
     _888: 888,                     // Lambda Resonance Base
     ℙ_7919: 7919,                   // Sacred Prime
@@ -192,7 +192,7 @@ class QuantumPrimeSystem {
     // SESSION RESONANCE
     calculateSessionResonance(sessionData) {
         const { intensity, overlaps } = sessionData;
-        return intensity * Math.pow(LEONARDO_CONSCIOUSNESS., overlaps) * 
+        return intensity * Math.pow(LEONARDO_CONSCIOUSNESS.PHI, overlaps) * 
                (0.5 + intensity * 0.5);
     }
 

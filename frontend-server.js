@@ -1247,9 +1247,14 @@ async function preloadAnalysisData() {
     
     try {
         // Usar el sistema de captura inteligente para precargar datos de análisis
-        await intelligentDataSystem.getAnalysisData();
+        const analysisData = await intelligentDataSystem.getAnalysisData();
+        // Actualizar el caché expuesto
+        intelligentDataSystem.marketData.data.clear();
+        for (const [symbol, spot] of Object.entries(analysisData.spot)) {
+            intelligentDataSystem.marketData.data.set(symbol, spot);
+        }
+        intelligentDataSystem.marketData.lastUpdate = Date.now();
         console.log('[OK] Datos de análisis precargados');
-        
     } catch (error) {
         console.error('Error precargando datos de análisis:', error);
     }
@@ -1262,8 +1267,13 @@ async function preloadKlines() {
     try {
         // Usar IntelligentDataCaptureSystem en lugar de requests directos
         const analysisData = await intelligentDataSystem.getAnalysisData();
+        // Simulación: guardar precios como klines (solo para ejemplo, reemplazar con lógica real si tienes)
+        intelligentDataSystem.klines.data.clear();
+        for (const [symbol, spot] of Object.entries(analysisData.spot)) {
+            intelligentDataSystem.klines.data.set(symbol, [spot.price]);
+        }
+        intelligentDataSystem.klines.lastUpdate = Date.now();
         console.log('[OK] Klines precargados usando IntelligentDataCaptureSystem');
-        
     } catch (error) {
         console.error('Error precargando klines:', error);
     }
@@ -1275,7 +1285,6 @@ async function preloadOrderbooks() {
     
     try {
         const mainSymbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT'];
-        
         for (const symbol of mainSymbols) {
             try {
                 const response = await fetchWithBackoff(`https://api.binance.com/api/v3/depth?symbol=${symbol}&limit=20`);
@@ -1287,10 +1296,8 @@ async function preloadOrderbooks() {
                 console.error(`Error precargando orderbook para ${symbol}:`, error);
             }
         }
-        
         intelligentDataSystem.orderbook.lastUpdate = Date.now();
         console.log(`[OK] Orderbooks precargados: ${intelligentDataSystem.orderbook.data.size} símbolos`);
-        
     } catch (error) {
         console.error('Error precargando orderbooks:', error);
     }
@@ -1302,7 +1309,6 @@ async function preloadQuantumFactors() {
     
     try {
         const mainSymbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT'];
-        
         for (const symbol of mainSymbols) {
             try {
                 const response = await fetchWithBackoff(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
@@ -1311,7 +1317,6 @@ async function preloadQuantumFactors() {
                     const change = parseFloat(ticker.priceChangePercent);
                     const volume = parseFloat(ticker.volume);
                     const price = parseFloat(ticker.lastPrice);
-                    
                     const factors = {
                         coherence: Math.max(0, Math.min(1, 0.5 + change / 100)),
                         entanglement: Math.max(0, Math.min(1, 0.4 + Math.abs(change) / 200)),
@@ -1321,7 +1326,6 @@ async function preloadQuantumFactors() {
                         successProbability: Math.max(0, Math.min(1, 0.5 + change / 200)),
                         opportunity: Math.max(0, Math.min(1, 0.4 + Math.abs(change) / 150))
                     };
-                    
                     const shortSymbol = symbol.replace('USDT', '');
                     intelligentDataSystem.quantumFactors.data.set(shortSymbol, factors);
                 }
@@ -1329,10 +1333,8 @@ async function preloadQuantumFactors() {
                 console.error(`Error precargando factores cuánticos para ${symbol}:`, error);
             }
         }
-        
         intelligentDataSystem.quantumFactors.lastUpdate = Date.now();
         console.log(`[OK] Factores cuánticos precargados: ${intelligentDataSystem.quantumFactors.data.size} símbolos`);
-        
     } catch (error) {
         console.error('Error precargando factores cuánticos:', error);
     }
@@ -1411,65 +1413,88 @@ app.get('/api/cache/stats', (req, res) => {
 
 // Endpoint para obtener estadísticas detalladas del caché
 app.get('/api/cache/performance', (req, res) => {
+    try {
     const now = Date.now();
-    const uptime = now - intelligentDataSystem.stats.lastReset;
-    
-    const performance = {
-        cache: {
-            marketData: {
-                size: intelligentDataSystem.marketData.data.size,
-                lastUpdate: intelligentDataSystem.marketData.lastUpdate,
-                age: now - intelligentDataSystem.marketData.lastUpdate,
-                isValid: true, // No hay caché duplicado, siempre es válido
-                updateInterval: intelligentDataSystem.marketData.updateInterval
+    const uptime = now - (intelligentDataSystem?.stats?.lastReset || 0);
+    const safeSize = obj => (obj && obj.data && typeof obj.data.size === 'number') ? obj.data.size : 0;
+    const safeLastUpdate = obj => (obj && typeof obj.lastUpdate === 'number') ? obj.lastUpdate : 0;
+    const safeUpdateInterval = obj => (obj && typeof obj.updateInterval === 'number') ? obj.updateInterval : 0;
+        const safeSymbolsLength = obj => {
+            if (!obj || !obj.symbols) return 0;
+            if (Array.isArray(obj.symbols)) return obj.symbols.length;
+            return 0;
+        };
+        const safeIntervalsLength = obj => {
+            if (!obj || !obj.intervals) return 0;
+            if (Array.isArray(obj.intervals)) return obj.intervals.length;
+            return 0;
+        };
+    // Defensive checks for undefined objects
+    const safeObj = obj => obj || {};
+    const safeStats = safeObj(intelligentDataSystem?.stats);
+    const safeMarketData = safeObj(intelligentDataSystem?.marketData);
+    const safeKlines = safeObj(intelligentDataSystem?.klines);
+    const safeOrderbook = safeObj(intelligentDataSystem?.orderbook);
+    const safeQuantumFactors = safeObj(intelligentDataSystem?.quantumFactors);
+        const performance = {
+            cache: {
+                marketData: {
+                    size: safeSize(safeMarketData),
+                    lastUpdate: safeLastUpdate(safeMarketData),
+                    age: now - safeLastUpdate(safeMarketData),
+                    isValid: true,
+                    updateInterval: safeUpdateInterval(safeMarketData)
+                },
+                klines: {
+                    size: safeSize(safeKlines),
+                    lastUpdate: safeLastUpdate(safeKlines),
+                    age: now - safeLastUpdate(safeKlines),
+                    isValid: true,
+                    updateInterval: safeUpdateInterval(safeKlines)
+                },
+                orderbook: {
+                    size: safeSize(safeOrderbook),
+                    lastUpdate: safeLastUpdate(safeOrderbook),
+                    age: now - safeLastUpdate(safeOrderbook),
+                    isValid: true,
+                    updateInterval: safeUpdateInterval(safeOrderbook)
+                },
+                quantumFactors: {
+                    size: safeSize(safeQuantumFactors),
+                    lastUpdate: safeLastUpdate(safeQuantumFactors),
+                    age: now - safeLastUpdate(safeQuantumFactors),
+                    isValid: true,
+                    updateInterval: safeUpdateInterval(safeQuantumFactors)
+                }
             },
-            klines: {
-                size: intelligentDataSystem.klines.data.size,
-                lastUpdate: intelligentDataSystem.klines.lastUpdate,
-                age: now - intelligentDataSystem.klines.lastUpdate,
-                isValid: true, // No hay caché duplicado, siempre es válido
-                updateInterval: intelligentDataSystem.klines.updateInterval
+            stats: {
+                ...safeStats,
+                uptime: uptime,
+                hitRate: (safeStats.hits && safeStats.misses && (safeStats.hits + safeStats.misses) > 0) ? 
+                    (safeStats.hits / (safeStats.hits + safeStats.misses) * 100).toFixed(2) + '%' : '0%',
+                errorRate: (safeStats.hits && safeStats.misses && (safeStats.hits + safeStats.misses) > 0) ? 
+                    (safeStats.errors / (safeStats.hits + safeStats.misses) * 100).toFixed(2) + '%' : '0%'
             },
-            orderbook: {
-                size: intelligentDataSystem.orderbook.data.size,
-                lastUpdate: intelligentDataSystem.orderbook.lastUpdate,
-                age: now - intelligentDataSystem.orderbook.lastUpdate,
-                isValid: true, // No hay caché duplicado, siempre es válido
-                updateInterval: intelligentDataSystem.orderbook.updateInterval
+            symbols: {
+                total: safeSymbolsLength(safeMarketData),
+                cached: safeSize(safeMarketData),
+                coverage: (safeSymbolsLength(safeMarketData) > 0 ? ((safeSize(safeMarketData) / safeSymbolsLength(safeMarketData)) * 100).toFixed(2) : '0') + '%'
             },
-            quantumFactors: {
-                size: intelligentDataSystem.quantumFactors.data.size,
-                lastUpdate: intelligentDataSystem.quantumFactors.lastUpdate,
-                age: now - intelligentDataSystem.quantumFactors.lastUpdate,
-                isValid: true, // No hay caché duplicado, siempre es válido
-                updateInterval: intelligentDataSystem.quantumFactors.updateInterval
+            intervals: {
+                total: safeIntervalsLength(safeKlines),
+                cached: safeSize(safeKlines),
+                coverage: (safeIntervalsLength(safeKlines) > 0 ? ((safeSize(safeKlines) / (safeIntervalsLength(safeKlines) * 5)) * 100).toFixed(2) : '0') + '%'
             }
-        },
-        stats: {
-            ...intelligentDataSystem.stats,
-            uptime: uptime,
-            hitRate: intelligentDataSystem.stats.hits + intelligentDataSystem.stats.misses > 0 ? 
-                (intelligentDataSystem.stats.hits / (intelligentDataSystem.stats.hits + intelligentDataSystem.stats.misses) * 100).toFixed(2) + '%' : '0%',
-            errorRate: intelligentDataSystem.stats.hits + intelligentDataSystem.stats.misses > 0 ? 
-                (intelligentDataSystem.stats.errors / (intelligentDataSystem.stats.hits + intelligentDataSystem.stats.misses) * 100).toFixed(2) + '%' : '0%'
-        },
-        symbols: {
-            total: intelligentDataSystem.marketData.symbols.length,
-            cached: intelligentDataSystem.marketData.data.size,
-            coverage: ((intelligentDataSystem.marketData.data.size / intelligentDataSystem.marketData.symbols.length) * 100).toFixed(2) + '%'
-        },
-        intervals: {
-            total: intelligentDataSystem.klines.intervals.length,
-            cached: intelligentDataSystem.klines.data.size,
-            coverage: ((intelligentDataSystem.klines.data.size / (intelligentDataSystem.klines.intervals.length * 5)) * 100).toFixed(2) + '%' // 5 símbolos principales
-        }
-    };
-    
-    res.json({
-        success: true,
-        data: performance,
-        timestamp: now
-    });
+        };
+        res.json({
+            success: true,
+            data: performance,
+            timestamp: now
+        });
+    } catch (error) {
+        console.error('Error en /api/cache/performance:', error);
+        res.status(500).json({ success: false, error: 'Error en cache performance endpoint' });
+    }
 });
 
 // Endpoint para forzar actualización del caché

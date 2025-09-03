@@ -581,3 +581,4 @@ runDeepAnalysis().then(analysis => {
     console.error('❌ Error durante el análisis:', error);
     process.exit(1);
 });
+

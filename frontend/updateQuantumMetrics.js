@@ -67,7 +67,7 @@ function calculateOverallQuantumCoherence() {
     let totalLeverage = 0;
     let symbolCount = 0;
     
-    // CONSTANTES QBTC UNIFICADAS - Alineadas con config.js
+    // Importar constantes centralizadas
     const QBTC_CONSTANTS = {
         Z_REAL: 9,
         Z_IMAG: 16,

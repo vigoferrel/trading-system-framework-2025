@@ -5,7 +5,7 @@ const BINANCE_API_BASE = 'https://api.binance.com';
 const API_BASE = 'http://localhost:4602';
 
 // Renderizador de pestañas
-const tabs = ['market', 'portfolio', 'options', 'oracle', 'logs'];
+const tabs = ['market', 'portfolio', 'options', 'oracle', 'insights', 'logs'];
 document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('nav button');
     navButtons.forEach(btn => {
@@ -216,6 +216,56 @@ async function renderTab(tab) {
         } catch (error) {
             console.error('Error loading market data:', error);
             main.innerHTML = '<div>Error cargando datos del mercado</div>';
+        }
+    } else if (tab === 'insights') {
+        main.innerHTML = '<div>Cargando insights...</div>';
+        try {
+            // Consumir sector analysis y trading insights
+            const [sectorRes, tradingRes] = await Promise.all([
+                fetch('http://localhost:4605/api/sector-analysis'),
+                fetch('http://localhost:4605/api/trading-insights')
+            ]);
+            const sectorData = await sectorRes.json();
+            const tradingData = await tradingRes.json();
+
+            // Procesar datos
+            const sectorSummary = sectorData?.data?.sector_summary || [];
+            const tradingInsights = tradingData?.data?.trading_insights || {};
+
+            // Panel Feynman: Explicación causal de los movimientos clave
+            let feynmanHtml = `<section><h2>🔬 Panel Feynman: Explicación Causal</h2><ul>`;
+            sectorSummary.forEach(s => {
+                feynmanHtml += `<li><strong>${s.sector}</strong>: El momentum (${(s.momentum*100).toFixed(2)}%) y la volatilidad (${(s.volatility*100).toFixed(2)}%) se explican por <em>${s.top_symbol}</em> y los flujos recientes. <br><span style='color:#40e0d0'>¿Por qué? </span> Cambios en liquidez y sentimiento institucional.</li>`;
+            });
+            feynmanHtml += '</ul></section>';
+
+            // Panel Markov: Trayectorias probables y bifurcaciones
+            let markovHtml = `<section><h2>🧬 Panel Markov: Trayectorias Probables</h2><table><thead><tr><th>Símbolo</th><th>Estado Actual</th><th>Próximo Estado</th><th>Probabilidad</th></tr></thead><tbody>`;
+            Object.values(tradingInsights).forEach(ins => {
+                // Simulación simple de transición Markov
+                const nextState = ins.score > 0.7 ? 'Rally' : (ins.score < 0.3 ? 'Caída' : 'Lateral');
+                const prob = (ins.score * 100).toFixed(1);
+                markovHtml += `<tr><td>${ins.symbol}</td><td>${ins.sector}</td><td>${nextState}</td><td>${prob}%</td></tr>`;
+            });
+            markovHtml += '</tbody></table></section>';
+
+            // Renderizar resumen sectorial y tabla de insights de trading
+            let sectorHtml = `<section><h2>🌲 Resumen Sectorial</h2><table><thead><tr><th>Sector</th><th>Momentum</th><th>Volatilidad</th><th>Mejor Símbolo</th></tr></thead><tbody>`;
+            sectorSummary.forEach(s => {
+                sectorHtml += `<tr><td>${s.sector}</td><td>${(s.momentum*100).toFixed(2)}%</td><td>${(s.volatility*100).toFixed(2)}%</td><td>${s.top_symbol}</td></tr>`;
+            });
+            sectorHtml += '</tbody></table></section>';
+
+            let tradingHtml = `<section><h2>💡 Mejores Símbolos por Sector</h2><table><thead><tr><th>Símbolo</th><th>Sector</th><th>Stop Loss</th><th>Take Profit</th><th>Score</th></tr></thead><tbody>`;
+            Object.values(tradingInsights).forEach(ins => {
+                tradingHtml += `<tr><td>${ins.symbol}</td><td>${ins.sector}</td><td>$${ins.stop_loss}</td><td>$${ins.take_profit}</td><td>${ins.score}</td></tr>`;
+            });
+            tradingHtml += '</tbody></table></section>';
+
+            main.innerHTML = feynmanHtml + markovHtml + sectorHtml + tradingHtml;
+        } catch (err) {
+            main.innerHTML = '<div>Error cargando insights</div>';
+            console.error('Error insights:', err);
         }
     } else if (tab === 'portfolio') {
         try {

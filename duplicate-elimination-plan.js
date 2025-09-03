@@ -300,3 +300,4 @@ pause
 
 // Ejecutar creación del plan
 createEliminationPlan();
+

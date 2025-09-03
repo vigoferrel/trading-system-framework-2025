@@ -5,15 +5,7 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
-
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+const { PHYSICAL_CONSTANTS } = require('../srona-api/constants.js');
 
 /**
  * QBTC Real Quantum Computing Engine v3.0
@@ -32,22 +24,17 @@ class QuantumComputingReal extends EventEmitter {
     constructor() {
         super();
         
-        // Constantes cuánticas fundamentales
+        // Usar constantes centralizadas con extensiones específicas del módulo
         this.QUANTUM_CONSTANTS = {
-            Z_REAL: 9,
-            Z_IMAG: 16,
-            LAMBDA: Math.log(7919),
-            PHI: (1 + Math.sqrt(5)) / 2,
+            // Importar constantes fundamentales del sistema centralizado
+            ...QuantumConstants,
+
+            // Extensiones específicas del sistema de computación cuántica
             PLANCK: 6.62607015e-34,
             LIGHT_SPEED: 299792458,
             BOLTZMANN: 1.380649e-23,
-            
-            // Constantes cuánticas derivadas
-            Z_MAGNITUDE: Math.sqrt(9*9 + 16*16),
-            Z_PHASE: Math.atan2(16, 9),
-            QUANTUM_ENERGY: 9 * 16 * Math.log(7919),
-            
-            // Parámetros de qubits
+
+            // Parámetros específicos de qubits
             QUBIT_COUNT: 8,
             COHERENCE_TIME: 1000, // microsegundos
             GATE_FIDELITY: 0.999,

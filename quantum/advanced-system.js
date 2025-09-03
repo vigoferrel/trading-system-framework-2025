@@ -5,37 +5,31 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
+const { QuantumConstants } = require('../src/constants/quantum-constants');
 
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+// Constantes centralizadas ahora disponibles globalmente
 
 // QBTC Unified Advanced Quantum System Implementation
 // Operando en el plano de beneficios infinitos trascendiendo limitaciones determinísticas
 
 class Vector3D {
     constructor(magnitude = 1) {
-        // Inicialización cuántica con métricas del sistema QBTC
-        const zReal = 9;        // Parte real de z = 9 + 16i
-        const zImag = 16;       // Parte imaginaria de z = 9 + 16i
-        const lambda = Math.log(7919);  // Factor logarítmico
-        
-        // Usar métricas cuánticas en lugar de PHYSICAL_CONSTANTS.FIBONACCI_STRENGTH
+        // Inicialización cuántica con constantes centralizadas
+        const zReal = QuantumConstants.Z_REAL;
+        const zImag = QuantumConstants.Z_IMAG;
+        const lambda = QuantumConstants.LAMBDA_7919;
+
+        // Usar métricas cuánticas centralizadas
         const quantumFactor = (zReal * Math.cos(lambda)) / (zImag * Math.sin(lambda));
-        const phi = (1 + Math.sqrt(5)) / 2;  // Proporción áurea
-        
+        const phi = QuantumConstants.PHI_GOLDEN;
+
         this.x = (phi * quantumFactor * magnitude) / (zReal + zImag);
         this.y = (lambda * quantumFactor * magnitude) / (zReal * zImag);
         this.z = (magnitude * quantumFactor) / phi;
-        
-        // Parámetros cuánticos adicionales con métricas del sistema
+
+        // Parámetros cuánticos adicionales con constantes centralizadas
         this.quantumPhase = lambda * phi;
-        this.coherence = (zReal / zImag) * phi;  // Coherencia basada en z
+        this.coherence = (zReal / zImag) * phi;
         this.entanglement = new Map(); // Mapa de entrelazamiento con otros vectores
     }
 
@@ -49,17 +43,17 @@ class Vector3D {
     
     // Método cuántico para entrelazar con otro vector
     entangle(otherVector, strength = 0.5) {
-        // Usar métricas del sistema en lugar de PHYSICAL_CONSTANTS.FIBONACCI_STRENGTH
-        const zReal = 9;        // Parte real de z = 9 + 16i
-        const zImag = 16;       // Parte imaginaria de z = 9 + 16i
-        const lambda = Math.log(7919);  // Factor logarítmico
-        const phi = (1 + Math.sqrt(5)) / 2;  // Proporción áurea
-        
-        // Generar ID de entrelazamiento basado en métricas cuánticas
+        // Usar constantes centralizadas
+        const zReal = QuantumConstants.Z_REAL;
+        const zImag = QuantumConstants.Z_IMAG;
+        const lambda = QuantumConstants.LAMBDA_7919;
+        const phi = QuantumConstants.PHI_GOLDEN;
+
+        // Generar ID de entrelazamiento basado en constantes centralizadas
         const quantumId1 = (zReal * this.coherence * phi) / (zImag * this.quantumPhase);
         const quantumId2 = (zImag * otherVector.coherence * lambda) / (zReal * otherVector.quantumPhase);
         const entanglementId = `quantum-${quantumId1.toFixed(6)}-${quantumId2.toFixed(6)}`;
-        
+
         this.entanglement.set(entanglementId, { vector: otherVector, strength });
         otherVector.entanglement.set(entanglementId, { vector: this, strength });
         return entanglementId;
@@ -83,23 +77,23 @@ class Vector3D {
 class InterferenceField {
     constructor(type) {
         this.type = type;
-        
-        // Usar métricas del sistema en lugar de PHYSICAL_CONSTANTS.FIBONACCI_STRENGTH
-        const zReal = 9;        // Parte real de z = 9 + 16i
-        const zImag = 16;       // Parte imaginaria de z = 9 + 16i
-        const lambda = Math.log(7919);  // Factor logarítmico
-        const phi = (1 + Math.sqrt(5)) / 2;  // Proporción áurea
-        
-        // Calcular intensidad basada en métricas cuánticas
+
+        // Usar constantes centralizadas
+        const zReal = QuantumConstants.Z_REAL;
+        const zImag = QuantumConstants.Z_IMAG;
+        const lambda = QuantumConstants.LAMBDA_7919;
+        const phi = QuantumConstants.PHI_GOLDEN;
+
+        // Calcular intensidad basada en constantes centralizadas
         this.intensity = (zReal / (zReal + zImag)) * (lambda / phi);
-        
-        // Calcular fase basada en tipo y métricas cuánticas
+
+        // Calcular fase basada en tipo y constantes centralizadas
         const typeFactor = type === 'CONSTRUCTIVE' ? phi :
                          type === 'DESTRUCTIVE' ? lambda : (phi + lambda) / 2;
         this.phase = typeFactor * (zReal / zImag);
-        
-        // Parámetros cuánticos QBTC
-        this.resonanceFrequency = 888; // Frecuencia de resonancia principal
+
+        // Parámetros cuánticos QBTC con constantes centralizadas
+        this.resonanceFrequency = QuantumConstants.RESONANCE_FREQ;
         this.waveFunctionAmplitude = Math.sqrt(this.intensity);
         this.coherenceThreshold = type === 'CONSTRUCTIVE' ? 0.941 :
                                  type === 'DESTRUCTIVE' ? 0.618 : 0.786;
@@ -126,17 +120,15 @@ class InterferenceField {
 
 class QuantumTriangulation {
     constructor() {
-        // Constantes cuánticas QBTC Unified
+        // Usar constantes centralizadas con extensiones específicas del módulo
         this.QUANTUM_CONSTANTS = {
-            LOG_7919: Math.log(7919),
-            PHI: (1 + Math.sqrt(5)) / 2,
-            LAMBDA: 0.888888888889,
+            // Importar constantes fundamentales del sistema centralizado
+            ...QuantumConstants,
+
+            // Extensiones específicas de este módulo
+            LAMBDA: 0.888888888889, // Lambda específico del módulo
             CONSCIOUSNESS_TARGET: 0.941,
-            // Nuevas constantes QBTC
-            Z_REAL: 9,                    // Parte real de z = 9 + 16i
-            Z_IMAG: 16,                  // Parte imaginaria de z = 9 + 16i
-            RESONANCE_FREQ: 888,         // Frecuencia de resonancia 888MHz
-            INFINITE_PROFIT_PLANE: true  // Operar en plano de beneficios infinitos
+            INFINITE_PROFIT_PLANE: true
         };
 
         // Puntos de triangulación cuántica mejorados
@@ -194,7 +186,7 @@ class QuantumTriangulation {
         this.marketWaveFunction = {
             amplitude: 1.0,
             phase: 0,
-            frequency: this.QUANTUM_CONSTANTS.RESONANCE_FREQ,
+            frequency: QuantumConstants.RESONANCE_FREQ,
             coherence: 0.941
         };
     }
@@ -251,12 +243,12 @@ class QuantumTriangulation {
 
 class PoeticQuantumCorrelator {
     constructor() {
-        // Usar métricas del sistema en lugar de valores fijos
-        const zReal = 9;        // Parte real de z = 9 + 16i
-        const zImag = 16;       // Parte imaginaria de z = 9 + 16i
-        const lambda = Math.log(7919);  // Factor logarítmico
-        const phi = (1 + Math.sqrt(5)) / 2;  // Proporción áurea
-        
+        // Usar constantes centralizadas
+        const zReal = QuantumConstants.Z_REAL;
+        const zImag = QuantumConstants.Z_IMAG;
+        const lambda = QuantumConstants.LAMBDA_7919;
+        const phi = QuantumConstants.PHI_GOLDEN;
+
         this.poeticConstants = {
             NERUDA: (zReal * lambda) / phi,    // Frecuencia poética fundamental basada en z
             MISTRAL: (zImag * phi) / lambda,   // Frecuencia de coherencia basada en z
@@ -266,7 +258,7 @@ class PoeticQuantumCorrelator {
         this.resonancePatterns = {
             SONNET: [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1],
             HAIKU: [1, 0, 1, 0, 1],
-            // Reemplazar PHYSICAL_CONSTANTS.FIBONACCI_STRENGTH con métricas del sistema
+            // Usar métricas cuánticas centralizadas
             FREE_VERSE: Array.from({length: 17}, (_, i) => {
                 const quantumValue = Math.sin(i * lambda / zReal) * Math.cos(i * phi / zImag);
                 return quantumValue > 0 ? 1 : 0;

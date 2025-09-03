@@ -58,31 +58,27 @@ const PHYSICAL_CONSTANTS = {
  */
 
 const EventEmitter = require('events');
+const { QuantumConstants } = require('../src/constants/quantum-constants');
 
 class QuantumCoreUnified extends EventEmitter {
     constructor() {
         super();
+
+        // Usar constantes centralizadas
+        this.Z_REAL = QuantumConstants.Z_REAL;
+        this.Z_IMAG = QuantumConstants.Z_IMAG;
+        this.LAMBDA_LOG_7919 = QuantumConstants.LAMBDA_7919;
+        this.LAMBDA_888_MHZ = QuantumConstants.RESONANCE_FREQ;
+        this.PHI = QuantumConstants.PHI_GOLDEN;
         
-        // Constantes cuánticas fundamentales
-        this.Z_REAL = 9;                    // Parte real de z
-        this.Z_IMAG = 16;                   // Parte imaginaria de z
-        this.LAMBDA_LOG_7919 = Math.log(7919); //  = log(7919)  8.977240362537735
-        this.LAMBDA_888_MHZ = 888;          // Frecuencia de resonancia 888 MHz
-        this.PHI = (1 + Math.sqrt(5)) / 2;  // Proporción áurea  1.618033988749895
-        
-        // Constantes cuánticas avanzadas
+        // Usar constantes centralizadas con extensiones específicas del módulo
         this.QUANTUM_CONSTANTS = {
-            // Constantes fundamentales
-            Z_REAL: this.Z_REAL,
-            Z_IMAG: this.Z_IMAG,
-            LAMBDA: this.LAMBDA_LOG_7919,
-            PHI: this.PHI,
-            LAMBDA_888: this.LAMBDA_888_MHZ,
-            
-            // Constantes derivadas
-            Z_MAGNITUDE: Math.sqrt(this.Z_REAL * this.Z_REAL + this.Z_IMAG * this.Z_IMAG), // |z| = (9² + 16²)  18.3575
-            Z_PHASE: Math.atan2(this.Z_IMAG, this.Z_REAL), // fase de z  1.0637 rad
-            QUANTUM_ENERGY: this.Z_REAL * this.Z_IMAG * this.LAMBDA_LOG_7919, // Energía cuántica
+            // Importar constantes fundamentales del sistema centralizado
+            ...QuantumConstants,
+
+            // Extensiones específicas de este módulo
+            LAMBDA: QuantumConstants.LAMBDA_7919, // Alias para compatibilidad
+            LAMBDA_888: QuantumConstants.RESONANCE_FREQ, // Alias para compatibilidad
             
             // SRONA Fields optimizados
             SRONA_FIELDS: {

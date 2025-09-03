@@ -77,12 +77,23 @@ app.post('/api/batch-decisions', async (req, res) => {
         console.log(` [LLM NEURAL SERVER] Generando decisiones para ${symbols.length} símbolos...`);
         
         const decisions = {};
+        let processedCount = 0;
         
         for (const symbol of symbols) {
             try {
                 decisions[symbol] = await llmOrchestrator.generateUnifiedDecision(symbol);
+                processedCount++;
+                
+                // Only log progress every 5 symbols to reduce verbosity
+                if (processedCount % 5 === 0) {
+                    console.log(` [LLM NEURAL SERVER] Procesados ${processedCount}/${symbols.length} símbolos...`);
+                }
+                
             } catch (error) {
-                console.warn(`[WARNING] Error con ${symbol}:`, error.message);
+                // Reduced warning frequency - only log every 10 errors
+                if (Object.keys(decisions).length % 10 === 0) {
+                    console.warn(`[WARNING] Error con ${symbol}:`, error.message);
+                }
                 decisions[symbol] = {
                     error: error.message,
                     symbol: symbol,

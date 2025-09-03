@@ -15,30 +15,18 @@
  */
 
 const { EventEmitter } = require('events');
-const { PHYSICAL_CONSTANTS } = require('./quantum/shared/quantum-kernel.js');
+const { QuantumConstants } = require('./src/constants/quantum-constants');
 
-// Constantes cuánticas reales del sistema QBTC
+// Usar constantes centralizadas con extensiones específicas del módulo
 const QBTC_QUANTUM_CONSTANTS = {
-    // Constantes fundamentales verificadas
-    Z_REAL: 9,                                    // Parte real del número cuántico complejo z = 9 + 16i
-    Z_IMAG: 16,                                   // Parte imaginaria del número cuántico complejo
-    LAMBDA_7919: Math.log(7919),                  // Longitud de onda cuántica fundamental  = 8.977 Hz
-    PHI_GOLDEN: (1 + Math.sqrt(5)) / 2,          // Proporción áurea   1.618034
-    RESONANCE_FREQ: 888,                          // Frecuencia de resonancia cuántica
-    EULER_GAMMA: 0.5772156649015329,              // Constante de Euler-Mascheroni
-    COHERENCE_THRESHOLD: 0.941,                   // Umbral de coherencia cuántica QBTC
-    
-    // Secuencias cuánticas
+    // Importar constantes fundamentales del sistema centralizado
+    ...QuantumConstants,
+
+    // Extensiones específicas de este módulo
+    HBAR: 1.054571817e-34, // Constante de Planck reducida (específica de Feynman)
+    COHERENCE_THRESHOLD: 0.941, // Umbral específico del módulo
     QUANTUM_FIBONACCI: [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597],
-    PRIME_SEQUENCE: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97],
-    
-    // Constantes derivadas
-    Z_MAGNITUDE: Math.sqrt(9 * 9 + 16 * 16),     // |z| = (9² + 16²)  18.3575
-    Z_PHASE: Math.atan2(16, 9),                  // fase de z  1.0637 rad
-    QUANTUM_ENERGY: 9 * 16 * Math.log(7919),     // Energía cuántica
-    
-    // Constante de Planck reducida
-    HBAR: 1.054571817e-34
+    PRIME_SEQUENCE: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 };
 
 // Implementación de números complejos usando las constantes QBTC

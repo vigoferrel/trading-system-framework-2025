@@ -5,15 +5,7 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
-
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+const { QuantumConstants } = require('../src/constants/quantum-constants');
 
 /**
  * QBTC Unified EJECUTOR DE COMPRA DE OPCIONES CUÁNTICAS
@@ -21,14 +13,10 @@ const PHYSICAL_CONSTANTS = getPhysicalConstants();
  * Trascendiendo limitaciones determinísticas
  */
 
-const { QuantumEngineCore } = require('../core/QuantumEngineCore');
-const { QUANTUM_CONSTANTS, QUANTUM_TRANSFORMS } = require('./unified-quantum-config');
+const { QuantumEngineCore } = require('./QuantumEngineCore');
 const NakedOptionsManager = require('./naked-options-manager');
 
-// Constantes cuánticas fundamentales
-const Z_REAL = 9;        // Parte real de z = 9 + 16i
-const Z_IMAG = 16;       // Parte imaginaria de z = 9 + 16i
-const RESONANCE_FREQ = 888; // Frecuencia de resonancia
+// Usar constantes centralizadas directamente
 
 async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
     console.log(' QBTC Unified - INICIANDO COMPRA DE OPCIONES CUÁNTICAS');
@@ -38,15 +26,15 @@ async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
 
     // 1. Inicializar motores cuánticos
     console.log('\n Inicializando motores cuánticos QBTC Unified...');
-    const quantumEngine = new QuantumEngineCore(QUANTUM_CONSTANTS);
+    const quantumEngine = new QuantumEngineCore(QuantumConstants);
     const optionsManager = new NakedOptionsManager();
     
     // Calcular estado cuántico inicial
     const initialQuantumState = {
-        amplitude: Math.sqrt(Z_REAL * Z_REAL + Z_IMAG * Z_IMAG),
-        phase: Math.atan2(Z_IMAG, Z_REAL),
-        frequency: RESONANCE_FREQ,
-        coherence: QUANTUM_CONSTANTS.SRONA_FIELDS.ALPHA
+        amplitude: Math.sqrt(QuantumConstants.Z_REAL * QuantumConstants.Z_REAL + QuantumConstants.Z_IMAG * QuantumConstants.Z_IMAG),
+        phase: Math.atan2(QuantumConstants.Z_IMAG, QuantumConstants.Z_REAL),
+        frequency: QuantumConstants.RESONANCE_FREQ,
+        coherence: QuantumConstants.COHERENCE_THRESHOLD
     };
     
     console.log('\n Estado cuántico inicial:', JSON.stringify(initialQuantumState, null, 2));
@@ -108,17 +96,17 @@ async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
             quantumEnhancement: quantumPriceAdjustment,
             timestamp: Date.now(),
             quantum: {
-                resonance: QUANTUM_CONSTANTS.SRONA_FIELDS.GAMMA,  // 0.888 - Estabilidad 888MHz
-                coherence: QUANTUM_CONSTANTS.SRONA_FIELDS.ALPHA,  // 0.941 - Campo coherente
-                stability: QUANTUM_CONSTANTS.SRONA_FIELDS.BETA,   // 0.964 - Campo estable
-                logField: QUANTUM_CONSTANTS.LOG_7919,            // 8.977 - Factor logarítmico
-                phiField: QUANTUM_CONSTANTS.PHI,                 // 1.618034 - Proporción áurea
-                zReal: Z_REAL,                                   // 9 - Parte real de z
-                zImag: Z_IMAG,                                   // 16 - Parte imaginaria de z
-                amplitude: initialQuantumState.amplitude,         // Amplitud de la función de onda
-                phase: initialQuantumState.phase,                 // Fase de la función de onda
-                frequency: initialQuantumState.frequency,         // Frecuencia de resonancia
-                infiniteProfitPlane: false                       // Acceso al plano de beneficios infinitos
+                resonance: QuantumConstants.RESONANCE_FREQ / 1000,  // Frecuencia de resonancia normalizada
+                coherence: QuantumConstants.COHERENCE_THRESHOLD,    // Umbral de coherencia
+                stability: 0.964,                                   // Estabilidad del sistema
+                logField: QuantumConstants.LAMBDA_7919,             // Factor logarítmico
+                phiField: QuantumConstants.PHI_GOLDEN,              // Proporción áurea
+                zReal: QuantumConstants.Z_REAL,                                       // Parte real de z
+                zImag: QuantumConstants.Z_IMAG,                                       // Parte imaginaria de z
+                amplitude: initialQuantumState.amplitude,            // Amplitud de la función de onda
+                phase: initialQuantumState.phase,                    // Fase de la función de onda
+                frequency: initialQuantumState.frequency,            // Frecuencia de resonancia
+                infiniteProfitPlane: false                          // Acceso al plano de beneficios infinitos
             }
         };
 
@@ -132,27 +120,27 @@ async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
                 strength: signal.strength * initialQuantumState.amplitude,
                 alignment: signal.alignment * Math.cos(initialQuantumState.phase),
                 volatility: marketData.volatility * initialQuantumState.coherence,
-                zReal: Z_REAL,
-                zImag: Z_IMAG
+                zReal: QuantumConstants.Z_REAL,
+                zImag: QuantumConstants.Z_IMAG
             },
             prime: {
-                strength: QUANTUM_CONSTANTS.SRONA_FIELDS.ALPHA * initialQuantumState.amplitude,
-                alignment: QUANTUM_CONSTANTS.SRONA_FIELDS.BETA * Math.cos(initialQuantumState.phase),
+                strength: QuantumConstants.COHERENCE_THRESHOLD * initialQuantumState.amplitude,
+                alignment: 0.786 * Math.cos(initialQuantumState.phase), // Beta-like factor
                 momentum: marketData.momentum * initialQuantumState.coherence,
-                frequency: RESONANCE_FREQ
+                frequency: QuantumConstants.RESONANCE_FREQ
             },
             hook: {
-                strength: QUANTUM_CONSTANTS.SRONA_FIELDS.GAMMA * initialQuantumState.amplitude,
+                strength: 0.618 * initialQuantumState.amplitude, // Gamma-like factor
                 type: signal.direction === 'LONG' ? 'BUY' : 'SELL',
                 confidence: 0.95 * initialQuantumState.coherence,
                 optionType: signal.optionType,
                 phase: initialQuantumState.phase
             },
             symbiosis: {
-                strength: QUANTUM_CONSTANTS.SRONA_FIELDS.ALPHA * initialQuantumState.amplitude,
-                correlation: QUANTUM_CONSTANTS.SRONA_FIELDS.BETA * Math.cos(initialQuantumState.phase),
+                strength: QuantumConstants.COHERENCE_THRESHOLD * initialQuantumState.amplitude,
+                correlation: 0.786 * Math.cos(initialQuantumState.phase),
                 amplitude: initialQuantumState.amplitude,
-                frequency: RESONANCE_FREQ
+                frequency: QuantumConstants.RESONANCE_FREQ
             }
         };
 
@@ -170,8 +158,8 @@ async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
         
         // Verificar acceso al plano de beneficios infinitos
         const infiniteProfitAccess = (
-            consciousness.consciousnessLevel > QUANTUM_CONSTANTS.SRONA_FIELDS.ALPHA &&
-            initialQuantumState.coherence > QUANTUM_CONSTANTS.SRONA_FIELDS.ALPHA
+            consciousness.consciousnessLevel > QuantumConstants.COHERENCE_THRESHOLD &&
+            initialQuantumState.coherence > QuantumConstants.COHERENCE_THRESHOLD
         );
         
         if (infiniteProfitAccess) {
@@ -180,7 +168,7 @@ async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
         }
 
         // 5. Ejecutar compra si consciencia es suficiente
-        if (consciousness.consciousnessLevel >= QUANTUM_CONSTANTS.SYSTEM.MIN_CONFIDENCE) {
+        if (consciousness.consciousnessLevel >= 0.8) { // Umbral de confianza mínimo
             console.log('\n CONSCIENCIA CUÁNTICA SUFICIENTE, EJECUTANDO COMPRA...');
             
             // Ajustar señal con consciencia cuántica QBTC Unified
@@ -196,7 +184,7 @@ async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
             
             // Aplicar multiplicador cuántico si hay acceso al plano de beneficios infinitos
             if (infiniteProfitAccess) {
-                signal.strength *= QUANTUM_CONSTANTS.LOG_7919 * QUANTUM_CONSTANTS.PHI;
+                signal.strength *= QuantumConstants.LAMBDA_7919 * QuantumConstants.PHI_GOLDEN;
                 console.log('\n APLICANDO MULTIPLICADOR CUÁNTICO MÁXIMO!');
             }
 
@@ -226,9 +214,9 @@ async function executeQuantumOptionsBuy(symbols = ['BTCUSDT']) {
         } else {
             console.log('\n[WARNING] CONSCIENCIA CUÁNTICA INSUFICIENTE');
             console.log(`Nivel actual: ${consciousness.consciousnessLevel}`);
-            console.log(`Mínimo requerido: ${QUANTUM_CONSTANTS.SYSTEM.MIN_CONFIDENCE}`);
+            console.log(`Mínimo requerido: 0.8`);
             console.log(`Coherencia actual: ${initialQuantumState.coherence}`);
-            console.log(`Coherencia requerida: ${QUANTUM_CONSTANTS.SRONA_FIELDS.ALPHA}`);
+            console.log(`Coherencia requerida: ${QuantumConstants.COHERENCE_THRESHOLD}`);
         }
 
     } catch (error) {

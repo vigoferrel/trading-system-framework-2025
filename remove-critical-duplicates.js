@@ -150,3 +150,4 @@ const success = removeCriticalDuplicates();
 
 // Salir con código apropiado
 process.exit(success ? 0 : 1);
+

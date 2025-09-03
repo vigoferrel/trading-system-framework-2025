@@ -338,8 +338,12 @@ class SectorAwareQuantumScanner extends QuantumOpportunityScanner {
         // ESCANEO POR SECTOR
         const sectorOpportunities = {};
         
+        // Reduced logging - only log progress every 3 sectors
+        let sectorCount = 0;
         for (const sector of sectorsToScan) {
-            console.log(`[DATA] Scanning ${sector} sector...`);
+            if (sectorCount % 3 === 0) {
+                console.log(`[DATA] Scanning sectors ${sectorCount + 1}-${Math.min(sectorCount + 3, sectorsToScan.length)}...`);
+            }
             
             const sectorResults = await this.scanSingleSector(
                 sector, 
@@ -349,6 +353,7 @@ class SectorAwareQuantumScanner extends QuantumOpportunityScanner {
             );
             
             sectorOpportunities[sector] = sectorResults;
+            sectorCount++;
         }
         
         // RANKING HOLÍSTICO CROSS-SECTOR
@@ -360,6 +365,9 @@ class SectorAwareQuantumScanner extends QuantumOpportunityScanner {
         
         // DETECCIÓN DE SECTOR ROTATION
         const sectorRotationAnalysis = this.analyzeSectorRotation(sectorOpportunities, marketRegimeAnalysis);
+        
+        // GENERAR INSIGHTS DE TRADING PARA MEJORES SÍMBOLOS POR SECTOR
+        const tradingInsights = this.generateSectorTradingInsights(sectorOpportunities);
         
         const scanDuration = Date.now() - startTime;
         
@@ -376,6 +384,9 @@ class SectorAwareQuantumScanner extends QuantumOpportunityScanner {
             
             // RESULTADOS POR SECTOR
             sector_opportunities: sectorOpportunities,
+            
+            // INSIGHTS DE TRADING ACCIONABLES
+            trading_insights: tradingInsights,
             
             // RANKING HOLÍSTICO
             holistic_ranking: holisticRanking,
@@ -516,6 +527,14 @@ class SectorAwareQuantumScanner extends QuantumOpportunityScanner {
                 sectorAdjustedScore, 
                 sectorPatterns, 
                 sector
+            ),
+
+            // NUEVO: NIVELES DE TRADING CON STOP LOSS Y TAKE PROFIT
+            trading_levels: this.calculateTradingLevels(
+                symbol,
+                symbolData,
+                sector,
+                sectorAdjustedScore.total_score
             )
         };
     }
@@ -938,20 +957,322 @@ class SectorAwareQuantumScanner extends QuantumOpportunityScanner {
     
     generateSectorEntryRecommendation(sectorAdjustedScore, sectorPatterns, sector) {
         const score = sectorAdjustedScore.total_score;
-        
+
         if (score > 0.8) return 'STRONG_BUY';
         if (score > 0.6) return 'BUY';
         if (score > 0.4) return 'HOLD';
         return 'AVOID';
     }
+
+    // NUEVA FUNCIÓN: CÁLCULO DE NIVELES TÉCNICOS PARA TRADING
+    calculateTradingLevels(symbol, symbolData, sector, sectorScore) {
+        const price = parseFloat(symbolData.price || 0);
+        const priceChange = parseFloat(symbolData.priceChangePercent || 0);
+        const volume24h = parseFloat(symbolData.volume || 0);
+
+        // CÁLCULO DE SOPORTE Y RESISTENCIA BASADO EN VOLATILIDAD DEL SECTOR
+        const sectorVolatility = this.getSectorVolatilityMultiplier(sector);
+        const baseVolatility = Math.abs(priceChange) / 100; // Volatilidad actual
+
+        // SOPORTE: Basado en precio actual menos volatilidad ajustada por sector
+        const supportLevel = price * (1 - (baseVolatility * sectorVolatility * 0.8));
+
+        // RESISTENCIA: Basado en precio actual más volatilidad ajustada por sector
+        const resistanceLevel = price * (1 + (baseVolatility * sectorVolatility * 1.2));
+
+        // STOP LOSS: Más conservador para sectores volátiles
+        const stopLossMultiplier = this.getStopLossMultiplier(sector, sectorScore);
+        const stopLoss = price * (1 - (baseVolatility * stopLossMultiplier));
+
+        // TAKE PROFIT: Más agresivo para sectores con momentum
+        const takeProfitMultiplier = this.getTakeProfitMultiplier(sector, sectorScore);
+        const takeProfit = price * (1 + (baseVolatility * takeProfitMultiplier));
+
+        // CÁLCULO DE RISK/REWARD RATIO
+        const risk = price - stopLoss;
+        const reward = takeProfit - price;
+        const riskRewardRatio = reward / risk;
+
+        // ENTRY POINT: Ligeramente por encima del precio actual para momentum
+        const entryPoint = price * (1 + (baseVolatility * 0.1));
+
+        return {
+            entry_point: Math.round(entryPoint * 100) / 100,
+            stop_loss: Math.round(stopLoss * 100) / 100,
+            take_profit: Math.round(takeProfit * 100) / 100,
+            support_level: Math.round(supportLevel * 100) / 100,
+            resistance_level: Math.round(resistanceLevel * 100) / 100,
+            risk_reward_ratio: Math.round(riskRewardRatio * 100) / 100,
+            position_size_suggestion: this.calculatePositionSize(sectorScore, riskRewardRatio),
+            confidence_level: this.calculateConfidenceLevel(sectorScore, riskRewardRatio),
+            technical_setup: this.identifyTechnicalSetup(symbol, price, supportLevel, resistanceLevel)
+        };
+    }
+
+    // MULTIPLICADORES DE VOLATILIDAD POR SECTOR
+    getSectorVolatilityMultiplier(sector) {
+        const multipliers = {
+            DEFI: 1.2,      // Moderadamente volátil
+            MEMES: 2.5,     // Muy volátil
+            AI_ML: 1.8,     // Alto momentum
+            INFRASTRUCTURE: 0.8,  // Más estable
+            PAYMENTS: 1.0,  // Estable
+            GAMING: 2.0,    // Alto engagement
+            LAYER2: 1.5,    // Crecimiento técnico
+            PRIVACY: 1.7    // Regulatorio
+        };
+        return multipliers[sector] || 1.0;
+    }
+
+    // MULTIPLICADORES DE STOP LOSS POR SECTOR Y SCORE
+    getStopLossMultiplier(sector, sectorScore) {
+        const baseMultiplier = this.getSectorVolatilityMultiplier(sector);
+        const scoreAdjustment = sectorScore > 0.7 ? 0.8 : sectorScore > 0.5 ? 1.0 : 1.2;
+        return baseMultiplier * scoreAdjustment;
+    }
+
+    // MULTIPLICADORES DE TAKE PROFIT POR SECTOR Y SCORE
+    getTakeProfitMultiplier(sector, sectorScore) {
+        const baseMultiplier = this.getSectorVolatilityMultiplier(sector);
+        const scoreAdjustment = sectorScore > 0.7 ? 1.5 : sectorScore > 0.5 ? 1.2 : 0.8;
+        return baseMultiplier * scoreAdjustment;
+    }
+
+    // CÁLCULO DE TAMAÑO DE POSICIÓN SUGERIDO
+    calculatePositionSize(sectorScore, riskRewardRatio) {
+        let baseSize = 0.5; // 0.5% del portfolio base
+
+        // Ajustar por score del sector
+        if (sectorScore > 0.8) baseSize *= 1.5;
+        else if (sectorScore > 0.6) baseSize *= 1.2;
+        else if (sectorScore < 0.4) baseSize *= 0.5;
+
+        // Ajustar por risk/reward ratio
+        if (riskRewardRatio > 3) baseSize *= 1.3;
+        else if (riskRewardRatio > 2) baseSize *= 1.1;
+        else if (riskRewardRatio < 1.5) baseSize *= 0.7;
+
+        return Math.round(baseSize * 100) / 100;
+    }
+
+    // CÁLCULO DE NIVEL DE CONFIANZA
+    calculateConfidenceLevel(sectorScore, riskRewardRatio) {
+        const scoreWeight = sectorScore * 0.6;
+        const rrWeight = Math.min(riskRewardRatio / 3, 1) * 0.4;
+        const totalConfidence = scoreWeight + rrWeight;
+
+        if (totalConfidence > 0.8) return 'HIGH';
+        if (totalConfidence > 0.6) return 'MEDIUM';
+        if (totalConfidence > 0.4) return 'LOW';
+        return 'VERY_LOW';
+    }
+
+    // IDENTIFICACIÓN DE SETUP TÉCNICO
+    identifyTechnicalSetup(symbol, price, support, resistance) {
+        const setups = [];
+
+        // Breakout setup
+        if (price > resistance * 0.98) setups.push('BREAKOUT');
+
+        // Bounce setup
+        if (price < support * 1.02) setups.push('BOUNCE');
+
+        // Range setup
+        if (price > support * 1.05 && price < resistance * 0.95) setups.push('RANGE_TRADE');
+
+        // Momentum setup
+        if (Math.abs(price - ((support + resistance) / 2)) / price > 0.1) setups.push('MOMENTUM');
+
+        return setups.length > 0 ? setups : ['NEUTRAL'];
+    }
     
+    // NUEVA FUNCIÓN: GENERAR INSIGHTS DE TRADING PARA MEJORES SÍMBOLOS POR SECTOR
+    generateSectorTradingInsights(sectorOpportunities) {
+        const insights = {};
+
+        for (const [sector, sectorData] of Object.entries(sectorOpportunities)) {
+            if (!sectorData.opportunities || sectorData.opportunities.length === 0) {
+                insights[sector] = {
+                    top_symbols: [],
+                    trading_insights: 'No opportunities found in this sector',
+                    sector_risk_level: 'UNKNOWN'
+                };
+                continue;
+            }
+
+            // Ordenar oportunidades por score y tomar las mejores
+            const topOpportunities = sectorData.opportunities
+                .sort((a, b) => b.sector_opportunity_score - a.sector_opportunity_score)
+                .slice(0, 3); // Top 3 por sector
+
+            const tradingInsights = topOpportunities.map(opp => ({
+                symbol: opp.symbol,
+                opportunity_score: opp.sector_opportunity_score,
+                entry_recommendation: opp.entry_recommendation,
+                trading_levels: opp.trading_levels,
+                risk_assessment: this.generateRiskAssessment(opp),
+                time_horizon: this.generateTimeHorizon(opp, sector),
+                sector_context: this.generateSectorContext(opp, sector)
+            }));
+
+            insights[sector] = {
+                top_symbols: topOpportunities.map(opp => opp.symbol),
+                trading_insights: tradingInsights,
+                sector_risk_level: this.calculateSectorRiskLevel(sectorData),
+                sector_momentum: this.calculateSectorMomentum(sectorData),
+                best_entry_symbol: topOpportunities[0]?.symbol || 'NONE',
+                average_risk_reward: this.calculateAverageRiskReward(topOpportunities)
+            };
+        }
+
+        return insights;
+    }
+
+    // GENERAR EVALUACIÓN DE RIESGO PARA UNA OPORTUNIDAD
+    generateRiskAssessment(opportunity) {
+        const score = opportunity.sector_opportunity_score;
+        const rrRatio = opportunity.trading_levels?.risk_reward_ratio || 1;
+
+        let riskLevel = 'MEDIUM';
+        let riskFactors = [];
+
+        if (score > 0.8 && rrRatio > 2.5) {
+            riskLevel = 'LOW';
+            riskFactors.push('High confidence setup', 'Favorable risk/reward');
+        } else if (score > 0.6 && rrRatio > 1.5) {
+            riskLevel = 'MEDIUM';
+            riskFactors.push('Moderate confidence', 'Acceptable risk/reward');
+        } else if (score < 0.4 || rrRatio < 1.2) {
+            riskLevel = 'HIGH';
+            riskFactors.push('Low confidence setup', 'Poor risk/reward ratio');
+        }
+
+        // Factores específicos del sector
+        if (opportunity.sector === 'MEMES') {
+            riskFactors.push('High volatility', 'Community driven');
+        } else if (opportunity.sector === 'DEFI') {
+            riskFactors.push('Protocol risk', 'Smart contract risk');
+        } else if (opportunity.sector === 'PRIVACY') {
+            riskFactors.push('Regulatory risk', 'Exchange delisting risk');
+        }
+
+        return {
+            risk_level: riskLevel,
+            risk_factors: riskFactors,
+            mitigation_strategies: this.generateMitigationStrategies(riskLevel, opportunity.sector)
+        };
+    }
+
+    // GENERAR HORIZONTE TEMPORAL RECOMENDADO
+    generateTimeHorizon(opportunity, sector) {
+        const score = opportunity.sector_opportunity_score;
+        const sectorVolatility = this.getSectorVolatilityMultiplier(sector);
+
+        if (sectorVolatility > 2.0) {
+            return score > 0.7 ? '1-3 days' : 'Hours to 1 day';
+        } else if (sectorVolatility > 1.5) {
+            return score > 0.7 ? '3-7 days' : '1-3 days';
+        } else {
+            return score > 0.7 ? '1-2 weeks' : '3-7 days';
+        }
+    }
+
+    // GENERAR CONTEXTO SECTORIAL
+    generateSectorContext(opportunity, sector) {
+        const sectorContexts = {
+            DEFI: 'Focus on TVL growth and yield farming activity',
+            MEMES: 'Community momentum and social media engagement',
+            AI_ML: 'Technological breakthroughs and partnership announcements',
+            INFRASTRUCTURE: 'Network adoption and developer activity',
+            PAYMENTS: 'Merchant adoption and transaction volume growth',
+            GAMING: 'User engagement and virtual economy development',
+            LAYER2: 'TVL migration and gas fee reduction benefits',
+            PRIVACY: 'Regulatory developments and privacy demand'
+        };
+
+        return sectorContexts[sector] || 'General market conditions';
+    }
+
+    // CALCULAR NIVEL DE RIESGO DEL SECTOR
+    calculateSectorRiskLevel(sectorData) {
+        const avgScore = sectorData.opportunities.reduce((sum, opp) =>
+            sum + opp.sector_opportunity_score, 0) / sectorData.opportunities.length;
+
+        if (avgScore > 0.7) return 'LOW';
+        if (avgScore > 0.5) return 'MEDIUM';
+        if (avgScore > 0.3) return 'HIGH';
+        return 'VERY_HIGH';
+    }
+
+    // CALCULAR MOMENTO DEL SECTOR
+    calculateSectorMomentum(sectorData) {
+        const opportunities = sectorData.opportunities;
+        if (opportunities.length === 0) return 'NEUTRAL';
+
+        const positiveCount = opportunities.filter(opp =>
+            opp.entry_recommendation === 'BUY' || opp.entry_recommendation === 'STRONG_BUY'
+        ).length;
+
+        const momentumRatio = positiveCount / opportunities.length;
+
+        if (momentumRatio > 0.7) return 'STRONG_BULLISH';
+        if (momentumRatio > 0.5) return 'BULLISH';
+        if (momentumRatio > 0.3) return 'BEARISH';
+        return 'STRONG_BEARISH';
+    }
+
+    // CALCULAR RATIO DE RIESGO/RECOMPENSA PROMEDIO
+    calculateAverageRiskReward(opportunities) {
+        if (opportunities.length === 0) return 0;
+
+        const totalRR = opportunities.reduce((sum, opp) =>
+            sum + (opp.trading_levels?.risk_reward_ratio || 1), 0);
+
+        return Math.round((totalRR / opportunities.length) * 100) / 100;
+    }
+
+    // GENERAR INSIGHTS ESPECÍFICOS DEL SECTOR
     generateSectorInsights(sector, sectorHealth, narrativeStrength, opportunities) {
+        const sectorConfig = this.sectorDefinitions[sector];
+        const sectorGravity = this.sectorGravitationalForces[sector];
+
         return {
             sector_health_status: sectorHealth.overall_health > 0.7 ? 'HEALTHY' : 'WEAK',
             narrative_momentum: narrativeStrength > 0.7 ? 'STRONG' : 'WEAK',
             opportunity_density: opportunities.length > 2 ? 'HIGH' : 'LOW',
-            sector_trend: this.calculateSectorTrend(opportunities)
+            sector_trend: this.calculateSectorTrend(opportunities),
+            gravitational_influence: sectorGravity?.gravitational_force || 'UNKNOWN',
+            key_drivers: sectorConfig?.key_metrics || [],
+            seasonal_bias: sectorConfig?.seasonal_patterns ?
+                this.getCurrentSeasonalBias(sectorConfig.seasonal_patterns) : 'NEUTRAL'
         };
+    }
+
+    // CALCULAR TENDENCIA DEL SECTOR
+    calculateSectorTrend(opportunities) {
+        if (opportunities.length === 0) return 'NEUTRAL';
+
+        const buySignals = opportunities.filter(opp =>
+            opp.entry_recommendation === 'BUY' || opp.entry_recommendation === 'STRONG_BUY'
+        ).length;
+
+        const sellSignals = opportunities.filter(opp =>
+            opp.entry_recommendation === 'SELL' || opp.entry_recommendation === 'STRONG_SELL'
+        ).length;
+
+        if (buySignals > sellSignals) return 'BULLISH';
+        if (sellSignals > buySignals) return 'BEARISH';
+        return 'NEUTRAL';
+    }
+
+    // OBTENER BIAS ESTACIONAL ACTUAL
+    getCurrentSeasonalBias(seasonalPatterns) {
+        const currentMonth = new Date().getMonth() + 1; // 1-12
+
+        if (currentMonth >= 1 && currentMonth <= 3) return seasonalPatterns.q1 || 'NEUTRAL';
+        if (currentMonth >= 4 && currentMonth <= 6) return seasonalPatterns.q2 || 'NEUTRAL';
+        if (currentMonth >= 7 && currentMonth <= 9) return seasonalPatterns.q3 || 'NEUTRAL';
+        return seasonalPatterns.q4 || 'NEUTRAL';
     }
     
     calculateSectorTrend(opportunities) {

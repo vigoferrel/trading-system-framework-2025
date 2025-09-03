@@ -1,5 +1,6 @@
 import { NakedOpportunity } from '../types/srona-core-types';
 import { CoherenceAnalysis, TemporalPattern, TemporalPrediction, CyclicalAnalysis, PhaseSynchronization, TemporalData } from '../types/temporal-types';
+import { PHYSICAL_CONSTANTS } from '../../constants.js';
 
 export class MotorIntertemporal {
   public async analyzeAll(opportunities: NakedOpportunity[]): Promise<TemporalData> {

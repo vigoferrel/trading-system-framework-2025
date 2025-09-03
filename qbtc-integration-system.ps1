@@ -21,10 +21,11 @@ function Get-SystemStatus {
         $networkInfo = docker network inspect bot-network 2>$null
         if ($networkInfo) {
             Write-Host "✓ Red Docker: bot-network (192.168.100.0/24)" -ForegroundColor Green
+        } else {
+            Write-Host "✗ Red Docker: No encontrada" -ForegroundColor Red
         }
     } catch {
-        Write-Host "✗ Red Docker: No encontrada" -ForegroundColor Red
-        return
+        Write-Host "✗ Error al verificar red Docker" -ForegroundColor Red
     }
 
     # Verificar bots
@@ -176,6 +177,8 @@ do {
     if ($choice -ne "6") {
         Read-Host "`nPresione Enter para continuar"
     }
+} while ($choice -ne "6")
+
 } while ($choice -ne "6")
 
 Write-Host "`n=== INTEGRACIÓN FINALIZADA ===" -ForegroundColor Green

@@ -5,15 +5,7 @@
 // ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
 // ✅ Fuente única de verdad para todas las constantes del sistema
 
-const {
-  QUANTUM_CONSTANTS,
-  getConstant,
-  getPhysicalConstants,
-  getQuantumConstants
-} = require('./src/constants/quantum-constants');
-
-// Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
-const PHYSICAL_CONSTANTS = getPhysicalConstants();
+const { QuantumConstants } = require('../src/constants/quantum-constants');
 
 /**
  * SRNOA OPTIONS MONEY MAKER
@@ -745,11 +737,7 @@ class SRNOAOptionsMaker {
         const timeframes = ['1m', '5m', '15m', '1h', '4h', '1d'];
         const griegos = ['delta', 'gamma', 'theta', 'vega', 'rho'];
         
-        // Constantes de Feynman para espacio complejo z=9+16j @ 88MHz
-        const FEYNMAN_Z_REAL = 9;
-        const FEYNMAN_Z_IMAG = 16;
-        const FREQ_88MHZ = 88e6;
-        const LOG_7919 = Math.log(7919);
+        // Usar constantes centralizadas directamente
         
         // MATRIZ ORIGINAL: [timeframes × griegos]
         const matrizOriginal = [];
@@ -788,7 +776,7 @@ class SRNOAOptionsMaker {
         
         // TRANSFORMACIÓN DE FEYNMAN EN ESPACIO COMPLEJO z=9+16j @ 88MHz
         const feynmanTransform = this.aplicarTransformacionFeynman(
-            angulosEntrada, angulosSalida, FEYNMAN_Z_REAL, FEYNMAN_Z_IMAG, FREQ_88MHZ, LOG_7919
+            angulosEntrada, angulosSalida, QuantumConstants.Z_REAL, QuantumConstants.Z_IMAG, QuantumConstants.RESONANCE_FREQ, QuantumConstants.LAMBDA_7919
         );
         
         return {
@@ -818,8 +806,8 @@ class SRNOAOptionsMaker {
                 }
             },
             feynman_transform: {
-                z_complex: `${FEYNMAN_Z_REAL}+${FEYNMAN_Z_IMAG}j`,
-                frequency_mhz: FREQ_88MHZ / 1e6,
+                z_complex: `${QuantumConstants.Z_REAL}+${QuantumConstants.Z_IMAG}j`,
+                frequency_mhz: QuantumConstants.RESONANCE_FREQ / 1e6,
                 log7919: LOG_7919,
                 leverage_space_angle: feynmanTransform.leverageSpaceAngle,
                 double_integral: feynmanTransform.doubleIntegral,

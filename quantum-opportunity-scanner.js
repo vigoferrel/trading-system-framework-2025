@@ -562,24 +562,62 @@ class QuantumOpportunityScanner {
     
     async getQBTCData() {
         try {
-            console.log(' [QUANTUM SCANNER] Obteniendo datos de QBTC cache...');
-            
+            // Reduced logging frequency - only log every 30 seconds
+            const now = Date.now();
+            if (!this.lastLogTime || (now - this.lastLogTime) > 30000) {
+                console.log(' [QUANTUM SCANNER] Obteniendo datos de QBTC cache...');
+                this.lastLogTime = now;
+            }
+
             const response = await axios.get(`${this.qbtcBaseUrl}/api/market-data`, {
                 timeout: 15000
             });
-            
+
             if (!response.data.success) {
                 throw new Error('Respuesta QBTC no exitosa');
             }
-            
-            const spotCount = Object.keys(response.data.data.spot || {}).length;
-            const futuresCount = Object.keys(response.data.data.futures || {}).length;
-            console.log(`[OK] [QUANTUM SCANNER] Datos obtenidos: ${spotCount} spot + ${futuresCount} futures = ${spotCount + futuresCount} símbolos total`);
-            return response.data.data;
-            
+
+            // Only log success stats, not individual symbol processing
+            // Only log success stats every 5 calls to reduce verbosity
+            const spotCount = response.data.spot ? Object.keys(response.data.spot).length : 0;
+            const futuresCount = response.data.futures ? Object.keys(response.data.futures).length : 0;
+            if (!this.successLogCount || this.successLogCount % 5 === 0) {
+                console.log(`[OK] [QUANTUM SCANNER] Datos obtenidos: ${spotCount} spot + ${futuresCount} futures = ${spotCount + futuresCount} símbolos total`);
+            }
+            if (!this.successLogCount) this.successLogCount = 0;
+            this.successLogCount++;
+
+            return response.data;
         } catch (error) {
-            console.error('[ERROR] [QUANTUM SCANNER] Error obteniendo datos QBTC:', error.message);
-            return null;
+            // Reduced error logging - only log once per minute for 404s
+            if (!this.lastErrorTime || (Date.now() - this.lastErrorTime) > 60000) {
+                console.error('[ERROR] [QUANTUM SCANNER] Error obteniendo datos QBTC:', error.message);
+                this.lastErrorTime = Date.now();
+            }
+            // Fallback: Try to get real data from Binance directly
+            try {
+                console.log('[QUANTUM SCANNER] Intentando obtener datos reales directamente de Binance...');
+                const { BinanceRealConnector } = require('./advanced-market-intelligence-engine.js');
+                const binance = BinanceRealConnector.getInstance();
+                // Example: get prices for major symbols
+                const symbols = [
+                    'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'XRPUSDT',
+                    'SOLUSDT', 'DOTUSDT', 'MATICUSDT', 'LTCUSDT', 'AVAXUSDT',
+                    'LINKUSDT', 'UNIUSDT', 'ATOMUSDT', 'XLMUSDT', 'VETUSDT'
+                ];
+                const spot = {};
+                for (const symbol of symbols) {
+                    const price = await binance.getCurrentPrice(symbol);
+                    if (price) {
+                        spot[symbol] = { price };
+                    }
+                }
+                // You can expand this to fetch futures data if needed
+                return { spot, futures: {} };
+            } catch (binanceError) {
+                console.error('[ERROR] [QUANTUM SCANNER] Error obteniendo datos de Binance:', binanceError.message);
+                return null;
+            }
         }
     }
     

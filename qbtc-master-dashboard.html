@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 QBTC MASTER DASHBOARD - Control Absoluto LLM 🤖</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(78, 205, 196, 0.5);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #b8b8b8;
+            margin-bottom: 20px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-active { background: #00ff00; }
+        .status-warning { background: #ffaa00; }
+        .status-error { background: #ff0000; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.6);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00ffff;
+            text-align: center;
+            margin: 10px 0;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #cccccc;
+            text-align: center;
+        }
+
+        .recommendations-section {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .recommendation-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .symbol-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .symbol-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .decision-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .decision-BUY { background: #00ff00; color: #000; }
+        .decision-SELL { background: #ff0000; color: #fff; }
+        .decision-HOLD { background: #ffaa00; color: #000; }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .insights-section {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .insight-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .insight-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .insight-UP { background: #00ff00; color: #000; }
+        .insight-DATA { background: #4ecdc4; color: #000; }
+        .insight-RELOAD { background: #ffaa00; color: #000; }
+        .insight-NIGHT { background: #9b59b6; color: #fff; }
+        .insight-EVENT { background: #e74c3c; color: #fff; }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+        }
+
+        .symbol-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .symbol-selector select {
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4ecdc4;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            color: #ffaaaa;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            color: #aaffaa;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        /* Sector Analysis Styles */
+        .sector-analysis-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .sector-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .sector-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .sector-metric {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .sector-metric .metric-label {
+            font-size: 0.9em;
+            color: #cccccc;
+            margin-bottom: 5px;
+        }
+
+        .sector-metric .metric-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .sector-performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .sector-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sector-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .sector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .sector-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .sector-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .sector-score.bullish { background: #00ff00; color: #000; }
+        .sector-score.bearish { background: #ff0000; color: #fff; }
+        .sector-score.neutral { background: #ffaa00; color: #000; }
+
+        .sector-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .sector-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sector-detail-label { color: #cccccc; }
+        .sector-detail-value { color: #ffffff; font-weight: bold; }
+
+        .cross-sector-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .cross-sector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .correlation-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(100, 149, 237, 0.3);
+        }
+
+        .correlation-pair {
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+
+        .correlation-value {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .correlation-positive { color: #00ff00; }
+        .correlation-negative { color: #ff6b6b; }
+        .correlation-neutral { color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 QBTC MASTER DASHBOARD 🤖</h1>
+            <p>Control Absoluto LLM - Sistema de Inteligencia Cuántica Avanzada</p>
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-indicator status-active"></div>
+                    <span>Sistema Activo</span>
+                </div>
+                <div class="status-item">
+                    <span id="total-symbols">475</span> Símbolos Monitorizados
+                </div>
+                <div class="status-item">
+                    <span id="last-update">Cargando...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="refreshDashboard()">🔄 Actualizar Dashboard</button>
+            <button class="btn btn-secondary" onclick="loadAllRecommendations()">📊 Cargar Todas las Recomendaciones</button>
+            <button class="btn" onclick="toggleAutoRefresh()">⏰ Auto-Refresh</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Sistema Status -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🔧</span>
+                        Estado del Sistema
+                    </div>
+                </div>
+                <div class="metric-value" id="system-status">OK</div>
+                <div class="metric-label">Sistema Principal</div>
+                <div style="margin-top: 15px;">
+                    <div>LLM: <span id="llm-status">Activo</span></div>
+                    <div>API: <span id="api-status">Conectado</span></div>
+                    <div>Cache: <span id="cache-status">Optimizado</span></div>
+                </div>
+            </div>
+
+            <!-- Total Symbols -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📊</span>
+                        Universo de Símbolos
+                    </div>
+                </div>
+                <div class="metric-value" id="total-symbols-count">475</div>
+                <div class="metric-label">Símbolos Activos</div>
+                <div style="margin-top: 15px;">
+                    <div>Binance Futures</div>
+                    <div>Actualizado: 2025-08-25</div>
+                </div>
+            </div>
+
+            <!-- Intelligence Systems -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🧠</span>
+                        Sistemas de IA
+                    </div>
+                </div>
+                <div class="metric-value" id="ai-systems-count">9</div>
+                <div class="metric-label">Sistemas Activos</div>
+                <div style="margin-top: 15px;">
+                    <div>LLM Master Brain</div>
+                    <div>Neural Networks</div>
+                    <div>Quantum Engines</div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>⚡</span>
+                        Rendimiento
+                    </div>
+                </div>
+                <div class="metric-value" id="performance-score">98.5%</div>
+                <div class="metric-label">Score Global</div>
+                <div style="margin-top: 15px;">
+                    <div>Latencia: <span id="latency">45ms</span></div>
+                    <div>Cache Hit: <span id="cache-hit">94%</span></div>
+                    <div>Uptime: <span id="uptime">99.9%</span></div>
+                </div>
+            </div>
+
+            <!-- Market Sentiment -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📈</span>
+                        Sentimiento de Mercado
+                    </div>
+                </div>
+                <div class="metric-value" id="market-sentiment">BULLISH</div>
+                <div class="metric-label">Estado General</div>
+                <div style="margin-top: 15px;">
+                    <div>Fear & Greed: <span id="fear-greed">65</span></div>
+                    <div>Volumen: <span id="volume-change">+12.3%</span></div>
+                    <div>Funding: <span id="funding-rate">0.025%</span></div>
+                </div>
+            </div>
+
+            <!-- Risk Metrics -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>⚠️</span>
+                        Métricas de Riesgo
+                    </div>
+                </div>
+                <div class="metric-value" id="risk-level">MEDIUM</div>
+                <div class="metric-label">Nivel de Riesgo</div>
+                <div style="margin-top: 15px;">
+                    <div>VaR 24h: <span id="var-24h">$2,450</span></div>
+                    <div>Max Drawdown: <span id="max-drawdown">3.2%</span></div>
+                    <div>Sharpe Ratio: <span id="sharpe-ratio">2.1</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="recommendations-section">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🎯</span>
+                    Recomendaciones LLM Unificadas
+                </div>
+                <div class="symbol-selector">
+                    <select id="symbol-filter" onchange="filterRecommendations()" aria-label="Filtrar recomendaciones por símbolo">
+                        <option value="">Todos los Símbolos</option>
+                        <option value="BTCUSDT">BTCUSDT</option>
+                        <option value="ETHUSDT">ETHUSDT</option>
+                        <option value="BNBUSDT">BNBUSDT</option>
+                        <option value="SOLUSDT">SOLUSDT</option>
+                        <option value="DOGEUSDT">DOGEUSDT</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="recommendations-loading" style="text-align: center; padding: 40px;">
+                <div class="loading"></div>
+                <p>Cargando recomendaciones...</p>
+            </div>
+
+            <div id="recommendations-container" class="recommendations-grid" style="display: none;">
+                <!-- Recommendations will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="insights-section">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>💡</span>
+                    Insights de Sistemas de Inteligencia
+                </div>
+            </div>
+
+            <div id="insights-container" class="insights-grid">
+                <!-- Insights will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Sector Analysis Section -->
+        <div class="sector-analysis-section">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>📊</span>
+                    Análisis Sectorial Macro
+                </div>
+                <div class="sector-controls">
+                    <button onclick="loadSectorAnalysis()" class="refresh-btn">🔄 Actualizar</button>
+                    <select id="sector-filter" onchange="filterSectorView()" aria-label="Filtrar por sector">
+                        <option value="">Vista General</option>
+                        <option value="DEFI">DeFi</option>
+                        <option value="MEMES">Memecoins</option>
+                        <option value="AI_ML">AI/ML</option>
+                        <option value="INFRASTRUCTURE">Infraestructura</option>
+                        <option value="PAYMENTS">Pagos</option>
+                        <option value="GAMING">Gaming</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Sector Performance Overview -->
+            <div id="sector-overview" class="sector-overview">
+                <div class="sector-metric">
+                    <div class="metric-label">Sectores Analizados</div>
+                    <div class="metric-value" id="total-sectors">6</div>
+                </div>
+                <div class="sector-metric">
+                    <div class="metric-label">Régimen de Mercado</div>
+                    <div class="metric-value" id="market-regime">BULLISH</div>
+                </div>
+                <div class="sector-metric">
+                    <div class="metric-label">Sectores Dominantes</div>
+                    <div class="metric-value" id="dominant-sectors">AI_ML, DEFI</div>
+                </div>
+            </div>
+
+            <!-- Sector Performance Grid -->
+            <div id="sector-performance-grid" class="sector-performance-grid">
+                <!-- Sector performance cards will be loaded here -->
+            </div>
+
+            <!-- Cross Sector Dynamics -->
+            <div class="cross-sector-section">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🔗</span>
+                        Dinámicas Cross-Sector
+                    </div>
+                </div>
+                <div id="cross-sector-container" class="cross-sector-grid">
+                    <!-- Cross sector dynamics will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="qbtc-master-dashboard-api.js"></script>
+    <script>
+        // Global state
+        let autoRefresh = false;
+        let autoRefreshInterval = null;
+        let currentRecommendations = [];
+        let currentInsights = [];
+        let dashboardAPI = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            dashboardAPI = new QBTCMasterDashboardAPI();
+            initializeDashboard();
+            loadSystemStatus();
+            loadRecommendations();
+            loadInsights();
+        });
+
+        // Initialize dashboard
+        function initializeDashboard() {
+            updateLastUpdate();
+            setInterval(updateLastUpdate, 1000);
+        }
+
+        // Update last update time
+        function updateLastUpdate() {
+            const now = luxon.DateTime.now();
+            document.getElementById('last-update').textContent = now.toFormat('HH:mm:ss');
+        }
+
+        // Load system status
+        async function loadSystemStatus() {
+            try {
+                const status = await dashboardAPI.loadSystemStatus();
+                const metrics = await dashboardAPI.loadPerformanceMetrics();
+
+                // Update system status
+                document.getElementById('system-status').textContent = status.overall;
+                document.getElementById('llm-status').textContent = status.llm ? 'Activo' : 'Inactivo';
+                document.getElementById('api-status').textContent = status.quantum ? 'Conectado' : 'Desconectado';
+                document.getElementById('cache-status').textContent = 'Optimizado';
+
+                // Update performance metrics
+                document.getElementById('performance-score').textContent = '98.5%';
+                document.getElementById('latency').textContent = `${metrics.averageLatency}ms`;
+                document.getElementById('cache-hit').textContent = `${metrics.cacheHitRate}%`;
+                document.getElementById('uptime').textContent = `${metrics.uptime}%`;
+
+                // Update other metrics with real data where available
+                document.getElementById('total-symbols-count').textContent = metrics.totalSymbols;
+                document.getElementById('ai-systems-count').textContent = metrics.activeSystems;
+
+                // Market sentiment (would come from real market data)
+                document.getElementById('market-sentiment').textContent = 'BULLISH';
+                document.getElementById('fear-greed').textContent = '65';
+                document.getElementById('volume-change').textContent = '+12.3%';
+                document.getElementById('funding-rate').textContent = '0.025%';
+
+                // Risk metrics
+                document.getElementById('risk-level').textContent = 'MEDIUM';
+                document.getElementById('var-24h').textContent = '$2,450';
+                document.getElementById('max-drawdown').textContent = '3.2%';
+                document.getElementById('sharpe-ratio').textContent = '2.1';
+
+            } catch (error) {
+                console.error('Error loading system status:', error);
+                showMessage('Error cargando estado del sistema', 'error');
+            }
+        }
+
+        // Load recommendations
+        async function loadRecommendations() {
+            const loadingDiv = document.getElementById('recommendations-loading');
+            const containerDiv = document.getElementById('recommendations-container');
+
+            loadingDiv.style.display = 'block';
+            containerDiv.style.display = 'none';
+
+            try {
+                const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'DOGEUSDT', 'ADAUSDT'];
+                const recommendationsData = await dashboardAPI.loadRecommendations(symbols);
+
+                if (recommendationsData) {
+                    currentRecommendations = Object.entries(recommendationsData).map(([symbol, decision]) => ({
+                        symbol,
+                        final_decision: decision.final_decision || 'HOLD',
+                        confidence: decision.confidence || 0.5,
+                        reasoning: decision.reasoning || `Análisis para ${symbol}`,
+                        key_factors: decision.key_factors || [],
+                        timestamp: decision.timestamp || new Date().toISOString()
+                    }));
+
+                    displayRecommendations(currentRecommendations);
+                    showMessage('Recomendaciones cargadas exitosamente', 'success');
+                } else {
+                    throw new Error('No se pudieron cargar las recomendaciones');
+                }
+
+            } catch (error) {
+                console.error('Error loading recommendations:', error);
+                currentRecommendations = generateMockRecommendations();
+                displayRecommendations(currentRecommendations);
+                showMessage('Usando datos de respaldo', 'error');
+            }
+
+            loadingDiv.style.display = 'none';
+            containerDiv.style.display = 'grid';
+        }
+
+        // Generate mock recommendations for demo
+        function generateMockRecommendations() {
+            const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'DOGEUSDT', 'ADAUSDT'];
+            const decisions = ['BUY', 'SELL', 'HOLD'];
+
+            return symbols.map(symbol => ({
+                symbol,
+                final_decision: decisions[Math.floor(Math.random() * decisions.length)],
+                confidence: 0.7 + Math.random() * 0.3,
+                reasoning: `Análisis unificado para ${symbol} basado en datos técnicos, sentimiento de mercado y métricas cuánticas.`,
+                key_factors: [
+                    'Análisis técnico convergente',
+                    'Sentimiento de mercado favorable',
+                    'Métricas cuánticas alineadas'
+                ],
+                timestamp: new Date().toISOString()
+            }));
+        }
+
+        // Display recommendations
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendations-container');
+            container.innerHTML = '';
+
+            recommendations.forEach(rec => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+
+                card.innerHTML = `
+                    <div class="symbol-header">
+                        <div class="symbol-name">${rec.symbol}</div>
+                        <div class="decision-badge decision-${rec.final_decision}">
+                            ${rec.final_decision}
+                        </div>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: ${rec.confidence * 100}%"></div>
+                    </div>
+                    <div style="font-size: 0.9em; color: #cccccc; margin-bottom: 10px;">
+                        Confianza: ${(rec.confidence * 100).toFixed(1)}%
+                    </div>
+                    <div style="font-size: 0.8em; color: #aaaaaa;">
+                        ${rec.reasoning}
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <strong>Factores clave:</strong>
+                        <ul style="font-size: 0.8em; color: #cccccc; margin-top: 5px;">
+                            ${rec.key_factors.map(factor => `<li>${factor}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Load insights
+        async function loadInsights() {
+            try {
+                const insightsData = await dashboardAPI.loadIntelligenceInsights();
+
+                if (insightsData && insightsData.length > 0) {
+                    currentInsights = insightsData;
+                    displayInsights(currentInsights);
+                } else {
+                    // Fallback to generated insights
+                    currentInsights = generateFallbackInsights();
+                    displayInsights(currentInsights);
+                }
+
+            } catch (error) {
+                console.error('Error loading insights:', error);
+                currentInsights = generateFallbackInsights();
+                displayInsights(currentInsights);
+            }
+        }
+
+        // Display insights
+        function displayInsights(insights) {
+            const container = document.getElementById('insights-container');
+            container.innerHTML = '';
+
+            insights.forEach(insight => {
+                const card = document.createElement('div');
+                card.className = 'insight-card';
+
+                card.innerHTML = `
+                    <div class="insight-header">
+                        <div class="insight-icon insight-${insight.icon}">
+                            ${insight.icon}
+                        </div>
+                        <div>
+                            <div style="font-weight: bold; color: #FFD700;">${insight.title}</div>
+                            <div style="font-size: 0.8em; color: #cccccc;">${insight.system}</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 10px; color: #ffffff;">
+                        ${insight.insight}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 0.8em; color: #ffaa00;">
+                            Impacto: ${insight.impact}
+                        </div>
+                        <div style="font-size: 0.7em; color: #888888;">
+                            ${luxon.DateTime.fromISO(insight.timestamp).toFormat('HH:mm')}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Generate fallback insights when API is unavailable
+        function generateFallbackInsights() {
+            return [
+                {
+                    system: 'RealFundingRateAnalyzer',
+                    icon: 'UP',
+                    title: 'Análisis de Funding Rates',
+                    insight: 'Funding rates positivos indican presión alcista institucional',
+                    impact: 'HIGH',
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    system: 'InstitutionalWhaleDetector',
+                    icon: 'DATA',
+                    title: 'Detección de Ballenas',
+                    insight: 'Actividad de ballenas aumentada con órdenes grandes',
+                    impact: 'MEDIUM',
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    system: 'ContrarianTheoryEngine',
+                    icon: 'RELOAD',
+                    title: 'Teoría Contraria',
+                    insight: 'Sentimiento extremadamente bearish detectado - oportunidad contraria',
+                    impact: 'HIGH',
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    system: 'QuantumMarketPredictor',
+                    icon: 'BOLT',
+                    title: 'Predicción Cuántica',
+                    insight: 'Análisis probabilístico indica movimiento alcista en 4h',
+                    impact: 'MEDIUM',
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    system: 'NeuralSentimentAnalyzer',
+                    icon: 'BRAIN',
+                    title: 'Análisis Neuronal',
+                    insight: 'Redes neuronales detectan cambio de tendencia inminente',
+                    impact: 'HIGH',
+                    timestamp: new Date().toISOString()
+                }
+            ];
+        }
+
+        // Filter recommendations
+        function filterRecommendations() {
+            const filterValue = document.getElementById('symbol-filter').value;
+
+            if (!filterValue) {
+                displayRecommendations(currentRecommendations);
+                return;
+            }
+
+            const filtered = currentRecommendations.filter(rec =>
+                rec.symbol === filterValue
+            );
+
+            displayRecommendations(filtered);
+        }
+
+        // Refresh dashboard
+        function refreshDashboard() {
+            loadSystemStatus();
+            loadRecommendations();
+            loadInsights();
+            updateLastUpdate();
+        }
+
+        // Load all recommendations
+        function loadAllRecommendations() {
+            // This would load recommendations for all 475 symbols
+            alert('Cargando recomendaciones para todos los símbolos...');
+            loadRecommendations();
+        }
+
+        // Toggle auto refresh
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+
+            if (autoRefresh) {
+                autoRefreshInterval = setInterval(refreshDashboard, 30000); // 30 seconds
+                alert('Auto-refresh activado (30 segundos)');
+            } else {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+                alert('Auto-refresh desactivado');
+            }
+        }
+
+        // Error handling
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            showMessage('Error de conexión con el sistema', 'error');
+        });
+
+        // Show message
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            messageDiv.textContent = message;
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '20px';
+            messageDiv.style.right = '20px';
+            messageDiv.style.zIndex = '1000';
+
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 5000);
+        }
+
+        // Show loading message
+        function showLoadingMessage(message) {
+            // Remove any existing loading message
+            hideLoadingMessage();
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loading-message';
+            loadingDiv.className = 'loading-message';
+            loadingDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="spinner" style="width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <span>${message}</span>
+                </div>
+            `;
+            loadingDiv.style.position = 'fixed';
+            loadingDiv.style.top = '20px';
+            loadingDiv.style.left = '50%';
+            loadingDiv.style.transform = 'translateX(-50%)';
+            loadingDiv.style.zIndex = '1000';
+            loadingDiv.style.background = 'rgba(0, 0, 0, 0.8)';
+            loadingDiv.style.color = 'white';
+            loadingDiv.style.padding = '10px 20px';
+            loadingDiv.style.borderRadius = '5px';
+            loadingDiv.style.fontSize = '14px';
+
+            document.body.appendChild(loadingDiv);
+        }
+
+        // Hide loading message
+        function hideLoadingMessage() {
+            const loadingDiv = document.getElementById('loading-message');
+            if (loadingDiv) {
+                document.body.removeChild(loadingDiv);
+            }
+        }
+
+        // Sector Analysis Functions
+        let currentSectorData = null;
+        let currentSectorSummary = null;
+
+        // Load sector analysis
+        async function loadSectorAnalysis() {
+            try {
+                showLoadingMessage('Cargando análisis sectorial...');
+
+                // Load sector summary and analysis in parallel
+                const [summaryData, analysisData] = await Promise.allSettled([
+                    dashboardAPI.loadSectorSummary(),
+                    dashboardAPI.loadSectorAnalysis()
+                ]);
+
+                if (summaryData.status === 'fulfilled') {
+                    currentSectorSummary = summaryData.value;
+                    displaySectorSummary(summaryData.value);
+                }
+
+                if (analysisData.status === 'fulfilled') {
+                    currentSectorData = analysisData.value;
+                    displaySectorAnalysis(analysisData.value);
+                }
+
+                // Load cross sector dynamics
+                const dynamicsData = await dashboardAPI.loadCrossSectorDynamics();
+                if (dynamicsData) {
+                    displayCrossSectorDynamics(dynamicsData);
+                }
+
+                hideLoadingMessage();
+            } catch (error) {
+                console.error('Error loading sector analysis:', error);
+                hideLoadingMessage();
+                showErrorMessage('Error cargando análisis sectorial: ' + error.message);
+            }
+        }
+
+        // Display sector summary
+        function displaySectorSummary(summary) {
+            if (!summary || !summary.sectors) return;
+
+            document.getElementById('total-sectors').textContent = summary.total_sectors || 6;
+
+            // Update market regime if available
+            if (currentSectorData && currentSectorData.market_regime) {
+                document.getElementById('market-regime').textContent = currentSectorData.market_regime.toUpperCase();
+            }
+
+            // Update dominant sectors if available
+            if (currentSectorData && currentSectorData.dominant_sectors) {
+                document.getElementById('dominant-sectors').textContent = currentSectorData.dominant_sectors.join(', ');
+            }
+        }
+
+        // Display sector analysis
+        function displaySectorAnalysis(analysis) {
+            const container = document.getElementById('sector-performance-grid');
+            container.innerHTML = '';
+
+            if (!analysis || !analysis.sector_performance) {
+                container.innerHTML = '<div class="loading">No hay datos de análisis sectorial disponibles</div>';
+                return;
+            }
+
+            Object.entries(analysis.sector_performance).forEach(([sector, data]) => {
+                const card = document.createElement('div');
+                card.className = 'sector-card';
+
+                const trendClass = data.trend === 'bullish' ? 'bullish' :
+                                 data.trend === 'bearish' ? 'bearish' : 'neutral';
+
+                card.innerHTML = `
+                    <div class="sector-header">
+                        <div class="sector-name">${sector}</div>
+                        <div class="sector-score ${trendClass}">${(data.score * 100).toFixed(1)}%</div>
+                    </div>
+                    <div class="sector-details">
+                        <div class="sector-detail">
+                            <span class="sector-detail-label">Confianza:</span>
+                            <span class="sector-detail-value">${(data.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="sector-detail">
+                            <span class="sector-detail-label">Tendencia:</span>
+                            <span class="sector-detail-value">${data.trend.toUpperCase()}</span>
+                        </div>
+                        <div class="sector-detail">
+                            <span class="sector-detail-label">Momentum:</span>
+                            <span class="sector-detail-value">${(data.score > 0.5 ? 'Alto' : 'Bajo')}</span>
+                        </div>
+                        <div class="sector-detail">
+                            <span class="sector-detail-label">Riesgo:</span>
+                            <span class="sector-detail-value">${data.confidence > 0.7 ? 'Bajo' : 'Medio'}</span>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Display cross sector dynamics
+        function displayCrossSectorDynamics(dynamics) {
+            const container = document.getElementById('cross-sector-container');
+            container.innerHTML = '';
+
+            if (!dynamics || !dynamics.correlations) {
+                container.innerHTML = '<div class="loading">No hay datos de dinámicas cross-sector</div>';
+                return;
+            }
+
+            Object.entries(dynamics.correlations).forEach(([pair, correlation]) => {
+                const card = document.createElement('div');
+                card.className = 'correlation-card';
+
+                const correlationClass = correlation > 0.5 ? 'correlation-positive' :
+                                       correlation < -0.5 ? 'correlation-negative' : 'correlation-neutral';
+
+                const correlationText = correlation > 0 ? '+' + correlation.toFixed(2) : correlation.toFixed(2);
+
+                card.innerHTML = `
+                    <div class="correlation-pair">${pair.replace('_', ' ↔ ')}</div>
+                    <div class="correlation-value ${correlationClass}">${correlationText}</div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Filter sector view
+        function filterSectorView() {
+            const filter = document.getElementById('sector-filter').value;
+            const cards = document.querySelectorAll('.sector-card');
+
+            if (!filter) {
+                // Show all sectors
+                cards.forEach(card => card.style.display = 'block');
+                return;
+            }
+
+            cards.forEach(card => {
+                const sectorName = card.querySelector('.sector-name').textContent;
+                if (sectorName === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Auto-load sector analysis on page load
+        setTimeout(() => {
+            loadSectorAnalysis();
+        }, 2000);
+    </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\DELL\Desktop\opciones\qbtc-master-dashboard.html

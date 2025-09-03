@@ -107,3 +107,4 @@ const result = verifyDeletion();
 
 // Salir con código apropiado
 process.exit(result.success ? 0 : 1);
+

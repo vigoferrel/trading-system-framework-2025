@@ -1,4 +1,12 @@
 
+// ==========================================
+// IMPORTACIÓN DE CONSTANTES UNIFICADAS
+// ==========================================
+// ✅ CONSTANTES CONSOLIDADAS - Eliminadas duplicaciones de 290+ archivos
+// ✅ Fuente única de verdad para todas las constantes del sistema
+
+const { QuantumConstants } = require(process.cwd() + '/src/constants/quantum-constants');
+
 // Constantes físicas reales del sistema
 const PHYSICAL_CONSTANTS = {
   "QUANTUM_COHERENCE": 0.75,
@@ -226,39 +234,36 @@ class QuantumAIMLSystem extends EventEmitter {
             optimizationInterval: config.optimizationInterval || 300000 // 5 minutos
         };
         
-        // Constantes cuánticas para AI/ML
+        // Usar constantes centralizadas con extensiones específicas del módulo
         this.QUANTUM_ML_CONSTANTS = {
-            // Constantes fundamentales
-            Z_REAL: 9,
-            Z_IMAG: 16,
-            LAMBDA: Math.log(7919),
-            PHI: (1 + Math.sqrt(5)) / 2,
-            
-            // Constantes de aprendizaje cuántico
-            QUANTUM_LEARNING_RATE: 0.001 * Math.sqrt(2),
-            QUANTUM_BATCH_SIZE: 32 * Math.PI,
-            QUANTUM_EPOCHS: 100 * Math.E,
-            QUANTUM_ENTANGLEMENT_FACTOR: 0.618033988749895,
+            // Importar constantes fundamentales del sistema centralizado
+            ...QuantumConstants,
+
+            // Extensiones específicas del sistema AI/ML
+            QUANTUM_LEARNING_RATE: QuantumConstants.LAMBDA_7919 * 0.001,
+            QUANTUM_BATCH_SIZE: 32 * QuantumConstants.PHI_GOLDEN,
+            QUANTUM_EPOCHS: 100 * QuantumConstants.E,
+            QUANTUM_ENTANGLEMENT_FACTOR: QuantumConstants.PHI_GOLDEN,
             QUANTUM_COHERENCE_THRESHOLD: 0.941,
-            
+
             // Constantes de redes neuronales cuánticas
             QUANTUM_NEURAL_LAYERS: 5,
             QUANTUM_NEURONS_PER_LAYER: 128,
             QUANTUM_ACTIVATION_FUNCTION: 'quantum_sigmoid',
             QUANTUM_OPTIMIZER: 'quantum_adam',
-            
+
             // Constantes de procesamiento de lenguaje natural
             NLP_TOKENIZER: 'quantum_wordpiece',
             NLP_EMBEDDING_DIM: 768,
             NLP_ATTENTION_HEADS: 12,
             NLP_TRANSFORMER_LAYERS: 12,
-            
+
             // Constantes de aprendizaje por refuerzo
             RL_EPSILON: 0.1,
             RL_GAMMA: 0.95,
             RL_ALPHA: 0.001,
             RL_EXPLORATION_RATE: 0.3,
-            
+
             // Constantes de optimización cuántica
             OPTIMIZATION_PARTICLES: 50,
             OPTIMIZATION_DIMENSIONS: 10,

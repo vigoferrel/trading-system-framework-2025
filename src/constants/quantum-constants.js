@@ -1,270 +1,262 @@
 /**
- * CONSTANTES CUÁNTICAS UNIFICADAS - QBTC TRADING SYSTEM
+ * QUANTUM CONSTANTS - Sistema Unificado de Constantes Cuánticas
  *
- * Archivo único de constantes físicas y cuánticas para todo el sistema.
- * Este archivo consolida todas las constantes duplicadas encontradas en 290+ archivos.
+ * Este archivo centraliza todas las constantes cuánticas del sistema
+ * para evitar duplicación y asegurar consistencia.
  *
- * Generado automáticamente mediante análisis de ingeniería inversa
- * Fecha: 31-08-2025
- *
- * ⚠️ IMPORTANTE: Este archivo reemplaza todas las constantes duplicadas
- * ⚠️ NO MODIFICAR DIRECTAMENTE - Usar este archivo como fuente única de verdad
+ * Version: 1.0.0
+ * Last Updated: 2025-09-03
  */
 
-const QUANTUM_CONSTANTS = {
-  // ==========================================
-  // CONSTANTES FÍSICAS REALES DEL SISTEMA
-  // ==========================================
+'use strict';
 
-  // Estados Cuánticos Básicos
-  "QUANTUM_COHERENCE": 0.75,
-  "QUANTUM_CONSCIOUSNESS": 0.8,
-  "QUANTUM_ENTANGLEMENT": 0.65,
-  "QUANTUM_SUPERPOSITION": 0.7,
-  "QUANTUM_TUNNELING": 0.6,
+// =============================================================================
+// CONSTANTES FUNDAMENTALES DEL SISTEMA QUÁNTICO
+// =============================================================================
 
-  // Parámetros de Mercado
-  "MARKET_VOLATILITY": 0.05,
-  "MARKET_MOMENTUM": 0.1,
-  "MARKET_LIQUIDITY": 0.75,
-  "MARKET_SPREAD": 0.001,
-  "MARKET_DEPTH": 500000,
+/**
+ * Constantes del Número Cuántico Complejo z = 9 + 16i
+ * Basado en la teoría de Feynman y mecánica cuántica avanzada
+ */
+const QUANTUM_COMPLEX = Object.freeze({
+  Z_REAL: 9,                    // Parte real del número cuántico complejo z = 9 + 16i
+  Z_IMAG: 16,                   // Parte imaginaria del número cuántico complejo
+  Z_MAGNITUDE: Math.sqrt(9 * 9 + 16 * 16), // |z| = √(9² + 16²) = 18.3576
+  Z_PHASE: Math.atan2(16, 9),   // Fase de z = atan2(16, 9) = 1.0637 rad
+});
 
-  // Parámetros de Funding
-  "FUNDING_RATE": 0.02,
-  "FUNDING_VOLATILITY": 0.01,
-  "FUNDING_DEVIATION": 0.5,
-  "FUNDING_ANNUALIZED": 5,
+/**
+ * Constantes de Longitud de Onda Cuántica
+ * Basadas en el número primo 7919 y logaritmos naturales
+ */
+const QUANTUM_WAVELENGTH = Object.freeze({
+  LAMBDA_7919: Math.log(7919),  // Longitud de onda cuántica fundamental λ = log(7919) = 8.977 Hz
+  LAMBDA_LOG_7919: Math.log(7919), // Alias para compatibilidad
+  LOG_7919: Math.log(7919),    // Alias alternativo
+});
 
-  // Riesgos y Probabilidades
-  "LIQUIDATION_PROBABILITY": 0.05,
-  "SLIPPAGE_RATE": 0.0025,
-  "VOLATILITY_RISK": 0.1,
-  "EXECUTION_RISK": 0.005,
+/**
+ * Constantes de Resonancia y Frecuencia
+ * Basadas en análisis espectral cuántico
+ */
+const QUANTUM_RESONANCE = Object.freeze({
+  RESONANCE_FREQ: 888,         // Frecuencia de resonancia fundamental 888 MHz
+  LAMBDA_888_MHZ: 888,         // Alias para compatibilidad
+  FREQ_88MHZ: 888,             // Alias alternativo
+});
 
-  // Volúmenes y Expansión
-  "VOLUME_24H": 500000,
-  "VOLUME_RATIO": 0.75,
-  "VOLUME_EXPANSION": 300000,
+/**
+ * Constantes Matemáticas Fundamentales
+ * Proporción áurea y constantes matemáticas universales
+ */
+const MATHEMATICAL_CONSTANTS = Object.freeze({
+  PHI_GOLDEN: (1 + Math.sqrt(5)) / 2, // Proporción áurea φ = 1.618034
+  PHI: (1 + Math.sqrt(5)) / 2,        // Alias para compatibilidad
+  EULER_GAMMA: 0.57721566490153286060651209008240243104215933593992, // Constante de Euler-Mascheroni
+  E: Math.E,                          // Número e (Euler)
+});
 
-  // Dinámicas de Precio
-  "PRICE_CHANGE": 0.02,
-  "PRICE_ACCELERATION": 0.015,
-  "PRICE_MOMENTUM": 0.01,
+/**
+ * Constantes de Coherencia Cuántica
+ * Umbrales y factores para algoritmos de coherencia
+ */
+const QUANTUM_COHERENCE = Object.freeze({
+  COHERENCE_THRESHOLD: 0.85,   // Umbral mínimo de coherencia para operaciones válidas
+  ENTANGLEMENT_FACTOR: 0.95,   // Factor de entrelazamiento cuántico
+  SUPERPOSITION_DEPTH: 0.90,   // Profundidad de superposición
+});
 
-  // Temporales
-  "TIME_TO_FUNDING": 1800000,
-  "SESSION_INTENSITY": 0.6,
-  "TEMPORAL_RESONANCE": 0.7,
+/**
+ * Constantes de Energía Cuántica
+ * Energía fundamental del sistema z × λ × φ
+ */
+const QUANTUM_ENERGY = Object.freeze({
+  QUANTUM_ENERGY: QUANTUM_COMPLEX.Z_REAL * QUANTUM_COMPLEX.Z_IMAG * QUANTUM_WAVELENGTH.LAMBDA_7919,
+  BASE_ENERGY: QUANTUM_COMPLEX.Z_REAL * QUANTUM_COMPLEX.Z_IMAG,
+  RESONANCE_ENERGY: QUANTUM_RESONANCE.RESONANCE_FREQ * QUANTUM_WAVELENGTH.LAMBDA_7919,
+});
 
-  // Análisis Técnico
-  "FIBONACCI_STRENGTH": 0.75,
-  "FIBONACCI_INDEX": 5,
+/**
+ * Secuencia Fibonacci Cuántica
+ * Primeros 16 números de Fibonacci para algoritmos cuánticos
+ */
+const QUANTUM_FIBONACCI = Object.freeze([
+  1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987
+]);
 
-  // Redes Neuronales
-  "NEURAL_CONFIDENCE": 0.85,
-  "NEURAL_COHERENCE": 0.8,
-  "NEURAL_ENTANGLEMENT": 0.7,
+/**
+ * Primos Cuánticos Optimizados
+ * Secuencia prima para generadores cuánticos y hash
+ */
+const QUANTUM_PRIMES = Object.freeze({
+  PRIMES: [7919, 9973, 1597, 887], // Secuencia prima optimizada
+  PRIMARY_PRIME: 7919,             // Primo principal del sistema
+  SECONDARY_PRIME: 9973,           // Primo secundario
+});
 
-  // Apalancamiento
-  "BASE_LEVERAGE": 15,
-  "CONSERVATIVE_LEVERAGE": 10,
-  "AGGRESSIVE_LEVERAGE": 25,
+/**
+ * Constantes de Tiempo Cuántico
+ * Factores temporales para algoritmos dinámicos
+ */
+const QUANTUM_TIME = Object.freeze({
+  QUANTUM_TIME_FACTOR: 0.0001,     // Factor temporal cuántico base
+  RESONANCE_PERIOD: 1 / 888,       // Período de resonancia
+  COHERENCE_WINDOW: 1000,          // Ventana de coherencia en ms
+});
 
-  // Gestión de Riesgo
-  "STOP_LOSS": 0.03,
-  "TAKE_PROFIT": 0.06,
-  "BASE_SCORE": 0.65,
-  "CONFIDENCE_SCORE": 0.75,
-  "QUALITY_SCORE": 0.8,
+/**
+ * Constantes de Validación
+ * Límites y validaciones del sistema
+ */
+const VALIDATION_CONSTANTS = Object.freeze({
+  MAX_QUANTUM_ITERATIONS: 1000,    // Máximo de iteraciones cuánticas
+  MIN_COHERENCE_LEVEL: 0.1,        // Nivel mínimo de coherencia
+  MAX_ENTANGLEMENT_DEPTH: 10,      // Profundidad máxima de entrelazamiento
+  TIMEOUT_QUANTUM_OPERATION: 5000, // Timeout para operaciones cuánticas (ms)
+});
 
-  // ==========================================
-  // CONSTANTES CUÁNTICAS QBTC UNIFICADAS
-  // ==========================================
+// =============================================================================
+// OBJETO PRINCIPAL DE CONSTANTES - EXPORTACIÓN UNIFICADA
+// =============================================================================
 
+/**
+ * QuantumConstants - Objeto principal con todas las constantes del sistema
+ * Congela el objeto para prevenir modificaciones accidentales
+ */
+const QuantumConstants = Object.freeze({
   // Números Cuánticos Complejos
-  "Z_REAL": 9,                          // Parte real del número cuántico complejo z = 9 + 16i
-  "Z_IMAG": 16,                         // Parte imaginaria del número cuántico complejo
+  Z_REAL: QUANTUM_COMPLEX.Z_REAL,
+  Z_IMAG: QUANTUM_COMPLEX.Z_IMAG,
+  Z_MAGNITUDE: QUANTUM_COMPLEX.Z_MAGNITUDE,
+  Z_PHASE: QUANTUM_COMPLEX.Z_PHASE,
 
   // Longitudes de Onda Cuánticas
-  "LAMBDA_7919": Math.log(7919),        // Longitud de onda cuántica fundamental λ = 8.977 Hz
+  LAMBDA_7919: QUANTUM_WAVELENGTH.LAMBDA_7919,
+  LAMBDA_LOG_7919: QUANTUM_WAVELENGTH.LAMBDA_LOG_7919,
+  LOG_7919: QUANTUM_WAVELENGTH.LOG_7919,
 
-  // Proporciones Sagradas
-  "PHI_GOLDEN": (1 + Math.sqrt(5)) / 2, // Proporción áurea φ = 1.618034...
-
-  // Frecuencias de Resonancia
-  "RESONANCE_FREQ": 888,                // Frecuencia de resonancia cuántica
-
-  // Umbrales Cuánticos
-  "COHERENCE_THRESHOLD": 0.941,         // Umbral de coherencia cuántica QBTC
+  // Resonancia y Frecuencia
+  RESONANCE_FREQ: QUANTUM_RESONANCE.RESONANCE_FREQ,
+  LAMBDA_888_MHZ: QUANTUM_RESONANCE.LAMBDA_888_MHZ,
+  FREQ_88MHZ: QUANTUM_RESONANCE.FREQ_88MHZ,
 
   // Constantes Matemáticas
-  "EULER_GAMMA": 0.5772156649015329,    // Constante de Euler-Mascheroni
+  PHI_GOLDEN: MATHEMATICAL_CONSTANTS.PHI_GOLDEN,
+  PHI: MATHEMATICAL_CONSTANTS.PHI,
+  EULER_GAMMA: MATHEMATICAL_CONSTANTS.EULER_GAMMA,
+  E: MATHEMATICAL_CONSTANTS.E,
 
-  // Secuencias Matemáticas
-  "QUANTUM_FIBONACCI": [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597],
-  "PRIME_SEQUENCE": [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97],
+  // Coherencia Cuántica
+  COHERENCE_THRESHOLD: QUANTUM_COHERENCE.COHERENCE_THRESHOLD,
+  ENTANGLEMENT_FACTOR: QUANTUM_COHERENCE.ENTANGLEMENT_FACTOR,
+  SUPERPOSITION_DEPTH: QUANTUM_COHERENCE.SUPERPOSITION_DEPTH,
 
-  // ==========================================
-  // ESTADO CUÁNTICO QBTC UNIFICADO
-  // ==========================================
+  // Energía Cuántica
+  QUANTUM_ENERGY: QUANTUM_ENERGY.QUANTUM_ENERGY,
+  BASE_ENERGY: QUANTUM_ENERGY.BASE_ENERGY,
+  RESONANCE_ENERGY: QUANTUM_ENERGY.RESONANCE_ENERGY,
 
-  "QUANTUM_STATE": {
-    "consciousness": 0.947,           // Nivel de conciencia cuántica
-    "coherence": 0.923,               // Estabilidad del sistema cuántico
-    "entanglement": 0.871,            // Entrelazamiento cuántico
-    "superposition": 0.896,           // Estado de superposición
-    "isRunning": false,
-    "cycleCount": 0
-  },
+  // Secuencias
+  QUANTUM_FIBONACCI: QUANTUM_FIBONACCI,
+  PRIMES: QUANTUM_PRIMES.PRIMES,
+  PRIMARY_PRIME: QUANTUM_PRIMES.PRIMARY_PRIME,
+  SECONDARY_PRIME: QUANTUM_PRIMES.SECONDARY_PRIME,
 
-  // ==========================================
-  // PRINCIPIOS HERMÉTICOS QBTC
-  // ==========================================
+  // Tiempo
+  QUANTUM_TIME_FACTOR: QUANTUM_TIME.QUANTUM_TIME_FACTOR,
+  RESONANCE_PERIOD: QUANTUM_TIME.RESONANCE_PERIOD,
+  COHERENCE_WINDOW: QUANTUM_TIME.COHERENCE_WINDOW,
 
-  "HERMETIC_PRINCIPLES": {
-    "correspondence": { active: true, alignment: 0.941 },
-    "vibration": { frequency: Math.log(7919), amplitude: 18.358 },
-    "polarity": { bullish: 0.874, bearish: 0.126 },
-    "rhythm": { cycle: 'expansion', phase: 0.623 },
-    "causation": { trigger: 'micro_divergence', probability: 0.874 },
-    "gender": { bosonic: 0.6, fermionic: 0.4 },
-    "mentalism": { consciousness: 0.947 }
-  },
+  // Validación
+  MAX_QUANTUM_ITERATIONS: VALIDATION_CONSTANTS.MAX_QUANTUM_ITERATIONS,
+  MIN_COHERENCE_LEVEL: VALIDATION_CONSTANTS.MIN_COHERENCE_LEVEL,
+  MAX_ENTANGLEMENT_DEPTH: VALIDATION_CONSTANTS.MAX_ENTANGLEMENT_DEPTH,
+  TIMEOUT_QUANTUM_OPERATION: VALIDATION_CONSTANTS.TIMEOUT_QUANTUM_OPERATION,
 
-  // ==========================================
-  // SÍMBOLOS DE TRADING UNIFICADOS
-  // ==========================================
+  // Objetos completos para acceso avanzado
+  COMPLEX: QUANTUM_COMPLEX,
+  WAVELENGTH: QUANTUM_WAVELENGTH,
+  RESONANCE: QUANTUM_RESONANCE,
+  MATHEMATICS: MATHEMATICAL_CONSTANTS,
+  COHERENCE: QUANTUM_COHERENCE,
+  ENERGY: QUANTUM_ENERGY,
+  TIME: QUANTUM_TIME,
+  VALIDATION: VALIDATION_CONSTANTS,
+});
 
-  "TRADING_SYMBOLS": [
-    // TOP 6 - Símbolos principales (alta liquidez)
-    'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT',
-    // TOP 10 - Símbolos adicionales (alta volatilidad)
-    'ADAUSDT', 'AVAXUSDT', 'DOTUSDT', 'LINKUSDT',
-    // TOP 15 - Símbolos emergentes (oportunidades de crecimiento)
-    'UNIUSDT', 'LTCUSDT', 'BCHUSDT', 'ATOMUSDT', 'NEARUSDT',
-    // TOP 20 - Símbolos especializados (diversificación)
-    'FTMUSDT', 'ALGOUSDT', 'VETUSDT', 'ICPUSDT', 'FILUSDT'
-  ],
-
-  "PRIORITY_SYMBOLS": ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT'],
-  "QUANTUM_ANALYSIS_SYMBOLS": ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'DOTUSDT'],
-
-  // ==========================================
-  // CONFIGURACIÓN MATRICIAL
-  // ==========================================
-
-  "MATRIX_SIZE": {
-    rows: 20,  // Más símbolos para análisis
-    cols: 8    // Modelo Híbrido-8
-  },
-
-  // ==========================================
-  // MÉTRICAS CUÁNTICAS UNIFICADAS
-  // ==========================================
-
-  "QUANTUM_METRICS": [
-    'Coherencia', 'Entrelazamiento', 'Momentum', 'Densidad',
-    'Temperatura', 'Probabilidad', 'Oportunidad', 'Sensibilidad'
-  ],
-
-  // ==========================================
-  // FACTORES CUÁNTICOS UNIFICADOS
-  // ==========================================
-
-  "QUANTUM_FACTORS": {
-    // Factores Físicos-5
-    coherence: { weight: 0.25, threshold: 0.941 },
-    entanglement: { weight: 0.20, threshold: 0.871 },
-    momentum: { weight: 0.15, threshold: 0.5 },
-    density: { weight: 0.15, threshold: 0.5 },
-    temperature: { weight: 0.15, threshold: 0.5 },
-
-    // Factores Híbridos-3 (sentiment + predictions)
-    successProbability: { weight: 0.05, threshold: 0.5 },
-    opportunity: { weight: 0.03, threshold: 0.5 },
-    sensitivity: { weight: 0.02, threshold: 0.5 }
-  },
-
-  // ==========================================
-  // CONFIGURACIÓN DE SISTEMA
-  // ==========================================
-
-  "SYSTEM_CONFIG": {
-    coherenceCheckInterval: 30000,     // 30 segundos
-    entanglementThreshold: 0.3,
-    superpositionFactor: 0.6,
-    temperatureRange: [0.2, 0.8],
-    densityNormalization: true
-  }
-};
-
-// ==========================================
-// FUNCIONES DE ACCESO A CONSTANTES
-// ==========================================
+// =============================================================================
+// FUNCIONES UTILITARIAS
+// =============================================================================
 
 /**
- * Obtener constante por nombre
- * @param {string} name - Nombre de la constante
- * @returns {*} Valor de la constante
+ * Valida que todas las constantes estén definidas y sean números finitos
  */
-function getConstant(name) {
-  return QUANTUM_CONSTANTS[name];
-}
+function validateConstants() {
+  const issues = [];
 
-/**
- * Obtener todas las constantes físicas
- * @returns {object} Objeto con constantes físicas
- */
-function getPhysicalConstants() {
-  const physicalKeys = [
-    'QUANTUM_COHERENCE', 'QUANTUM_CONSCIOUSNESS', 'QUANTUM_ENTANGLEMENT',
-    'QUANTUM_SUPERPOSITION', 'QUANTUM_TUNNELING', 'MARKET_VOLATILITY',
-    'MARKET_MOMENTUM', 'MARKET_LIQUIDITY', 'MARKET_SPREAD', 'MARKET_DEPTH',
-    'FUNDING_RATE', 'FUNDING_VOLATILITY', 'FUNDING_DEVIATION', 'FUNDING_ANNUALIZED',
-    'LIQUIDATION_PROBABILITY', 'SLIPPAGE_RATE', 'VOLATILITY_RISK', 'EXECUTION_RISK',
-    'VOLUME_24H', 'VOLUME_RATIO', 'VOLUME_EXPANSION', 'PRICE_CHANGE', 'PRICE_ACCELERATION',
-    'PRICE_MOMENTUM', 'TIME_TO_FUNDING', 'SESSION_INTENSITY', 'TEMPORAL_RESONANCE',
-    'FIBONACCI_STRENGTH', 'FIBONACCI_INDEX', 'NEURAL_CONFIDENCE', 'NEURAL_COHERENCE',
-    'NEURAL_ENTANGLEMENT', 'BASE_LEVERAGE', 'CONSERVATIVE_LEVERAGE', 'AGGRESSIVE_LEVERAGE',
-    'STOP_LOSS', 'TAKE_PROFIT', 'BASE_SCORE', 'CONFIDENCE_SCORE', 'QUALITY_SCORE'
-  ];
-
-  const physicalConstants = {};
-  physicalKeys.forEach(key => {
-    if (QUANTUM_CONSTANTS[key] !== undefined) {
-      physicalConstants[key] = QUANTUM_CONSTANTS[key];
+  Object.entries(QuantumConstants).forEach(([key, value]) => {
+    if (typeof value === 'number' && !isFinite(value)) {
+      issues.push(`Constante ${key} no es un número finito: ${value}`);
+    }
+    if (value === undefined || value === null) {
+      issues.push(`Constante ${key} está indefinida o es null`);
     }
   });
 
-  return physicalConstants;
+  if (issues.length > 0) {
+    console.error('❌ Errores de validación en constantes cuánticas:', issues);
+    throw new Error(`Constantes inválidas detectadas: ${issues.join(', ')}`);
+  }
+
+  console.log('✅ Todas las constantes cuánticas validadas correctamente');
+  return true;
 }
 
 /**
- * Obtener constantes cuánticas
- * @returns {object} Objeto con constantes cuánticas
+ * Obtiene una constante por nombre con validación
  */
-function getQuantumConstants() {
-  return {
-    Z_REAL: QUANTUM_CONSTANTS.Z_REAL,
-    Z_IMAG: QUANTUM_CONSTANTS.Z_IMAG,
-    LAMBDA_7919: QUANTUM_CONSTANTS.LAMBDA_7919,
-    PHI_GOLDEN: QUANTUM_CONSTANTS.PHI_GOLDEN,
-    RESONANCE_FREQ: QUANTUM_CONSTANTS.RESONANCE_FREQ,
-    COHERENCE_THRESHOLD: QUANTUM_CONSTANTS.COHERENCE_THRESHOLD
-  };
+function getConstant(name) {
+  if (!(name in QuantumConstants)) {
+    throw new Error(`Constante cuántica '${name}' no encontrada`);
+  }
+  return QuantumConstants[name];
 }
 
-// ==========================================
+/**
+ * Lista todas las constantes disponibles
+ */
+function listConstants() {
+  return Object.keys(QuantumConstants).filter(key =>
+    typeof QuantumConstants[key] === 'number'
+  );
+}
+
+// =============================================================================
 // EXPORTS
-// ==========================================
+// =============================================================================
 
 module.exports = {
-  QUANTUM_CONSTANTS,
+  QuantumConstants,
+  QUANTUM_CONSTANTS: QuantumConstants, // Alias para compatibilidad
+  validateConstants,
   getConstant,
-  getPhysicalConstants,
-  getQuantumConstants,
+  listConstants,
 
-  // Exportar constantes individuales para compatibilidad
-  ...QUANTUM_CONSTANTS
+  // Exportaciones individuales para compatibilidad
+  Z_REAL: QuantumConstants.Z_REAL,
+  Z_IMAG: QuantumConstants.Z_IMAG,
+  LAMBDA_7919: QuantumConstants.LAMBDA_7919,
+  PHI_GOLDEN: QuantumConstants.PHI_GOLDEN,
+  RESONANCE_FREQ: QuantumConstants.RESONANCE_FREQ,
+  COHERENCE_THRESHOLD: QuantumConstants.COHERENCE_THRESHOLD,
+  QUANTUM_FIBONACCI: QuantumConstants.QUANTUM_FIBONACCI,
+  EULER_GAMMA: QuantumConstants.EULER_GAMMA,
 };
+
+// Validar constantes al cargar el módulo
+validateConstants();
+
+console.log('🔬 [QUANTUM CONSTANTS] Sistema de constantes cuánticas inicializado');
+console.log(`   📊 ${listConstants().length} constantes cargadas`);
+console.log(`   🎯 Energía base: ${QuantumConstants.BASE_ENERGY.toFixed(3)}`);
+console.log(`   📈 Coherencia mínima: ${(QuantumConstants.MIN_COHERENCE_LEVEL * 100).toFixed(1)}%`);
