@@ -54,10 +54,59 @@ QBTC serves institutional clients who need **reliable portfolio optimization** f
 
 ## 💼 **Service Approach**
 
+### 🔄 **Partnership Implementation Flow**
+```mermaid
+flowchart TD
+    A[Initial Consultation] --> B[Portfolio Analysis]
+    B --> C[Custom Strategy Design]
+    C --> D[Pilot Implementation]
+    D --> E{Performance Review}
+    
+    E -->|Success| F[Scale Deployment]
+    E -->|Adjustments Needed| G[Strategy Refinement]
+    G --> D
+    
+    F --> H[Full Portfolio Integration]
+    H --> I[Ongoing Monitoring]
+    I --> J[Regular Performance Reviews]
+    J --> K{Relationship Evaluation}
+    
+    K -->|Excellent| L[Partnership Expansion]
+    K -->|Good| M[Maintain Current Level]
+    K -->|Issues| N[Strategy Adjustment]
+    
+    L --> I
+    M --> I
+    N --> G
+```
+
+### 📊 **Value Creation Framework**
+```
+    ┌───────────────── CLIENT VALUE CREATION ─────────────────┐
+    │                                                                 │
+    │  🏆 PERFORMANCE METRICS        📊 OPERATIONAL BENEFITS  │
+    │  ┌─────────────────────────   │  ┌──────────────────────┐  │
+    │  │ • Risk-Adjusted Returns     │   │  │ • Automated Rebalancing  │  │
+    │  │ • Sharpe Ratio Improvement  │   │  │ • Real-time Monitoring   │  │
+    │  │ • Drawdown Reduction       │   │  │ • Compliance Reporting   │  │
+    │  │ • Volatility Management     │   │  │ • Tax Optimization       │  │
+    │  └─────────────────────────   │  └──────────────────────┘  │
+    │                                                                 │
+    │  🔒 RISK MANAGEMENT           📈 REPORTING & ANALYTICS │
+    │  ┌─────────────────────────   │  ┌──────────────────────┐  │
+    │  │ • VaR Monitoring           │   │  │ • Performance Attribution│  │
+    │  │ • Correlation Analysis     │   │  │ • Risk Analytics        │  │
+    │  │ • Position Sizing          │   │  │ • Client Dashboards     │  │
+    │  │ • Circuit Breakers         │   │  │ • Regulatory Reports    │  │
+    │  └─────────────────────────   │  └──────────────────────┘  │
+    │                                                                 │
+    └─────────────────────────────────────────────────────────────────┘
+```
+
 ### **Performance-Based Partnership**
 Rather than fixed fees, we align our compensation with client success:
 
-- **Setup costs** for implementation and integration
+- **Setup costs** for implementation and integration (customized per client)
 - **Performance-based fees** tied to measurable portfolio improvements
 - **Success sharing** - we only do well when you do well
 - **Transparent measurement** of value creation

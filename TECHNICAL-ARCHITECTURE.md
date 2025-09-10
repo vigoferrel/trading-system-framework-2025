@@ -23,6 +23,64 @@ QBTC is a hybrid futures-options trading platform with quantum-enhanced mathemat
 
 ## 🔧 **Core Components**
 
+### 🎨 **Component Interaction Diagram**
+```mermaid
+graph TB
+    A[Client Request] --> B[API Gateway]
+    B --> C[Quantum Event Orchestrator]
+    C --> D{Component Router}
+    
+    D --> E[Kernel RNG]
+    D --> F[Safe Mathematics]
+    D --> G[LLM Integration]
+    D --> H[Risk Manager]
+    
+    E --> I[Portfolio Optimizer]
+    F --> I
+    G --> I
+    H --> I
+    
+    I --> J[Order Executor]
+    J --> K[Binance API]
+    K --> L[Response Handler]
+    L --> M[Client Response]
+    
+    I --> N[Performance Monitor]
+    N --> O[Database]
+    N --> P[Real-time Dashboard]
+```
+
+### 🔄 **Data Flow Architecture**
+```
+    ┌─────────────── INPUT LAYER ───────────────┐
+    │                                               │
+    │ 📊 Market Data │ 📈 Portfolio │ 📡 Client Input │
+    │      │             │        │             │         │
+    └──────┼───────────┼───────────┼─────────┘
+           │                │                │
+           ▼                ▼                ▼
+    ┌───────────── PROCESSING LAYER ─────────────┐
+    │                                               │
+    │        ⚛️ Quantum Event Orchestrator         │
+    │                       │                       │
+    │     ┌─────────┼─────────┐     │
+    │     │  🎲 RNG  │  🔢 Math  │     │
+    │     └─────────┼─────────┘     │
+    │                       │                       │
+    │     ┌─────────┼─────────┐     │
+    │     │ 🤖 LLM   │ 🎯 Risk   │     │
+    │     └─────────┼─────────┘     │
+    │                       │                       │
+    └───────────────────────┼───────────────────────┘
+                               │
+                               ▼
+    ┌────────────── OUTPUT LAYER ──────────────┐
+    │                                               │
+    │ 📊 Orders │ 📈 Reports │ 📡 Alerts │ 🔔 Logs │
+    │                                               │
+    └───────────────────────────────────────────────┘
+```
+
 ### 1. **Quantum Event Orchestrator** (`src/core/`)
 - **Purpose**: Central event management and coordination
 - **Key Features**: Backpressure handling, timeout management, health monitoring
@@ -78,13 +136,87 @@ GET /api/risk/metrics        - Risk analytics
 
 ## 🚀 **Deployment Architecture**
 
-### Production Stack
+### 🏭 **Production Infrastructure Diagram**
+```mermaid
+flowchart LR
+    subgraph "Client Layer"
+        C1[Family Office]
+        C2[RIA Clients]
+        C3[Asset Managers]
+    end
+    
+    subgraph "Load Balancer"
+        LB[NGINX/CloudFlare]
+    end
+    
+    subgraph "Application Layer"
+        A1[Frontend:3000]
+        A2[API Gateway:4603] 
+        A3[Risk Monitor:5000]
+        A4[LLM Service:8000]
+    end
+    
+    subgraph "Data Layer"
+        D1[(SQLite)]
+        D2[(Redis Cache)]
+        D3[(Logs DB)]
+    end
+    
+    subgraph "External APIs"
+        E1[Binance API]
+        E2[Google Gemini]
+        E3[Market Data]
+    end
+    
+    C1 --> LB
+    C2 --> LB
+    C3 --> LB
+    
+    LB --> A1
+    LB --> A2
+    
+    A1 --> A2
+    A2 --> A3
+    A2 --> A4
+    
+    A2 --> D1
+    A2 --> D2
+    A3 --> D3
+    
+    A2 --> E1
+    A4 --> E2
+    A3 --> E3
+```
+
+### 💻 Production Stack
 ```yaml
 Frontend: Node.js + Express (Port 3000)
 API Gateway: Custom middleware (Port 4603)
 Risk Monitor: Background service (Port 5000)
+LLM Service: Google Gemini integration (Port 8000)
 Database: SQLite + Redis cache
 External: Binance API integration
+```
+
+### 🌐 **Scalability & High Availability**
+```
+    ┌────────────────── PRODUCTION CLUSTER ──────────────────┐
+    │                                                               │
+    │  🔄 Load Balancer          📊 Monitoring              │
+    │  ┌────────────────┐    ┌────────────────┐      │
+    │  │ NGINX/CloudFlare │    │ Prometheus/      │      │
+    │  │ SSL Termination  │    │ Grafana          │      │
+    │  │ Rate Limiting    │    │ AlertManager     │      │
+    │  └────────────────┘    └────────────────┘      │
+    │                                                               │
+    │  🖥️ App Instances (3x)     🗄️ Data Persistence     │
+    │  ┌────────────────┐    ┌────────────────┐      │
+    │  │ Primary Node     │    │ Master DB        │      │
+    │  │ Replica Node A   │    │ Read Replica     │      │
+    │  │ Replica Node B   │    │ Redis Cluster    │      │
+    │  └────────────────┘    └────────────────┘      │
+    │                                                               │
+    └───────────────────────────────────────────────────────────────┘
 ```
 
 ### Process Management

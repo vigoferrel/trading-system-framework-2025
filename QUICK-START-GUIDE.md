@@ -1,7 +1,41 @@
 # QBTC Quick Start Guide
 *Get running in 5 minutes or less*
 
-## 🚀 **Instant Setup**
+## 🚆 **Instant Setup**
+
+### 🗺️ **Quick Start Flow**
+```mermaid
+flowchart LR
+    A[Prerequisites] --> B[Clone & Install]
+    B --> C[Environment Setup]
+    C --> D[Run Tests]
+    D --> E{Tests Pass?}
+    
+    E -->|Yes| F[Run Demo]
+    E -->|No| G[Fix Issues]
+    G --> D
+    
+    F --> H[Explore Documentation]
+    H --> I[Customize Configuration]
+    I --> J[Deploy to Production]
+```
+
+### 📋 **Development Checklist**
+```
+┌──────────────── QBTC SETUP PROGRESS ────────────────┐
+│                                                     │
+│ ☐ Node.js >= 16.0.0 installed                     │
+│ ☐ NPM >= 8.0.0 available                          │
+│ ☐ Repository cloned successfully                 │
+│ ☐ Dependencies installed (npm install)           │
+│ ☐ Environment variables configured (.env)        │
+│ ☐ All tests passing (npm test)                   │
+│ ☐ Demo system running                            │
+│ ☐ Documentation reviewed                         │
+│ ☐ Ready for production deployment                │
+│                                                     │
+└───────────────────────────────────────────────────────┘
+```
 
 ### Step 1: Prerequisites Check
 ```bash
