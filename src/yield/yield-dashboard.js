@@ -24,10 +24,10 @@
  */
 
 const EventEmitter = require('events');
-const KernelRNG = require('../utils/kernel-rng');
+const { kernelRNG } = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -184,7 +184,7 @@ class YieldDashboard extends EventEmitter {
         }
 
         // Logger específico
-        this.logger = Logger.createLogger('YieldDashboard');
+        this.logger = new Logger.SecureLogger('YieldDashboard');
 
         // Cache para métricas complejas
         this.metricsCache = new Map();
@@ -217,6 +217,10 @@ class YieldDashboard extends EventEmitter {
 
             // Cálculo inicial de métricas
             await this.calculateAllMetrics();
+
+            // Marcar como inicializado
+            this.initialized = true;
+            this.state.initialized = true;
 
             this.logger.info('✅ Yield Dashboard inicializado:', {
                 enableLLM: this.config.enableLLMInsights,
@@ -300,7 +304,7 @@ class YieldDashboard extends EventEmitter {
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
-        const randomFactor = KernelRNG.nextFloat();
+        const randomFactor = kernelRNG.nextFloat();
         const timeModulation = Math.sin(Date.now() / QUANTUM_CONSTANTS.LAMBDA_7919) * 0.1;
         
         // Coherencia basada en calidad de datos y performance
@@ -459,7 +463,7 @@ class YieldDashboard extends EventEmitter {
             date.setDate(date.getDate() - i);
             
             // Agregar volatilidad al return
-            const volatility = (KernelRNG.nextFloat() - 0.5) * 0.04; // ±2% daily volatility
+            const volatility = (kernelRNG.nextFloat() - 0.5) * 0.04; // ±2% daily volatility
             const actualReturn = dailyReturn + volatility;
             
             cumulativeValue *= (1 + actualReturn);
@@ -550,7 +554,7 @@ class YieldDashboard extends EventEmitter {
             const dailyVolatility = tierConfig.dailyVolatility;
             const trendBias = tierConfig.trendBias;
             
-            const randomComponent = (KernelRNG.nextFloat() - 0.5) * dailyVolatility;
+            const randomComponent = (kernelRNG.nextFloat() - 0.5) * dailyVolatility;
             const trendComponent = trendBias * 0.001; // Tendencia sutil
             const change = randomComponent + trendComponent;
             
@@ -562,11 +566,11 @@ class YieldDashboard extends EventEmitter {
             priceHistory.push({
                 date: date.toISOString().split('T')[0],
                 timestamp: date.getTime(),
-                open: currentPrice * (1 + (KernelRNG.nextFloat() - 0.5) * 0.002),
-                high: currentPrice * (1 + KernelRNG.nextFloat() * 0.03),
-                low: currentPrice * (1 - KernelRNG.nextFloat() * 0.03),
+                open: currentPrice * (1 + (kernelRNG.nextFloat() - 0.5) * 0.002),
+                high: currentPrice * (1 + kernelRNG.nextFloat() * 0.03),
+                low: currentPrice * (1 - kernelRNG.nextFloat() * 0.03),
                 close: currentPrice,
-                volume: tierConfig.baseVolume * (0.5 + KernelRNG.nextFloat()),
+                volume: tierConfig.baseVolume * (0.5 + kernelRNG.nextFloat()),
                 tier: tier
             });
         }
@@ -627,22 +631,22 @@ class YieldDashboard extends EventEmitter {
         // Precios base realistas (aproximados a precios reales)
         const priceMap = {
             // TIER1
-            'BTCUSDT': 45000 + KernelRNG.nextFloat() * 20000,
-            'ETHUSDT': 2500 + KernelRNG.nextFloat() * 1000,
-            'BNBUSDT': 300 + KernelRNG.nextFloat() * 200,
+            'BTCUSDT': 45000 + kernelRNG.nextFloat() * 20000,
+            'ETHUSDT': 2500 + kernelRNG.nextFloat() * 1000,
+            'BNBUSDT': 300 + kernelRNG.nextFloat() * 200,
             
             // TIER2
-            'SOLUSDT': 80 + KernelRNG.nextFloat() * 40,
-            'XRPUSDT': 0.5 + KernelRNG.nextFloat() * 0.3,
-            'DOGEUSDT': 0.08 + KernelRNG.nextFloat() * 0.04,
-            'ADAUSDT': 0.4 + KernelRNG.nextFloat() * 0.2,
-            'AVAXUSDT': 25 + KernelRNG.nextFloat() * 15,
-            'DOTUSDT': 6 + KernelRNG.nextFloat() * 3,
-            'LINKUSDT': 12 + KernelRNG.nextFloat() * 8,
-            'LTCUSDT': 80 + KernelRNG.nextFloat() * 40,
-            'BCHUSDT': 200 + KernelRNG.nextFloat() * 100,
-            'ATOMUSDT': 8 + KernelRNG.nextFloat() * 4,
-            'NEARUSDT': 3 + KernelRNG.nextFloat() * 2
+            'SOLUSDT': 80 + kernelRNG.nextFloat() * 40,
+            'XRPUSDT': 0.5 + kernelRNG.nextFloat() * 0.3,
+            'DOGEUSDT': 0.08 + kernelRNG.nextFloat() * 0.04,
+            'ADAUSDT': 0.4 + kernelRNG.nextFloat() * 0.2,
+            'AVAXUSDT': 25 + kernelRNG.nextFloat() * 15,
+            'DOTUSDT': 6 + kernelRNG.nextFloat() * 3,
+            'LINKUSDT': 12 + kernelRNG.nextFloat() * 8,
+            'LTCUSDT': 80 + kernelRNG.nextFloat() * 40,
+            'BCHUSDT': 200 + kernelRNG.nextFloat() * 100,
+            'ATOMUSDT': 8 + kernelRNG.nextFloat() * 4,
+            'NEARUSDT': 3 + kernelRNG.nextFloat() * 2
         };
         
         // Para símbolos no mapeados, generar precio basado en tier
@@ -661,7 +665,7 @@ class YieldDashboard extends EventEmitter {
         };
         
         const range = baseRanges[tier] || [1, 100];
-        return range[0] + KernelRNG.nextFloat() * (range[1] - range[0]);
+        return range[0] + kernelRNG.nextFloat() * (range[1] - range[0]);
     }
 
     /**
@@ -805,12 +809,12 @@ class YieldDashboard extends EventEmitter {
         // Simular métricas específicas de estrategias de yield
         return {
             totalYieldGenerated: periodData.reduce((sum, d) => sum + (d.yieldGenerated || 0), 0),
-            assignmentRate: KernelRNG.nextFloat() * 0.15, // 0-15% assignment rate
-            rollSuccessRate: 0.80 + KernelRNG.nextFloat() * 0.15, // 80-95% roll success
-            premiumCaptureRate: 0.75 + KernelRNG.nextFloat() * 0.20, // 75-95% premium capture
-            averageDTE: 25 + KernelRNG.nextFloat() * 20, // 25-45 días promedio DTE
-            averageOTMPercent: 10 + KernelRNG.nextFloat() * 15, // 10-25% OTM promedio
-            opportunityCost: KernelRNG.nextFloat() * 0.05 // 0-5% opportunity cost
+            assignmentRate: kernelRNG.nextFloat() * 0.15, // 0-15% assignment rate
+            rollSuccessRate: 0.80 + kernelRNG.nextFloat() * 0.15, // 80-95% roll success
+            premiumCaptureRate: 0.75 + kernelRNG.nextFloat() * 0.20, // 75-95% premium capture
+            averageDTE: 25 + kernelRNG.nextFloat() * 20, // 25-45 días promedio DTE
+            averageOTMPercent: 10 + kernelRNG.nextFloat() * 15, // 10-25% OTM promedio
+            opportunityCost: kernelRNG.nextFloat() * 0.05 // 0-5% opportunity cost
         };
     }
 
@@ -859,24 +863,24 @@ class YieldDashboard extends EventEmitter {
      */
     simulateStrategyPerformance(strategy) {
         const base = STRATEGY_METRICS_CONFIG[strategy].expectedYield * 100;
-        const variation = (KernelRNG.nextFloat() - 0.5) * base * 0.5; // ±25% variation
+        const variation = (kernelRNG.nextFloat() - 0.5) * base * 0.5; // ±25% variation
         
         return {
             actualYield: base + variation,
             annualizedYield: Math.max(base + variation, 0),
-            assignmentRate: KernelRNG.nextFloat() * 0.20,
-            premiumCapture: 0.80 + KernelRNG.nextFloat() * 0.15,
-            rollSuccessRate: 0.85 + KernelRNG.nextFloat() * 0.10,
-            averageEntry: KernelRNG.nextFloat() * 0.10,
-            opportunityCost: KernelRNG.nextFloat() * 0.05,
-            protectionEfficiency: 0.70 + KernelRNG.nextFloat() * 0.25,
+            assignmentRate: kernelRNG.nextFloat() * 0.20,
+            premiumCapture: 0.80 + kernelRNG.nextFloat() * 0.15,
+            rollSuccessRate: 0.85 + kernelRNG.nextFloat() * 0.10,
+            averageEntry: kernelRNG.nextFloat() * 0.10,
+            opportunityCost: kernelRNG.nextFloat() * 0.05,
+            protectionEfficiency: 0.70 + kernelRNG.nextFloat() * 0.25,
             netYield: base + variation * 0.8,
-            volatilityReduction: KernelRNG.nextFloat() * 0.30,
-            upsideCapture: 0.60 + KernelRNG.nextFloat() * 0.35,
+            volatilityReduction: kernelRNG.nextFloat() * 0.30,
+            upsideCapture: 0.60 + kernelRNG.nextFloat() * 0.35,
             totalCycleReturn: base + variation,
-            averageCycleDays: 25 + KernelRNG.nextFloat() * 20,
+            averageCycleDays: 25 + kernelRNG.nextFloat() * 20,
             cumulativeYield: base + variation,
-            volatilityDrag: KernelRNG.nextFloat() * 0.05
+            volatilityDrag: kernelRNG.nextFloat() * 0.05
         };
     }
 
@@ -914,12 +918,12 @@ class YieldDashboard extends EventEmitter {
         
         // Simular métricas de yield específicas del activo
         const yieldMetrics = {
-            coveredCallYield: (5 + KernelRNG.nextFloat() * 15), // 5-20% yield anual
-            putSellingYield: (3 + KernelRNG.nextFloat() * 10), // 3-13% yield anual
-            collarNetYield: (2 + KernelRNG.nextFloat() * 8),   // 2-10% yield anual
-            wheelStrategyYield: (8 + KernelRNG.nextFloat() * 20), // 8-28% yield anual
-            optionsVolumePremium: KernelRNG.nextFloat() * 5,   // 0-5% vol premium
-            liquidityScore: 70 + KernelRNG.nextFloat() * 30    // 70-100 liquidity score
+            coveredCallYield: (5 + kernelRNG.nextFloat() * 15), // 5-20% yield anual
+            putSellingYield: (3 + kernelRNG.nextFloat() * 10), // 3-13% yield anual
+            collarNetYield: (2 + kernelRNG.nextFloat() * 8),   // 2-10% yield anual
+            wheelStrategyYield: (8 + kernelRNG.nextFloat() * 20), // 8-28% yield anual
+            optionsVolumePremium: kernelRNG.nextFloat() * 5,   // 0-5% vol premium
+            liquidityScore: 70 + kernelRNG.nextFloat() * 30    // 70-100 liquidity score
         };
         
         return {
@@ -1230,7 +1234,7 @@ class YieldDashboard extends EventEmitter {
 
     calculateInsightAccuracy() {
         // Simular accuracy de insights previos
-        return 0.75 + KernelRNG.nextFloat() * 0.20; // 75-95% accuracy
+        return 0.75 + kernelRNG.nextFloat() * 0.20; // 75-95% accuracy
     }
 
     calculateRiskAdjustedReturn() {
@@ -1256,12 +1260,12 @@ class YieldDashboard extends EventEmitter {
         
         for (let i = 0; i < 3; i++) {
             paths.push({
-                probability: KernelRNG.nextFloat(),
-                energy: 50 + KernelRNG.nextFloat() * 50,
-                coherence: this.state.quantumState.coherence * (0.9 + KernelRNG.nextFloat() * 0.2),
+                probability: kernelRNG.nextFloat(),
+                energy: 50 + kernelRNG.nextFloat() * 50,
+                coherence: this.state.quantumState.coherence * (0.9 + kernelRNG.nextFloat() * 0.2),
                 performance: {
-                    expectedReturn: KernelRNG.nextFloat() * 0.30, // 0-30% expected return
-                    riskLevel: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(KernelRNG.nextFloat() * 3)],
+                    expectedReturn: kernelRNG.nextFloat() * 0.30, // 0-30% expected return
+                    riskLevel: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(kernelRNG.nextFloat() * 3)],
                     timeHorizon: ['SHORT', 'MEDIUM', 'LONG'][i]
                 }
             });
@@ -1347,8 +1351,8 @@ class YieldDashboard extends EventEmitter {
         for (let i = days; i >= 0; i--) {
             data.push({
                 date: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-                value: 10000 * (1 + KernelRNG.nextFloat() * 0.02),
-                yieldGenerated: KernelRNG.nextFloat() * 50
+                value: 10000 * (1 + kernelRNG.nextFloat() * 0.02),
+                yieldGenerated: kernelRNG.nextFloat() * 50
             });
         }
         return data;
@@ -1535,17 +1539,17 @@ class YieldDashboard extends EventEmitter {
 
     calculateRiskAdjustedOutperformance(portfolioData, benchmarkData) {
         // Simular cálculo de outperformance ajustado por riesgo
-        return KernelRNG.nextFloat() * 0.10 - 0.05; // -5% to +5%
+        return kernelRNG.nextFloat() * 0.10 - 0.05; // -5% to +5%
     }
 
     calculatePortfolioHodlReturn(portfolioSummary) {
         // Simular return de HODL del portfolio
-        return KernelRNG.nextFloat() * 0.40; // 0-40% return
+        return kernelRNG.nextFloat() * 0.40; // 0-40% return
     }
 
     calculateActualPortfolioReturn() {
         // Simular return actual del portfolio
-        return KernelRNG.nextFloat() * 0.60; // 0-60% return
+        return kernelRNG.nextFloat() * 0.60; // 0-60% return
     }
 
     calculateAssetReturns(priceHistory) {

@@ -1,0 +1,423 @@
+{
+  "metadata": {
+    "sourceCommit": "3f29ab8^",
+    "analysisDate": "2025-09-10T19:39:12.795Z",
+    "totalDeleted": 1713,
+    "candidatesForRecovery": 59
+  },
+  "candidates": [
+    {
+      "path": "VigoFutures/core/quantum-engine/quadrants/quantum-binance-metrics.js",
+      "priority": "HIGH",
+      "score": 8,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first, ✓ Cumple regla segundo plano"
+    },
+    {
+      "path": "VigoFutures/bot-futuros/binance-futures-trader.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "VigoFutures/bot-futuros/binance-trader.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "VigoFutures/core/quantum-engine/quadrants/feynman-q1-binance.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "VigoFutures/core/quantum-engine/quadrants/feynman-q2-binance.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "VigoFutures/core/quantum-engine/quadrants/feynman-q3-binance.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "VigoFutures/core/quantum-engine/quadrants/feynman-q4-binance.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "binance-connector.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "binance-ip-bypass.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "binance-proxy.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "binance-sentiment-service.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "debug-binance-connector.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "fix-binance-integration.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "investigate-binance-api.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "qbtc-binance-integration.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "quantum-binance-system-evolved.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "quantum-binance-system.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "real-binance-opportunities-service.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "real-binance-sentiment-service.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "tools/diagnose-binance.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "websocket-binance-integration.js",
+      "priority": "HIGH",
+      "score": 7,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "QBTC_BINANCE_CONNECTOR_ADAPTER.js",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Funcionalidad potencialmente crítica",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "VigoFutures/core/quantum-engine/feynman-binance-config.json",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "quantum-options-specialist/src/core/options-cache.js",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "quantum-options-specialist/src/core/options-integration.js",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "quantum-options-specialist/src/core/quantum-engine.js",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "quantum-options-specialist/src/core/srona-quantum-integration.js",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/SISTEMA_OPCIONES_BINANCE.js",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Funcionalidad potencialmente crítica",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/quantum-system/scripts/verifyBinanceProducts.js",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Funcionalidad potencialmente crítica",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/AnalizadorFrecuencias.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/BinanceSimpleConnector.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/CopilotConEdge.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/DetectorConEdge.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/Matrix6x8Builder.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/MemoriaTemporal.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/MotorIntertemporal.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/NakedOptionsDetector.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/src/core/PrimeTransformations.ts",
+      "priority": "HIGH",
+      "score": 5,
+      "reason": "Componente central del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "config-consolidation.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "config.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "ecosystem.config.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "fixed-ip-config.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "frontend/config.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "ip-rotation-config.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "mcp-crypto-config.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "mvp-config.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "production-config.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "quantum/unified-quantum-config.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "results/aggressive-profits/aggressive-config-2025-09-09T21-42-07-111Z.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/.env.example",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Funcionalidad potencialmente crítica",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/config/quantum.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/quantum-system/core/tsconfig.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/quantum-system/tsconfig.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "srona-api/tsconfig.json",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "test-binance-connection.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "test-binance-symbols.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Integración Binance (fuente única de datos)",
+      "compliance": "✓ Cumple regla Binance-first"
+    },
+    {
+      "path": "utils/kernel-rng.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Generador RNG determinista (regla crítica del proyecto)",
+      "compliance": "✓ Cumple regla no-Math.random"
+    },
+    {
+      "path": "vpn-config/dual-vpn-solution.js",
+      "priority": "MEDIUM",
+      "score": 3,
+      "reason": "Configuración del sistema",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    },
+    {
+      "path": "VigoFutures/core/quantum-engine/modules/BinanceRateLimitOptimizer.js",
+      "priority": "MEDIUM",
+      "score": 2,
+      "reason": "Funcionalidad potencialmente crítica",
+      "compliance": "⚠ Verificar cumplimiento de reglas"
+    }
+  ]
+}

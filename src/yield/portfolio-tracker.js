@@ -14,10 +14,10 @@
  */
 
 const EventEmitter = require('events');
-const KernelRNG = require('../utils/kernel-rng');
+const { kernelRNG } = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -92,7 +92,7 @@ class PortfolioTracker extends EventEmitter {
         };
 
         // Logger específico
-        this.logger = Logger.createLogger('PortfolioTracker');
+        this.logger = new Logger.SecureLogger('PortfolioTracker');
         
         // Cache para optimizar consultas
         this.cache = new Map();
@@ -166,7 +166,7 @@ class PortfolioTracker extends EventEmitter {
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
-        const randomFactor = KernelRNG.nextFloat();
+        const randomFactor = kernelRNG.nextFloat();
         const timeModulation = Math.sin(Date.now() / QUANTUM_CONSTANTS.LAMBDA_7919) * 0.1;
         
         // Calcular coherencia basada en diversificación del portfolio
@@ -249,9 +249,9 @@ class PortfolioTracker extends EventEmitter {
         
         for (let i = 0; i < 3; i++) {
             const path = {
-                probability: KernelRNG.nextFloat(),
-                energy: 50 + KernelRNG.nextFloat() * 50,
-                coherence: this.quantumState.coherence * (0.8 + KernelRNG.nextFloat() * 0.4),
+                probability: kernelRNG.nextFloat(),
+                energy: 50 + kernelRNG.nextFloat() * 50,
+                coherence: this.quantumState.coherence * (0.8 + kernelRNG.nextFloat() * 0.4),
                 assets: holdings.slice(0, 3 + i).map(h => ({
                     symbol: h.symbol,
                     weight: h.allocation,
@@ -397,7 +397,7 @@ class PortfolioTracker extends EventEmitter {
     calculateYieldPotential(symbol, currentPrice) {
         // Usar métricas del sistema para calcular potencial (regla de usuario)
         const baseYield = 0.08; // 8% base
-        const volatilityFactor = KernelRNG.nextFloat() * 0.1; // 0-10% adicional
+        const volatilityFactor = kernelRNG.nextFloat() * 0.1; // 0-10% adicional
         const quantumFactor = this.quantumState.coherence * 0.05; // 0-5% por coherencia
         
         return baseYield + volatilityFactor + quantumFactor;
@@ -513,7 +513,7 @@ class PortfolioTracker extends EventEmitter {
         // Volatilidad ponderada simplificada
         const weightedVolatility = holdings.reduce((sum, holding) => {
             // Estimar volatilidad basada en precio y coherencia cuántica
-            const volatility = (1 - this.quantumState.coherence) * 0.5 + KernelRNG.nextFloat() * 0.3;
+            const volatility = (1 - this.quantumState.coherence) * 0.5 + kernelRNG.nextFloat() * 0.3;
             return sum + (volatility * holding.allocation);
         }, 0);
 
@@ -530,7 +530,7 @@ class PortfolioTracker extends EventEmitter {
             
             for (const [symbol, holding] of this.portfolio.holdings.entries()) {
                 // Simular cambio de precio usando kernel RNG
-                const priceChange = (KernelRNG.nextFloat() - 0.5) * 0.05; // ±2.5%
+                const priceChange = (kernelRNG.nextFloat() - 0.5) * 0.05; // ±2.5%
                 holding.currentPrice *= (1 + priceChange);
                 holding.currentValue = holding.amount * holding.currentPrice;
                 holding.unrealizedPnL = holding.currentValue - holding.totalCost;
@@ -617,14 +617,19 @@ class PortfolioTracker extends EventEmitter {
     /**
      * Obtener resumen completo del portfolio
      */
-    getPortfolioSummary() {
+    async getPortfolioSummary() {
+        // Asegurar que las métricas estén calculadas
+        if (this.portfolio.totalValue === 0 && this.portfolio.holdings.size > 0) {
+            await this.calculatePortfolioMetrics();
+        }
+        
         return {
             overview: {
-                totalValue: this.portfolio.totalValue,
-                totalCost: this.portfolio.totalCost,
-                unrealizedPnL: this.portfolio.unrealizedPnL,
+                totalValue: this.portfolio.totalValue || 0,
+                totalCost: this.portfolio.totalCost || 0,
+                unrealizedPnL: this.portfolio.unrealizedPnL || 0,
                 unrealizedPnLPct: SafeMath.safeDiv(this.portfolio.unrealizedPnL, this.portfolio.totalCost, 0) * 100,
-                diversificationScore: this.portfolio.diversificationScore,
+                diversificationScore: this.portfolio.diversificationScore || 0,
                 lastUpdate: this.portfolio.lastUpdate
             },
             yield: {

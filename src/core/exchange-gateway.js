@@ -13,7 +13,7 @@ const axios = require('axios');
 const WebSocket = require('ws');
 const KernelRNG = require('../utils/kernel-rng');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const { realisticMarketMock } = require('../mocks/realistic-market-mock');
 
 /**

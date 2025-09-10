@@ -19,10 +19,10 @@
  */
 
 const EventEmitter = require('events');
-const KernelRNG = require('../utils/kernel-rng');
+const { kernelRNG } = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -131,7 +131,7 @@ class CoveredCallOptimizer extends EventEmitter {
         }
 
         // Logger específico
-        this.logger = Logger.createLogger('CoveredCallOptimizer');
+        this.logger = new Logger.SecureLogger('CoveredCallOptimizer');
 
         // Cache para datos de opciones
         this.optionsCache = new Map();
@@ -213,7 +213,7 @@ class CoveredCallOptimizer extends EventEmitter {
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
-        const randomFactor = KernelRNG.nextFloat();
+        const randomFactor = kernelRNG.nextFloat();
         const timeModulation = Math.sin(Date.now() / QUANTUM_CONSTANTS.LAMBDA_7919) * 0.1;
         
         // Factor de mercado basado en opportunities activas
@@ -474,10 +474,10 @@ class CoveredCallOptimizer extends EventEmitter {
                 premium: Math.max(premium, basePrice * 0.005), // Mínimo 0.5%
                 dte: dte,
                 expiry: Date.now() + (dte * 24 * 60 * 60 * 1000),
-                impliedVolatility: 0.25 + KernelRNG.nextFloat() * 0.35, // 25-60% IV
+                impliedVolatility: 0.25 + kernelRNG.nextFloat() * 0.35, // 25-60% IV
                 delta: Math.max(0.05, 1 - otmFactor * 2), // Delta decrece con OTM
-                gamma: KernelRNG.nextFloat() * 0.01,
-                volume: Math.round(KernelRNG.nextFloat() * 100)
+                gamma: kernelRNG.nextFloat() * 0.01,
+                volume: Math.round(kernelRNG.nextFloat() * 100)
             });
         }
         
@@ -640,7 +640,7 @@ class CoveredCallOptimizer extends EventEmitter {
         // Simulación de actualización de posición
         // En implementación real consultaría exchange APIs
         
-        const currentPrice = position.underlying.price * (1 + (KernelRNG.nextFloat() - 0.5) * 0.05);
+        const currentPrice = position.underlying.price * (1 + (kernelRNG.nextFloat() - 0.5) * 0.05);
         const timeDecay = (Date.now() - position.timestamp) / (24 * 60 * 60 * 1000); // días transcurridos
         
         position.current = {
@@ -743,8 +743,8 @@ class CoveredCallOptimizer extends EventEmitter {
         for (const symbol of symbols) {
             const simulatedHolding = {
                 symbol,
-                amount: KernelRNG.nextFloat() * 10,
-                currentPrice: 100 + KernelRNG.nextFloat() * 50000,
+                amount: kernelRNG.nextFloat() * 10,
+                currentPrice: 100 + kernelRNG.nextFloat() * 50000,
                 isLongTermHolding: true,
                 currentValue: 0
             };
@@ -891,6 +891,196 @@ class CoveredCallOptimizer extends EventEmitter {
 
         } catch (error) {
             this.logger.error('❌ Error cerrando optimizer:', error);
+        }
+    }
+
+    /**
+     * Optimizar covered call para un símbolo específico
+     */
+    async optimizeCoveredCall(marketData) {
+        try {
+            this.logger.info(`🎯 Optimizando covered call para ${marketData.symbol}`, {
+                currentPrice: marketData.currentPrice,
+                volatility: marketData.volatility,
+                daysToExpiry: marketData.daysToExpiry
+            });
+
+            const currentPrice = marketData.currentPrice;
+            const volatility = marketData.volatility || 0.3;
+            const daysToExpiry = marketData.daysToExpiry || 30;
+            const strikePrices = marketData.strikePrices || this.generateStrikePrices(currentPrice);
+
+            // Analizar cada strike price
+            const strikeAnalysis = strikePrices.map(strike => {
+                const otmPercent = ((strike - currentPrice) / currentPrice) * 100;
+                const estimatedPremium = this.calculateEstimatedPremium(currentPrice, strike, volatility, daysToExpiry);
+                const annualizedYield = this.calculateAnnualizedYield(estimatedPremium, currentPrice, daysToExpiry);
+                const assignmentRisk = this.calculateAssignmentRisk(currentPrice, strike, volatility, daysToExpiry);
+                
+                return {
+                    strike,
+                    otmPercent,
+                    estimatedPremium,
+                    annualizedYield,
+                    assignmentRisk,
+                    riskLevel: this.assessRiskLevel(assignmentRisk, otmPercent),
+                    suitability: this.calculateStrikeSuitability(otmPercent, annualizedYield, assignmentRisk)
+                };
+            });
+
+            // Filtrar strikes válidos (ajustar criterios para ser más permisivos)
+            const validStrikes = strikeAnalysis.filter(strike => 
+                strike.otmPercent >= 5 && // Mínimo 5% OTM
+                strike.assignmentRisk < 0.5 && // Más permisivo
+                strike.annualizedYield > 0.05 // Yield mínimo más bajo
+            );
+
+            if (validStrikes.length === 0) {
+                this.logger.warn(`No se encontraron strikes válidos para ${marketData.symbol}`);
+                return null;
+            }
+
+            // Ordenar por suitability score
+            validStrikes.sort((a, b) => b.suitability - a.suitability);
+
+            const recommendedStrike = validStrikes[0];
+
+            // Análisis con LLM si está disponible
+            let llmAnalysis = null;
+            if (this.llmOrchestrator) {
+                llmAnalysis = await this.analyzeWithLLM(marketData, recommendedStrike);
+            }
+
+            const result = {
+                symbol: marketData.symbol,
+                currentPrice,
+                recommendedStrike: recommendedStrike.strike,
+                otmPercent: recommendedStrike.otmPercent,
+                estimatedPremium: recommendedStrike.estimatedPremium,
+                expectedYield: recommendedStrike.annualizedYield,
+                assignmentRisk: recommendedStrike.assignmentRisk,
+                riskLevel: recommendedStrike.riskLevel,
+                daysToExpiry,
+                allStrikes: strikeAnalysis,
+                llmAnalysis,
+                timestamp: Date.now()
+            };
+
+            this.logger.info(`✅ Covered call optimizado para ${marketData.symbol}`, {
+                strike: recommendedStrike.strike,
+                yield: recommendedStrike.annualizedYield.toFixed(2) + '%',
+                risk: recommendedStrike.riskLevel
+            });
+
+            return result;
+
+        } catch (error) {
+            this.logger.error('Error optimizando covered call:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Generar strike prices alrededor del precio actual
+     */
+    generateStrikePrices(currentPrice) {
+        const strikes = [];
+        const step = currentPrice * 0.05; // 5% steps
+        
+        // Generar strikes desde 5% ITM hasta 20% OTM
+        for (let i = -1; i <= 4; i++) {
+            strikes.push(currentPrice + (i * step));
+        }
+        
+        return strikes;
+    }
+
+    /**
+     * Calcular premium estimado usando modelo simplificado
+     */
+    calculateEstimatedPremium(currentPrice, strike, volatility, daysToExpiry) {
+        const timeValue = Math.sqrt(daysToExpiry / 365) * 0.1;
+        const volatilityValue = volatility * 0.15;
+        const intrinsicValue = Math.max(0, strike - currentPrice);
+        
+        return currentPrice * (timeValue + volatilityValue + intrinsicValue / currentPrice);
+    }
+
+    /**
+     * Calcular yield anualizado
+     */
+    calculateAnnualizedYield(premium, currentPrice, daysToExpiry) {
+        const periodYield = premium / currentPrice;
+        return (periodYield * 365) / daysToExpiry;
+    }
+
+    /**
+     * Calcular riesgo de assignment
+     */
+    calculateAssignmentRisk(currentPrice, strike, volatility, daysToExpiry) {
+        // Modelo simplificado de probabilidad de assignment
+        const moneyness = strike / currentPrice;
+        const timeDecay = Math.sqrt(daysToExpiry / 365);
+        
+        if (moneyness < 0.95) return 0.8; // ITM - alto riesgo
+        if (moneyness < 1.0) return 0.4; // ATM - riesgo medio
+        if (moneyness < 1.05) return 0.2; // 5% OTM - bajo riesgo
+        if (moneyness < 1.1) return 0.1;  // 10% OTM - muy bajo riesgo
+        
+        return 0.05; // >10% OTM - riesgo mínimo
+    }
+
+    /**
+     * Evaluar nivel de riesgo
+     */
+    assessRiskLevel(assignmentRisk, otmPercent) {
+        if (assignmentRisk > 0.5 || otmPercent < 5) return 'HIGH';
+        if (assignmentRisk > 0.3 || otmPercent < 10) return 'MEDIUM';
+        return 'LOW';
+    }
+
+    /**
+     * Calcular suitability score
+     */
+    calculateStrikeSuitability(otmPercent, annualizedYield, assignmentRisk) {
+        const yieldScore = Math.min(annualizedYield * 10, 10); // Max 10 points
+        const riskScore = (1 - assignmentRisk) * 10; // Max 10 points
+        const otmScore = Math.min(otmPercent / 2, 5); // Max 5 points
+        
+        return yieldScore + riskScore + otmScore;
+    }
+
+    /**
+     * Analizar con LLM
+     */
+    async analyzeWithLLM(marketData, strikeData) {
+        try {
+            const decision = await this.llmOrchestrator.makeUnifiedTradingDecision(
+                { 
+                    symbol: marketData.symbol, 
+                    price: marketData.currentPrice,
+                    volatility: marketData.volatility
+                },
+                { 
+                    dimensionalSignals: [0.7], 
+                    secureIndicators: { 
+                        strike_analysis: strikeData,
+                        market_conditions: marketData
+                    }, 
+                    feynmanPaths: [] 
+                }
+            );
+
+            return {
+                recommendation: decision.decision || 'HOLD',
+                confidence: decision.confidence || 0.7,
+                reasoning: decision.reasoning || 'Análisis LLM completado',
+                riskAssessment: decision.riskLevel || 'MEDIUM'
+            };
+
+        } catch (error) {
+            this.logger.error('Error en análisis LLM:', error);
+            return null;
         }
     }
 }

@@ -24,10 +24,10 @@
  */
 
 const EventEmitter = require('events');
-const KernelRNG = require('../utils/kernel-rng');
+const { kernelRNG } = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -365,7 +365,7 @@ class YieldDashboardReal extends EventEmitter {
             date.setDate(date.getDate() - i);
             
             // Cambio de precio diario (usar Kernel RNG - regla de usuario)
-            const randomComponent = (KernelRNG.nextFloat() - 0.5) * tierConfig.dailyVolatility;
+            const randomComponent = (kernelRNG.nextFloat() - 0.5) * tierConfig.dailyVolatility;
             const trendComponent = tierConfig.trendBias * 0.001;
             const change = randomComponent + trendComponent;
             
@@ -375,11 +375,11 @@ class YieldDashboardReal extends EventEmitter {
             priceHistory.push({
                 date: date.toISOString().split('T')[0],
                 timestamp: date.getTime(),
-                open: currentPrice * (1 + (KernelRNG.nextFloat() - 0.5) * 0.002),
-                high: currentPrice * (1 + KernelRNG.nextFloat() * 0.03),
-                low: currentPrice * (1 - KernelRNG.nextFloat() * 0.03),
+                open: currentPrice * (1 + (kernelRNG.nextFloat() - 0.5) * 0.002),
+                high: currentPrice * (1 + kernelRNG.nextFloat() * 0.03),
+                low: currentPrice * (1 - kernelRNG.nextFloat() * 0.03),
                 close: currentPrice,
-                volume: tierConfig.baseVolume * (0.5 + KernelRNG.nextFloat()),
+                volume: tierConfig.baseVolume * (0.5 + kernelRNG.nextFloat()),
                 tier: tier,
                 isReal: false // Marcar como datos mock
             });

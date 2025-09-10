@@ -7,15 +7,16 @@
  * @since 2024
  */
 
-const { secure_logger } = require('./utils/secure-logger');
-const { random, generateUUID } = require('../utils/kernel-rng');
-const safeMath = require('../utils/safe-math');
+const { SecureLogger } = require('./utils/secure-logger');
+const { random, kernelRNG } = require('./utils/kernel-rng');
+const crypto = require('crypto'); // Para generateUUID
+const safeMath = require('./utils/safe-math');
 
 class TemporalPrimeLadder {
     constructor(positionManager, temporalEngine, options = {}) {
         this.positionManager = positionManager;
         this.temporalEngine = temporalEngine;
-        this.logger = secure_logger.createLogger('TemporalPrimeLadder');
+        this.logger = new SecureLogger('TemporalPrimeLadder');
         
         // Configuración optimizada para ladders primas
         this.config = {
@@ -164,7 +165,7 @@ class TemporalPrimeLadder {
      */
     createNewLadder(symbol, primeBand) {
         const ladder = {
-            id: `ladder_${symbol}_${primeBand}d_${generateUUID().substring(0, 8)}`,
+            id: `ladder_${symbol}_${primeBand}d_${crypto.randomUUID().substring(0, 8)}`,
             symbol: symbol,
             primeBand: primeBand,
             tier: this.getBandTier(primeBand),

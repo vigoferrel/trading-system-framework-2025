@@ -11,7 +11,7 @@
 
 const { spawn } = require('child_process');
 const http = require('http');
-const Logger = require('../logging/secure-logger');
+const Logger = require('./secure-logger');
 const { kernelRNG } = require('./kernel-rng');
 
 /**

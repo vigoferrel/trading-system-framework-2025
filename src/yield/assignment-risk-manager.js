@@ -22,10 +22,10 @@
  */
 
 const EventEmitter = require('events');
-const KernelRNG = require('../utils/kernel-rng');
+const { kernelRNG } = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -179,7 +179,7 @@ class AssignmentRiskManager extends EventEmitter {
         }
 
         // Logger específico
-        this.logger = Logger.createLogger('AssignmentRiskManager');
+        this.logger = new Logger.SecureLogger('AssignmentRiskManager');
 
         // Cache para cálculos intensivos
         this.riskCache = new Map();
@@ -293,7 +293,7 @@ class AssignmentRiskManager extends EventEmitter {
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
-        const randomFactor = KernelRNG.nextFloat();
+            const randomFactor = kernelRNG.nextFloat();
         const timeModulation = Math.sin(Date.now() / QUANTUM_CONSTANTS.LAMBDA_7919) * 0.1;
         
         // Coherencia basada en accuracy de predicciones previas
@@ -388,10 +388,10 @@ class AssignmentRiskManager extends EventEmitter {
             const symbol = symbols[i];
             const positionId = `${symbol}_CALL_${Date.now()}_${i}`;
             
-            const currentPrice = 50000 + KernelRNG.nextFloat() * 50000;
-            const strike = currentPrice * (1.05 + KernelRNG.nextFloat() * 0.15); // 5-20% OTM
-            const dte = 7 + KernelRNG.nextInt(60); // 7-67 días
-            const premium = currentPrice * (0.02 + KernelRNG.nextFloat() * 0.06); // 2-8%
+            const currentPrice = 50000 + kernelRNG.nextFloat() * 50000;
+            const strike = currentPrice * (1.05 + kernelRNG.nextFloat() * 0.15); // 5-20% OTM
+            const dte = 7 + Math.floor(kernelRNG.nextFloat() * 60); // 7-67 días
+            const premium = currentPrice * (0.02 + kernelRNG.nextFloat() * 0.06); // 2-8%
             
             const position = {
                 id: positionId,
@@ -460,7 +460,7 @@ class AssignmentRiskManager extends EventEmitter {
      */
     async updatePositionRiskMetrics(position) {
         // Simular actualización de precio (en implementación real vendrían de APIs)
-        const priceChange = (KernelRNG.nextFloat() - 0.5) * 0.05; // ±2.5%
+        const priceChange = (kernelRNG.nextFloat() - 0.5) * 0.05; // ±2.5%
         position.currentPrice *= (1 + priceChange);
         
         // Decrementar DTE
@@ -599,7 +599,7 @@ class AssignmentRiskManager extends EventEmitter {
      * Procesar nueva alerta
      */
     async processNewAlert(alert) {
-        const alertId = `alert_${Date.now()}_${KernelRNG.nextInt(10000)}`;
+        const alertId = `alert_${Date.now()}_${Math.floor(kernelRNG.nextFloat() * 10000)}`;
         alert.id = alertId;
         alert.status = 'ACTIVE';
         
@@ -1009,13 +1009,13 @@ class AssignmentRiskManager extends EventEmitter {
         
         // Actualizar condiciones de mercado (simulado)
         this.state.marketConditions.volatilityRegime = 
-            KernelRNG.nextFloat() > 0.7 ? 'HIGH' : 'NORMAL';
+            kernelRNG.nextFloat() > 0.7 ? 'HIGH' : 'NORMAL';
         
         this.state.marketConditions.trendDirection = 
-            KernelRNG.nextFloat() > 0.6 ? 'BULLISH' : 
-            KernelRNG.nextFloat() < 0.3 ? 'BEARISH' : 'NEUTRAL';
+            kernelRNG.nextFloat() > 0.6 ? 'BULLISH' : 
+            kernelRNG.nextFloat() < 0.3 ? 'BEARISH' : 'NEUTRAL';
         
-        this.state.marketConditions.momentumStrength = (KernelRNG.nextFloat() - 0.5) * 2; // -1 to 1
+        this.state.marketConditions.momentumStrength = (kernelRNG.nextFloat() - 0.5) * 2; // -1 to 1
         this.state.marketConditions.lastUpdate = Date.now();
     }
 
@@ -1143,6 +1143,238 @@ class AssignmentRiskManager extends EventEmitter {
         } catch (error) {
             this.logger.error('❌ Error cerrando risk manager:', error);
         }
+    }
+
+    /**
+     * Evaluar riesgo de assignment para una posición específica
+     */
+    async assessAssignmentRisk(positionData) {
+        try {
+            this.logger.info(`🔍 Evaluando assignment risk para ${positionData.symbol}`, {
+                currentPrice: positionData.currentPrice,
+                strikePrice: positionData.strikePrice,
+                daysToExpiry: positionData.daysToExpiry
+            });
+
+            const {
+                symbol,
+                currentPrice,
+                strikePrice,
+                daysToExpiry,
+                optionPrice,
+                underlyingPrice
+            } = positionData;
+
+            // Calcular métricas básicas
+            const moneyness = strikePrice / currentPrice;
+            const timeToExpiry = daysToExpiry / 365;
+            const intrinsicValue = Math.max(0, strikePrice - currentPrice);
+            const timeValue = optionPrice - intrinsicValue;
+
+            // Calcular probabilidad de assignment
+            const assignmentProbability = this.calculateAssignmentProbability(
+                moneyness, timeToExpiry, positionData.volatility || 0.3
+            );
+
+            // Determinar nivel de riesgo
+            const riskLevel = this.determineRiskLevel(assignmentProbability, moneyness, daysToExpiry);
+
+            // Calcular métricas de riesgo
+            const riskMetrics = {
+                assignmentProbability,
+                moneyness,
+                timeToExpiry,
+                intrinsicValue,
+                timeValue,
+                riskLevel,
+                earlyAssignmentRisk: this.calculateEarlyAssignmentRisk(assignmentProbability, daysToExpiry),
+                rollRecommendation: this.getRollRecommendation(riskLevel, moneyness, daysToExpiry)
+            };
+
+            // Análisis con LLM si está disponible
+            let llmAnalysis = null;
+            if (this.llmOrchestrator && riskLevel === 'HIGH') {
+                llmAnalysis = await this.analyzeHighRiskPosition(positionData, riskMetrics);
+            }
+
+            const result = {
+                symbol,
+                currentPrice,
+                strikePrice,
+                daysToExpiry,
+                assignmentProbability,
+                riskLevel,
+                riskMetrics,
+                llmAnalysis,
+                timestamp: Date.now(),
+                recommendations: this.generateRecommendations(riskMetrics)
+            };
+
+            this.logger.info(`✅ Assignment risk evaluado para ${symbol}`, {
+                probability: (assignmentProbability * 100).toFixed(1) + '%',
+                riskLevel,
+                recommendation: riskMetrics.rollRecommendation
+            });
+
+            return result;
+
+        } catch (error) {
+            this.logger.error('Error evaluando assignment risk:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Calcular probabilidad de assignment
+     */
+    calculateAssignmentProbability(moneyness, timeToExpiry, volatility) {
+        // Modelo simplificado basado en Black-Scholes
+        const d1 = (Math.log(moneyness) + (0.5 * volatility * volatility * timeToExpiry)) / 
+                   (volatility * Math.sqrt(timeToExpiry));
+        
+        // Probabilidad de que la opción esté ITM al vencimiento
+        const itmProbability = this.normalCDF(d1);
+        
+        // Ajustar por tiempo restante y volatilidad
+        const timeDecay = Math.exp(-timeToExpiry * 2);
+        const volatilityAdjustment = Math.min(volatility * 2, 1);
+        
+        return itmProbability * timeDecay * volatilityAdjustment;
+    }
+
+    /**
+     * Función de distribución normal acumulativa (aproximación)
+     */
+    normalCDF(x) {
+        return 0.5 * (1 + this.erf(x / Math.sqrt(2)));
+    }
+
+    /**
+     * Función de error (aproximación)
+     */
+    erf(x) {
+        const a1 =  0.254829592;
+        const a2 = -0.284496736;
+        const a3 =  1.421413741;
+        const a4 = -1.453152027;
+        const a5 =  1.061405429;
+        const p  =  0.3275911;
+
+        const sign = x >= 0 ? 1 : -1;
+        x = Math.abs(x);
+
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+
+        return sign * y;
+    }
+
+    /**
+     * Determinar nivel de riesgo
+     */
+    determineRiskLevel(assignmentProbability, moneyness, daysToExpiry) {
+        if (assignmentProbability > 0.7 || moneyness < 0.95 || daysToExpiry < 3) {
+            return 'HIGH';
+        }
+        if (assignmentProbability > 0.4 || moneyness < 1.0 || daysToExpiry < 7) {
+            return 'MEDIUM';
+        }
+        return 'LOW';
+    }
+
+    /**
+     * Calcular riesgo de early assignment
+     */
+    calculateEarlyAssignmentRisk(assignmentProbability, daysToExpiry) {
+        const earlyAssignmentFactor = Math.max(0, (14 - daysToExpiry) / 14);
+        return assignmentProbability * earlyAssignmentFactor;
+    }
+
+    /**
+     * Obtener recomendación de roll
+     */
+    getRollRecommendation(riskLevel, moneyness, daysToExpiry) {
+        if (riskLevel === 'HIGH') {
+            if (daysToExpiry < 3) return 'ROLL_OUT_IMMEDIATELY';
+            if (moneyness < 0.95) return 'ROLL_UP_AND_OUT';
+            return 'ROLL_OUT';
+        }
+        if (riskLevel === 'MEDIUM') {
+            if (daysToExpiry < 7) return 'CONSIDER_ROLL_OUT';
+            return 'MONITOR_CLOSELY';
+        }
+        return 'HOLD';
+    }
+
+    /**
+     * Analizar posición de alto riesgo con LLM
+     */
+    async analyzeHighRiskPosition(positionData, riskMetrics) {
+        try {
+            const decision = await this.llmOrchestrator.makeUnifiedTradingDecision(
+                {
+                    symbol: positionData.symbol,
+                    price: positionData.currentPrice,
+                    volatility: positionData.volatility
+                },
+                {
+                    dimensionalSignals: [0.8],
+                    secureIndicators: {
+                        assignment_risk: riskMetrics,
+                        position_data: positionData
+                    },
+                    feynmanPaths: []
+                }
+            );
+
+            return {
+                recommendation: decision.decision || 'ROLL_OUT',
+                confidence: decision.confidence || 0.8,
+                reasoning: decision.reasoning || 'Análisis LLM de alto riesgo completado',
+                riskAssessment: decision.riskLevel || 'HIGH',
+                actionRequired: true
+            };
+
+        } catch (error) {
+            this.logger.error('Error en análisis LLM de alto riesgo:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Generar recomendaciones basadas en métricas de riesgo
+     */
+    generateRecommendations(riskMetrics) {
+        const recommendations = [];
+
+        if (riskMetrics.assignmentProbability > 0.6) {
+            recommendations.push({
+                type: 'IMMEDIATE_ACTION',
+                action: 'ROLL_OUT',
+                priority: 'HIGH',
+                reason: 'Alta probabilidad de assignment'
+            });
+        }
+
+        if (riskMetrics.earlyAssignmentRisk > 0.3) {
+            recommendations.push({
+                type: 'EARLY_ASSIGNMENT',
+                action: 'ROLL_UP_AND_OUT',
+                priority: 'MEDIUM',
+                reason: 'Riesgo de early assignment'
+            });
+        }
+
+        if (riskMetrics.timeToExpiry < 0.02) { // Menos de 7 días
+            recommendations.push({
+                type: 'TIME_DECAY',
+                action: 'CONSIDER_ROLL',
+                priority: 'MEDIUM',
+                reason: 'Tiempo de vencimiento corto'
+            });
+        }
+
+        return recommendations;
     }
 }
 

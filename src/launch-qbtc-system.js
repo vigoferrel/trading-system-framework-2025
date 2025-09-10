@@ -1,5 +1,4 @@
-﻿#!/usr/bin/env node
-/**
+﻿/**
  * 🚀 QBTC SYSTEM LAUNCHER - INTEGRATED QUANTUM TRADING SYSTEM
  * Script principal para iniciar todo el ecosistema QBTC con todos los componentes integrados
  * 
@@ -10,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Logger = require('./logging/secure-logger');
+const Logger = require('./utils/secure-logger');
 
 // Importar componentes principales
 const MasterControlHub = require('./core/master-control-hub');
@@ -28,7 +27,7 @@ class QBTCSystemLauncher {
         this.config = {
             mode: config.mode || process.env.QBTC_MODE || 'paper', // paper | live
             logLevel: config.logLevel || process.env.LOG_LEVEL || 'info',
-            geminiApiKey: config.geminiApiKey || process.env.GEMINI_API_KEY,
+            openRouterApiKey: config.openRouterApiKey || process.env.OPENROUTER_API_KEY,
             binanceApiKey: config.binanceApiKey || process.env.BINANCE_API_KEY,
             binanceApiSecret: config.binanceApiSecret || process.env.BINANCE_API_SECRET,
             
@@ -87,7 +86,7 @@ class QBTCSystemLauncher {
         };
 
         // Logger principal
-        this.logger = Logger.createLogger('QBTCLauncher');
+        this.logger = new Logger.SecureLogger('QBTCLauncher');
 
         // Validar entorno
         this.validateEnvironment();
@@ -106,10 +105,10 @@ class QBTCSystemLauncher {
             }
         }
 
-        if (this.config.geminiApiKey) {
-            this.logger.info('✅ Gemini API Key configurada - LLM Neural Orchestrator disponible');
+        if (this.config.openRouterApiKey) {
+            this.logger.info('✅ OpenRouter API Key configurada - LLM Neural Orchestrator disponible');
         } else {
-            this.logger.warn('⚠️ Gemini API Key no configurada - LLM funcionará en modo fallback');
+            this.logger.warn('⚠️ OpenRouter API Key no configurada - LLM funcionará en modo fallback');
         }
 
         // Verificar dependencias críticas
@@ -141,7 +140,7 @@ class QBTCSystemLauncher {
             './utils/kernel-rng.js',
             './utils/safe-math.js',
             './constants/quantum-constants.js',
-            './logging/secure-logger.js'
+            './utils/secure-logger.js'
         ];
 
         for (const file of requiredFiles) {
@@ -372,7 +371,7 @@ class QBTCSystemLauncher {
             this.logger.info('🧠 Inicializando LLM Neural Orchestrator...');
 
             const llmConfig = {
-                apiKey: this.config.geminiApiKey,
+                apiKey: this.config.openRouterApiKey,
                 maxDecisionTime: 30000,
                 decisionThreshold: 0.7,
                 quantumSyncInterval: this.config.integration.metricsInterval * 2 // 1 minuto
@@ -381,7 +380,7 @@ class QBTCSystemLauncher {
             this.components.llmOrchestrator = new LLMNeuralOrchestrator(llmConfig);
 
             // Solo esperar inicialización si tenemos API key
-            if (this.config.geminiApiKey) {
+            if (this.config.openRouterApiKey) {
                 await new Promise((resolve, reject) => {
                     this.components.llmOrchestrator.on('initialized', resolve);
                     this.components.llmOrchestrator.on('error', reject);
@@ -389,7 +388,7 @@ class QBTCSystemLauncher {
                     setTimeout(() => reject(new Error('Timeout inicializando LLM Orchestrator')), 40000);
                 });
 
-                this.logger.info('✅ LLM Neural Orchestrator iniciado con Gemini API');
+                this.logger.info('✅ LLM Neural Orchestrator iniciado con OpenRouter API');
             } else {
                 this.logger.info('⚠️ LLM Neural Orchestrator iniciado en modo fallback');
             }
@@ -534,7 +533,7 @@ class QBTCSystemLauncher {
             this.logger.info(`🎯 Modo de operación: ${this.config.mode.toUpperCase()}`);
             this.logger.info(`🌐 Master Hub: http://localhost:${this.config.ports.masterHub}`);
             this.logger.info(`💼 Position Manager: Activo con límites de riesgo configurados`);
-            this.logger.info(`🧠 LLM Neural: ${this.components.llmOrchestrator ? 'Activo con Gemini API' : 'Modo Fallback'}`);
+            this.logger.info(`🧠 LLM Neural: ${this.components.llmOrchestrator ? 'Activo con OpenRouter API' : 'Modo Fallback'}`);
             this.logger.info(`🔗 Exchange: ${this.components.exchangeGateway?.state?.connected ? 'Conectado' : 'Mock/Simulado'}`);
             this.logger.info('🎉 Sistema listo para trading algorithmic!');
             this.logger.info('🎉 ========================================');
@@ -655,7 +654,7 @@ class QBTCSystemLauncher {
      */
     getSystemStatus() {
         const configuredAPIs = [];
-        if (this.config.geminiApiKey) configuredAPIs.push('Gemini');
+        if (this.config.openRouterApiKey) configuredAPIs.push('OpenRouter');
         if (this.config.binanceApiKey) configuredAPIs.push('Binance');
         if (configuredAPIs.length === 0) configuredAPIs.push('Mock/Simulado');
 
@@ -787,7 +786,7 @@ module.exports = QBTCSystemLauncher;
  * node src/launch-qbtc-system.js --mode=paper
  * 
  * Live Trading:
- * BINANCE_API_KEY=xxx BINANCE_API_SECRET=xxx GEMINI_API_KEY=xxx node src/launch-qbtc-system.js --mode=live
+ * BINANCE_API_KEY=xxx BINANCE_API_SECRET=xxx OPENROUTER_API_KEY=xxx node src/launch-qbtc-system.js --mode=live
  * 
  * Con logging debug:
  * node src/launch-qbtc-system.js --mode=paper --log-level=debug

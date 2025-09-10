@@ -1,24 +1,26 @@
 ﻿/**
- * 🧠 LLM NEURAL ORCHESTRATOR - GOOGLE GEMINI FLASH 1.5 INTEGRATION
+ * 🧠 LLM NEURAL ORCHESTRATOR - OPENROUTER INTEGRATION
  * Sistema de orquestación neural con IA avanzada para decisiones de trading unificadas
  * 
  * @author QBTC Development Team
- * @version 2.0
- * @since 2025-01-04
+ * @version 2.1
+ * @since 2025-01-09
  */
 
-let GoogleGenerativeAIOptional = null;
-try {
-    ({ GoogleGenerativeAI: GoogleGenerativeAIOptional } = require('@google/generative-ai'));
-} catch (e) {
-    // Modo fallback si el paquete no está instalado
-    GoogleGenerativeAIOptional = null;
-}
+// Configuración para OpenRouter
+const OPENROUTER_CONFIG = {
+    apiKey: process.env.OPENROUTER_API_KEY || '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',
+    model: 'google/gemini-flash-1.5-8b',
+    baseUrl: 'https://openrouter.ai/api/v1',
+    timeout: 30000,
+    maxRetries: 3,
+    retryDelay: 1000
+};
 const EventEmitter = require('events');
-const KernelRNG = require('../utils/kernel-rng');
+const { kernelRNG } = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 
 /**
  * Integración completa con Google Gemini Flash 1.5 para decisiones de trading algorithmic
@@ -29,12 +31,15 @@ class LLMNeuralOrchestrator extends EventEmitter {
         
         // Configuración del sistema
         this.config = {
-            apiKey: config.apiKey || process.env.GEMINI_API_KEY,
-            model: 'gemini-1.5-flash',
-            maxDecisionTime: config.maxDecisionTime || 30000, // 30 segundos
+            apiKey: config.apiKey || OPENROUTER_CONFIG.apiKey,
+            model: config.model || OPENROUTER_CONFIG.model,
+            baseUrl: config.baseUrl || OPENROUTER_CONFIG.baseUrl,
+            maxDecisionTime: config.maxDecisionTime || OPENROUTER_CONFIG.timeout,
             decisionThreshold: config.decisionThreshold || 0.7,
             quantumSyncInterval: config.quantumSyncInterval || 10000, // 10 segundos
             confidenceWeight: config.confidenceWeight || 0.3,
+            maxRetries: config.maxRetries || OPENROUTER_CONFIG.maxRetries,
+            retryDelay: config.retryDelay || OPENROUTER_CONFIG.retryDelay,
             ...config
         };
 
@@ -50,9 +55,9 @@ class LLMNeuralOrchestrator extends EventEmitter {
             activeDecisions: new Map()
         };
 
-        // Inicializar Google Gemini
-        this.genAI = null;
-        this.model = null;
+        // Inicializar OpenRouter
+        this.openRouterClient = null;
+        this.isOpenRouterAvailable = false;
         
         // Sistema de decisiones neurales
         this.neuralDecisionMatrix = {
@@ -65,7 +70,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
         };
 
         // Logger específico
-        this.logger = Logger.createLogger('LLMNeuralOrchestrator');
+        this.logger = new Logger.SecureLogger('LLMNeuralOrchestrator');
         
         // Inicializar sistema
         this.initialize();
@@ -79,9 +84,9 @@ class LLMNeuralOrchestrator extends EventEmitter {
             this.logger.info('🧠 Inicializando LLM Neural Orchestrator...');
 
             // Verificar API key
-            if (!this.config.apiKey || !GoogleGenerativeAIOptional) {
+            if (!this.config.apiKey) {
                 // Modo fallback: sin LLM externo
-                this.logger.warn('LLM Neural Orchestrator en modo fallback (sin @google/generative-ai o sin GEMINI_API_KEY)');
+                this.logger.warn('LLM Neural Orchestrator en modo fallback (sin OPENROUTER_API_KEY)');
                 this.state.initialized = true;
                 this.state.neuralSyncStatus = 'fallback';
                 this.setupQuantumSync();
@@ -90,16 +95,18 @@ class LLMNeuralOrchestrator extends EventEmitter {
                 return;
             }
 
-            // Inicializar Google Gemini
-            this.genAI = new GoogleGenerativeAIOptional(this.config.apiKey);
-            this.model = this.genAI.getGenerativeModel({ model: this.config.model });
+            // Inicializar OpenRouter
+            this.openRouterClient = this.createOpenRouterClient();
+            this.isOpenRouterAvailable = true;
 
             // Test de conectividad
             await this.testConnection();
 
-            // Configurar intervalos de sincronización
-            this.setupQuantumSync();
-            this.setupDecisionProcessor();
+        // Configurar intervalos de sincronización
+        this.quantumSyncInterval = null;
+        this.decisionProcessorInterval = null;
+        this.setupQuantumSync();
+        this.setupDecisionProcessor();
 
             this.state.initialized = true;
             this.state.neuralSyncStatus = 'connected';
@@ -109,34 +116,86 @@ class LLMNeuralOrchestrator extends EventEmitter {
 
         } catch (error) {
             this.logger.error('❌ Error inicializando LLM Neural Orchestrator:', error);
+            
+            // Si es error de autenticación, continuar en modo fallback
+            if (error.message.includes('401') || error.message.includes('Invalid token')) {
+                this.logger.warn('🔄 API key inválida, continuando en modo fallback');
+                this.state.initialized = true;
+                this.state.neuralSyncStatus = 'fallback';
+                this.isOpenRouterAvailable = false;
+                this.setupQuantumSync();
+                this.setupDecisionProcessor();
+                this.emit('initialized', { status: 'fallback', timestamp: Date.now() });
+                return;
+            }
+            
             this.emit('error', { type: 'initialization_failed', error: error.message });
             throw error;
         }
     }
 
     /**
-     * Test de conexión con Google Gemini
+     * Crear cliente de OpenRouter
+     */
+    createOpenRouterClient() {
+        return {
+            apiKey: this.config.apiKey,
+            baseUrl: this.config.baseUrl,
+            model: this.config.model,
+            async makeRequest(prompt, options = {}) {
+                const response = await fetch(`${this.baseUrl}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${this.apiKey}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': 'https://qbtc-trading-system.com',
+                        'X-Title': 'QBTC Quantum Trading System'
+                    },
+                    body: JSON.stringify({
+                        model: this.model,
+                        messages: [
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        max_tokens: options.maxTokens || 1000,
+                        temperature: options.temperature || 0.7,
+                        ...options
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`OpenRouter API error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            }
+        };
+    }
+
+    /**
+     * Test de conexión con OpenRouter
      */
     async testConnection() {
         try {
-            if (!this.model) {
+            if (!this.isOpenRouterAvailable) {
                 // Fallback
                 this.logger.info('Modo fallback: testConnection simulado OK');
                 return true;
             }
-            const prompt = `
-                Test connection for QBTC Quantum Trading System.
-                Please respond with: \"Neural connection established - Ready for quantum trading decisions\"\n            `;
-
-            const result = await this.model.generateContent(prompt);
-            const response = result.response.text();
             
-            this.logger.info('🔗 Conexión Gemini establecida:', response.substring(0, 100) + '...');
+            const prompt = `Test connection for QBTC Quantum Trading System. Please respond with: "Neural connection established - Ready for quantum trading decisions"`;
+
+            const response = await this.openRouterClient.makeRequest(prompt, { maxTokens: 100 });
+            
+            this.logger.info('🔗 Conexión OpenRouter establecida:', response.substring(0, 100) + '...');
             return true;
 
         } catch (error) {
             this.logger.error('❌ Error en test de conexión:', error);
-            throw new Error(`Gemini connection failed: ${error.message}`);
+            throw new Error(`OpenRouter connection failed: ${error.message}`);
         }
     }
 
@@ -144,7 +203,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
      * Configurar sincronización cuántica periódica
      */
     setupQuantumSync() {
-        setInterval(async () => {
+        this.quantumSyncInterval = setInterval(async () => {
             try {
                 await this.synchronizeQuantumState();
             } catch (error) {
@@ -157,7 +216,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
      * Configurar procesador de decisiones en background
      */
     setupDecisionProcessor() {
-        setInterval(async () => {
+        this.decisionProcessorInterval = setInterval(async () => {
             try {
                 await this.processDecisionQueue();
             } catch (error) {
@@ -197,7 +256,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
      */
     calculatealgorithmicCoherence() {
         // Usar kernel RNG en lugar de Math.random y Math.sin (regla de usuario)
-        const randomFactor = KernelRNG.nextFloat();
+        const randomFactor = kernelRNG.nextFloat();
         const timeBasedSeed = (Date.now() % QUANTUM_CONSTANTS.LAMBDA_7919) / QUANTUM_CONSTANTS.LAMBDA_7919;
         const timeModulation = (timeBasedSeed - 0.5) * 0.2; // Oscilar entre -0.1 y 0.1
         
@@ -244,7 +303,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
 
             // Realizar decisión con timeout
             let decision;
-            if (this.model) {
+            if (this.isOpenRouterAvailable) {
                 decision = await this.executeDecisionWithTimeout(prompt, decisionId);
             } else {
                 // Fallback decision JSON string simulated
@@ -258,12 +317,13 @@ class LLMNeuralOrchestrator extends EventEmitter {
                     time_horizon: 'SHORT',
                     risk_level: 'LOW',
                     quantum_alignment: context.quantum.coherence,
-                    confidence_factor: context.quantum.confidence
+                    confidence_factor: context.quantum.confidence,
+                    isFallback: true
                 });
             }
 
             // Procesar y validar decisión
-            const processedDecision = await this.processGeminiDecision(decision, context, decisionId);
+            const processedDecision = await this.processLLMDecision(decision, context, decisionId);
 
             // Registrar decisión
             this.registerDecision(processedDecision);
@@ -370,9 +430,11 @@ Respond with a JSON structure:
             }, this.config.maxDecisionTime);
 
             try {
-                // Ejecutar decisión con Gemini
-                const result = await this.model.generateContent(prompt);
-                const response = result.response.text();
+                // Ejecutar decisión con OpenRouter
+                const response = await this.openRouterClient.makeRequest(prompt, {
+                    maxTokens: 1500,
+                    temperature: 0.7
+                });
                 
                 clearTimeout(timeout);
                 resolve(response);
@@ -385,18 +447,18 @@ Respond with a JSON structure:
     }
 
     /**
-     * Procesar respuesta de Gemini y validar estructura
+     * Procesar respuesta de LLM y validar estructura
      */
-    async processGeminiDecision(geminiResponse, context, decisionId) {
+    async processLLMDecision(llmResponse, context, decisionId) {
         try {
             // Extraer JSON de la respuesta
             let decisionData;
-            const jsonMatch = geminiResponse.match(/\{[\s\S]*\}/);
+            const jsonMatch = llmResponse.match(/\{[\s\S]*\}/);
             
             if (jsonMatch) {
                 decisionData = JSON.parse(jsonMatch[0]);
             } else {
-                throw new Error('No valid JSON found in Gemini response');
+                throw new Error('No valid JSON found in LLM response');
             }
 
             // Validar y ajustar decisión
@@ -416,7 +478,7 @@ Respond with a JSON structure:
                 
                 // Metadatos adicionales
                 context: context,
-                geminiRawResponse: geminiResponse,
+                llmRawResponse: llmResponse,
                 processingTime: Date.now() - context.system.timestamp,
                 neuralScore: this.calculateNeuralScore(decisionData, context)
             };
@@ -424,7 +486,7 @@ Respond with a JSON structure:
             return processedDecision;
 
         } catch (error) {
-            this.logger.error('Error procesando decisión de Gemini:', error);
+            this.logger.error('Error procesando decisión de LLM:', error);
             
             // Generar decisión de fallback
             return this.generateFallbackDecision(context, decisionId);
@@ -466,12 +528,12 @@ Respond with a JSON structure:
      * Calcular score neural de la decisión
      */
     calculateNeuralScore(decisionData, context) {
-        const confidenceScore = decisionData.confidence || 0.5;
+        const decisionConfidence = decisionData.confidence || 0.5;
         const quantumScore = decisionData.quantum_alignment || 0.5;
-        const confidenceScore = context.quantum.confidence;
+        const contextConfidence = context.quantum.confidence;
         const coherenceScore = context.quantum.coherence;
 
-        return (confidenceScore * 0.3 + quantumScore * 0.25 + confidenceScore * 0.25 + coherenceScore * 0.2);
+        return (decisionConfidence * 0.3 + quantumScore * 0.25 + contextConfidence * 0.25 + coherenceScore * 0.2);
     }
 
     /**
@@ -534,7 +596,7 @@ Respond with a JSON structure:
      * Generar ID único para decisión
      */
     generateDecisionId() {
-        return `LLM_${Date.now()}_${KernelRNG.nextInt(1000000)}`;
+        return `LLM_${Date.now()}_${kernelRNG.nextInt(1000000)}`;
     }
 
     /**
@@ -628,8 +690,14 @@ Respond with a JSON structure:
             this.logger.info('🔄 Cerrando LLM Neural Orchestrator...');
 
             // Limpiar intervalos
-            clearInterval(this.quantumSyncInterval);
-            clearInterval(this.decisionProcessorInterval);
+            if (this.quantumSyncInterval) {
+                clearInterval(this.quantumSyncInterval);
+                this.quantumSyncInterval = null;
+            }
+            if (this.decisionProcessorInterval) {
+                clearInterval(this.decisionProcessorInterval);
+                this.decisionProcessorInterval = null;
+            }
 
             // Actualizar estado
             this.state.initialized = false;

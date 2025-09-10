@@ -14,7 +14,7 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const path = require('path');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const { kernelRNG } = require('../utils/kernel-rng');
 

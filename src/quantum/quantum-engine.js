@@ -11,7 +11,7 @@
  * @since 2025-01-09
  */
 
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const { kernelRNG } = require('../utils/kernel-rng');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const { getServiceConfig } = require('../config/system-optimization');
@@ -39,7 +39,7 @@ class QuantumEngine {
         this.updateTimer = null;
 
         // Utilidades
-        this.logger = Logger.createLogger('QuantumEngine');
+        this.logger = new Logger.SecureLogger('QuantumEngine');
         this.rng = kernelRNG;
 
         // Inicializar motor

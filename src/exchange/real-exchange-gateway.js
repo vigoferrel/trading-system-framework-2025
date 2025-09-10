@@ -22,11 +22,11 @@ const axios = require('axios');
 const crypto = require('crypto');
 const { kernelRNG } = require('../utils/kernel-rng');
 const safeMath = require('../utils/safe-math');
-const { secureLogger } = require('../utils/secure-logger');
+const { SecureLogger } = require('../utils/secure-logger');
 
 class RealExchangeGateway {
     constructor(config = {}) {
-        this.logger = new secureLogger('ExchangeGateway');
+        this.logger = new SecureLogger('ExchangeGateway');
         this.config = config;
         this.exchanges = new Map();
         this.webSockets = new Map();
@@ -42,7 +42,7 @@ class RealExchangeGateway {
             lastTemporalSync: Date.now()
         };
         
-        // Configuración de Binance con APIs especializadas aprovechando infraestructura existente
+        // Configuración EXCLUSIVAMENTE de Binance (única fuente de verdad según reglas)
         this.exchangeConfigs = {
             binance: {
                 name: 'Binance Complete',
@@ -61,6 +61,7 @@ class RealExchangeGateway {
                     options: { requests: 500, window: 60000 }
                 },
                 supports: ['spot', 'futures', 'options'],
+                exclusive: true, // Binance como única fuente de verdad
                 fees: {
                     spot: { maker: 0.001, taker: 0.001 },
                     futures: { maker: 0.0002, taker: 0.0004 },
@@ -81,11 +82,22 @@ class RealExchangeGateway {
     }
 
     /**
-     * Inicializa conexiones a todos los exchanges configurados
+     * Inicializa conexiones a todos los exchanges configurados (solo Binance)
      */
     async initializeExchanges() {
         try {
+            // Verificar que solo se use Binance (regla de usuario)
+            const allowedExchanges = Object.keys(this.exchangeConfigs).filter(id => id === 'binance');
+            
+            if (allowedExchanges.length === 0) {
+                throw new Error('No hay exchanges permitidos. Solo Binance es permitido como única fuente de verdad.');
+            }
+            
             for (const [exchangeId, config] of Object.entries(this.exchangeConfigs)) {
+                if (exchangeId !== 'binance') {
+                    this.logger.warn(`⚠️ Exchange ${exchangeId} omitido - solo Binance permitido`);
+                    continue;
+                }
                 await this.setupExchange(exchangeId, config);
             }
             
@@ -110,7 +122,7 @@ class RealExchangeGateway {
         try {
             if (exchangeId === 'binance') {
                 // Usar la infraestructura existente de BinanceConnector
-                const BinanceConnector = require('../../binance-connector');
+                const BinanceConnector = require('../binance-connector');
                 
                 this.binanceConnector = new BinanceConnector({
                     tradeMode: 'unified', // Aprovechar modo unificado
@@ -163,11 +175,13 @@ class RealExchangeGateway {
                         'User-Agent': 'QBTC-Theta-Aware-Gateway/1.0'
                     }
                 });
+            }
 
             // Configurar WebSocket para datos en tiempo real con manejo robusto de errores
             let ws;
-            try {
-                ws = new WebSocket(config.wsUrl);
+            if (config.wsUrl) {
+                try {
+                    ws = new WebSocket(config.wsUrl);
                 
                 ws.on('open', () => {
                     this.logger.info(`🌐 WebSocket conectado a ${config.name}`);
@@ -196,12 +210,17 @@ class RealExchangeGateway {
                     });
                 });
                 
-            } catch (wsError) {
-                this.logger.warn(`⚠️ No se pudo crear WebSocket para ${config.name}: ${wsError.message}`);
-                ws = null; // Sin WebSocket, solo HTTP
+                } catch (wsError) {
+                    this.logger.warn(`⚠️ No se pudo crear WebSocket para ${config.name}: ${wsError.message}`);
+                    ws = null; // Sin WebSocket, solo HTTP
+                }
+            } else {
+                ws = null; // Sin WebSocket configurado
             }
 
             // Almacenar configuración
+            const httpClient = exchangeId === 'binance' ? this.httpClients : 
+                this.exchanges.get(exchangeId)?.httpClient || null;
             this.exchanges.set(exchangeId, {
                 config,
                 httpClient,

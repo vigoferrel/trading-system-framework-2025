@@ -15,14 +15,14 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs').promises;
 const { getSystemConfig, getServiceConfig, SYSTEM_CATEGORY } = require('../config/system-optimization');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 
 /**
  * QBTC Optimized Launcher
  */
 class QBTCOptimizedLauncher {
     constructor() {
-        this.logger = Logger.createLogger('QBTCLauncher');
+        this.logger = new Logger.SecureLogger('QBTCLauncher');
         this.systemConfig = getSystemConfig();
         this.processes = new Map();
         this.startupOrder = this.getOptimizedStartupOrder();

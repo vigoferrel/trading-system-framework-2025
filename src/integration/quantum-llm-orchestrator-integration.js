@@ -25,7 +25,7 @@ const { VALIDATION_CONSTANTS } = require('../constants/validation-constants');
  * Configuración de integración con Google Gemini Flash 1.5
  */
 const GEMINI_CONFIG = {
-    apiKey: process.env.OPENROUTER_API_KEY || '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',
+    apiKey: process.env.OPENROUTER_API_KEY || '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',
     model: 'google/gemini-flash-1.5-8b',
     baseUrl: 'https://openrouter.ai/api/v1',
     timeout: 30000,

@@ -11,9 +11,9 @@ const EventEmitter = require('events');
 const http = require('http');
 const express = require('express');
 const WebSocket = require('ws');
-const KernelRNG = require('../utils/kernel-rng');
+const { kernelRNG } = require('../utils/kernel-rng');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 
 // Importar componentes críticos
 const LLMNeuralOrchestrator = require('./llm-neural-orchestrator');
@@ -69,7 +69,7 @@ class MasterControlHub extends EventEmitter {
         this.app = express();
 
         // Logger específico
-        this.logger = Logger.createLogger('MasterControlHub');
+        this.logger = new Logger.SecureLogger('MasterControlHub');
 
         // Cola de operaciones
         this.operationQueue = [];
@@ -169,6 +169,23 @@ class MasterControlHub extends EventEmitter {
             res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
             res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             next();
+        });
+
+        // Ruta raíz del sistema
+        this.app.get('/', (req, res) => {
+            res.json({
+                system: 'QBTC Quantum Trading System',
+                version: '4.0',
+                status: 'operational',
+                endpoints: {
+                    health: '/health',
+                    status: '/status',
+                    metrics: '/metrics',
+                    dashboard: '/dashboard'
+                },
+                uptime: Date.now() - this.metrics.startTime,
+                timestamp: Date.now()
+            });
         });
 
         // Ruta de salud del sistema
@@ -536,7 +553,7 @@ class MasterControlHub extends EventEmitter {
 
             if (name === 'quantumOrchestrator') {
                 // Verificar estado algorithmic
-                return KernelRNG.nextFloat() * 0.3 + 0.7; // Simulación de health score
+                return kernelRNG.nextFloat() * 0.3 + 0.7; // Simulación de health score
             }
 
             // Score base para componentes sin verificación específica

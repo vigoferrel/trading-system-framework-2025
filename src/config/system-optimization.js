@@ -1,5 +1,4 @@
-﻿#!/usr/bin/env node
-/**
+﻿/**
  * 🚀 SYSTEM OPTIMIZATION - CONFIGURACIÓN OPTIMIZADA PARA QBTC
  * Configuración centralizada de parámetros de rendimiento y optimización
  * 
@@ -12,7 +11,7 @@
  */
 
 const os = require('os');
-const Logger = require('../logging/secure-logger');
+const Logger = require('../utils/secure-logger');
 const { kernelRNG } = require('../utils/kernel-rng');
 
 /**
@@ -20,7 +19,7 @@ const { kernelRNG } = require('../utils/kernel-rng');
  */
 class SystemOptimization {
     constructor() {
-        this.logger = Logger.createLogger('SystemOptimization');
+        this.logger = new Logger.SecureLogger('SystemOptimization');
         this.rng = kernelRNG;
         
         // Detectar capacidades del sistema

@@ -10,7 +10,7 @@
  */
 
 const { performance, PerformanceObserver } = require('perf_hooks');
-const Logger = require('../logging/secure-logger');
+const Logger = require('./secure-logger');
 const { kernelRNG } = require('./kernel-rng');
 
 /**
