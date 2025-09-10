@@ -1,24 +1,61 @@
 {
   "name": "trading-system-framework-2025",
-  "version": "2.0.0",
+  "version": "3.0.0-alpha",
   "private": true,
-  "description": "Professional Trading System Framework - Quantum Algorithmic Options & Futures Trading Platform",
+  "description": "QBTC - Professional Algorithmic Trading Framework with Deterministic RNG and Advanced Risk Management",
   "main": "src/launch-qbtc-system.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "algorithmic-trading",
+    "cryptocurrency",
+    "binance",
+    "trading-bot",
+    "risk-management",
+    "deterministic",
+    "options-trading",
+    "futures-trading"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vigoferrel/trading-system-framework-2025.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vigoferrel/trading-system-framework-2025/issues"
+  },
+  "homepage": "https://github.com/vigoferrel/trading-system-framework-2025#readme",
   "scripts": {
     "start": "node src/launch-qbtc-system.js",
     "dev": "nodemon src/launch-qbtc-system.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPattern=tests/unit",
+    "test:integration": "jest --testPathPattern=tests/integration",
+    "test:performance": "jest --testPathPattern=tests/performance",
+    "test:system": "node test-system.js",
+    "coverage": "jest --coverage",
     "test:ci": "CI=true jest --ci --coverage --watchAll=false",
-    "test:unit": "jest --testPathPattern=tests/",
     "lint": "eslint src/ tests/ --ext .js",
     "lint:fix": "eslint src/ tests/ --ext .js --fix",
+    "audit:security": "npm audit --audit-level high",
+    "audit:fix": "npm audit fix",
+    "benchmark": "node benchmark/performance-tests.js",
+    "rng:quality": "node -e \"const {qualityTest} = require('./src/utils/kernel-rng.js'); console.log(JSON.stringify(qualityTest(100000), null, 2));\"",
+    "demo": "node demo/realistic-prices-demo.js",
+    "demo:test": "node demo/realistic-prices-demo.js test",
+    "demo:vol": "node demo/realistic-prices-demo.js vol",
     "dashboard": "node src/dashboard/central-control-dashboard.js",
     "monitor": "node src/monitoring/intelligent-monitor.js",
     "optimize": "node src/optimization/gamma-hedging-engine.js",
     "yield": "node src/yield/yield-strategy-engine.js",
-    "launcher": "node src/launcher/hermetic-core-daemon.js"
+    "paper-trade": "NODE_ENV=paper node src/launch-qbtc-system.js",
+    "live-trade": "NODE_ENV=production node src/launch-qbtc-system.js",
+    "validate": "npm run test:system && npm run rng:quality && npm run lint",
+    "precommit": "npm run lint:fix && npm run test && npm run test:system",
+    "build:docs": "jsdoc -c jsdoc.config.json",
+    "clean": "rm -rf coverage/ docs/ .nyc_output/"
   },
   "dependencies": {
     "axios": "^1.11.0",
