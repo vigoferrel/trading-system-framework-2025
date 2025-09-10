@@ -1,8 +1,8 @@
-/**
+﻿/**
  * QUANTUM EVENT ORCHESTRATOR
  * ==========================
  * 
- * Sistema avanzado de orquestación de eventos cuánticos con:
+ * Sistema avanzado de orquestación de eventos algorithmics con:
  * - Timeouts configurables y cancelación
  * - Health checks y watchdogs
  * - Hooks de ciclo de vida
@@ -44,7 +44,7 @@ const { validateRange, clampValue } = require('../utils/safe-math');
  */
 
 /**
- * Definiciones de eventos cuánticos con esquemas JSDoc
+ * Definiciones de eventos algorithmics con esquemas JSDoc
  */
 const QUANTUM_EVENTS = {
     /**
@@ -178,7 +178,7 @@ const QUANTUM_EVENTS = {
      */
     systemError: {
         name: 'systemError',
-        description: 'Error ocurrido en el sistema cuántico',
+        description: 'Error ocurrido en el sistema algorithmic',
         payloadSchema: {
             timestamp: { type: 'number', required: true },
             errorType: { type: 'string', required: true },
@@ -335,7 +335,7 @@ class CancellablePromise {
 }
 
 /**
- * Orquestador principal de eventos cuánticos
+ * Orquestador principal de eventos algorithmics
  */
 class QuantumEventOrchestrator extends EventEmitter {
     constructor(options = {}) {
@@ -516,7 +516,7 @@ class QuantumEventOrchestrator extends EventEmitter {
     }
     
     /**
-     * Emitir un evento cuántico con validación y métricas
+     * Emitir un evento algorithmic con validación y métricas
      * @param {string} eventName - Nombre del evento
      * @param {Object} payload - Datos del evento
      * @param {Object} options - Opciones adicionales
@@ -731,7 +731,7 @@ class QuantumEventOrchestrator extends EventEmitter {
     generateEventId() {
         // Usar kernel RNG en lugar de Math.random() (regla del usuario)
         const { kernelRNG } = require('../utils/kernel-rng');
-        return `qe_${Date.now()}_${kernelRNG.nextFloat().toString(36).substr(2, 9)}`;
+        return `qe_${Date.now()}_${Math.floor(kernelRNG.nextFloat() * 1000000).toString(36)}`;
     }
     
     /**
@@ -969,3 +969,4 @@ module.exports = {
     EventQueue,
     CancellablePromise
 };
+

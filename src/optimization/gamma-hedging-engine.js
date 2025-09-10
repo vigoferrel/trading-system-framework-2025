@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * ⚡ GAMMA HEDGING DYNAMIC ENGINE
  * ==============================
@@ -138,7 +138,7 @@ class GammaHedgingEngine {
         
         // Quantum enhancement components
         this.quantumFactors = getPhysicalConstants();
-        this.quantumCoherence = getConstant('COHERENCE_THRESHOLD') || 0.75;
+        this.algorithmicCoherence = getConstant('COHERENCE_THRESHOLD') || 0.75;
         
         // Inicializar neural network
         this.initializeNeuralNetwork();
@@ -509,7 +509,7 @@ class GammaHedgingEngine {
             const quantumPhase = (symbolHash % 1000) * lambda;
             
             // Coherencia cuántica para timing
-            const coherence = Math.cos(quantumPhase + Date.now() / 1000000) * this.quantumCoherence;
+            const coherence = Math.cos(quantumPhase + Date.now() / 1000000) * this.algorithmicCoherence;
             
             // Entanglement para correlaciones
             const entanglement = Math.sin(quantumPhase + instrument.quantity * lambda) * 
@@ -827,7 +827,7 @@ class GammaHedgingEngine {
         const lambda = Math.log(7919);
         const quantumPhase = Date.now() / 1000000;
         
-        const coherence = Math.cos(quantumPhase + totalGamma * lambda / 1000000) * this.quantumCoherence;
+        const coherence = Math.cos(quantumPhase + totalGamma * lambda / 1000000) * this.algorithmicCoherence;
         const entanglement = Math.sin(quantumPhase + totalDelta * lambda / 1000) * 
                            getConstant('ENTANGLEMENT_FACTOR');
         
@@ -877,7 +877,7 @@ class GammaHedgingEngine {
                 accuracy: this.mlPredictor.predictionAccuracy
             },
             quantumEnhancement: {
-                coherence: this.quantumCoherence,
+                coherence: this.algorithmicCoherence,
                 constantsLoaded: Object.keys(this.quantumFactors).length
             },
             realTimeMonitoring: true,
@@ -1103,7 +1103,7 @@ class GammaHedgingEngine {
             }
         }
         
-        const coherence = Math.cos(quantumPhase + totalGamma * lambda / 1000000) * this.quantumCoherence * (1 + marketVolatility);
+        const coherence = Math.cos(quantumPhase + totalGamma * lambda / 1000000) * this.algorithmicCoherence * (1 + marketVolatility);
         const entanglement = Math.sin(quantumPhase + totalDelta * lambda / 1000) * 
                            getConstant('ENTANGLEMENT_FACTOR') * (1 + marketVolatility * 0.5);
         
@@ -1236,3 +1236,4 @@ class GammaHedgingEngine {
 }
 
 module.exports = GammaHedgingEngine;
+

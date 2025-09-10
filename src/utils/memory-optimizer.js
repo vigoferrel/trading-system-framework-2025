@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🧠 MEMORY OPTIMIZER - ADVANCED MEMORY MANAGEMENT SYSTEM
  * Sistema de optimización de memoria para el ecosistema QBTC con limpieza inteligente
  * 
@@ -10,7 +10,7 @@
  */
 
 const { performance, PerformanceObserver } = require('perf_hooks');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const { kernelRNG } = require('./kernel-rng');
 
 /**
@@ -542,3 +542,4 @@ class MemoryOptimizer {
 }
 
 module.exports = MemoryOptimizer;
+

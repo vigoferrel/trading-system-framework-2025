@@ -1,7 +1,7 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
- * ⚛️ QUANTUM ENGINE - MOTOR CUÁNTICO BÁSICO PARA QBTC
- * Motor cuántico simplificado para permitir el arranque del sistema
+ * ⚛️ QUANTUM ENGINE - MOTOR algorithmic BÁSICO PARA QBTC
+ * Motor algorithmic simplificado para permitir el arranque del sistema
  * 
  * Implementa funcionalidades básicas de coherencia cuántica
  * Utiliza métricas del kernel según las reglas establecidas
@@ -11,17 +11,17 @@
  * @since 2025-01-09
  */
 
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const { kernelRNG } = require('../utils/kernel-rng');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const { getServiceConfig } = require('../config/system-optimization');
 
 /**
- * Quantum Engine - Motor cuántico básico
+ * Quantum Engine - Motor algorithmic básico
  */
 class QuantumEngine {
     constructor(config = {}) {
-        // Configuración del motor cuántico
+        // Configuración del motor algorithmic
         this.config = getServiceConfig('quantumEngine');
         
         // Estado del motor
@@ -56,7 +56,7 @@ class QuantumEngine {
             // Configurar Memory Optimizer
             await this.initializeMemoryOptimizer();
 
-            // Iniciar cálculos cuánticos
+            // Iniciar cálculos algorithmics
             this.startQuantumCalculations();
 
             this.state.initialized = true;
@@ -87,7 +87,7 @@ class QuantumEngine {
     }
 
     /**
-     * Iniciar cálculos cuánticos
+     * Iniciar cálculos algorithmics
      */
     startQuantumCalculations() {
         const interval = this.config.coherenceCalculationInterval || 500;
@@ -96,11 +96,11 @@ class QuantumEngine {
             this.updateQuantumState();
         }, interval);
 
-        this.logger.info('⚛️ Cálculos cuánticos iniciados en segundo plano');
+        this.logger.info('⚛️ Cálculos algorithmics iniciados en segundo plano');
     }
 
     /**
-     * Actualizar estado cuántico
+     * Actualizar estado algorithmic
      */
     updateQuantumState() {
         try {
@@ -109,7 +109,7 @@ class QuantumEngine {
             const timeDecay = Math.exp(-0.1 * (Date.now() - this.state.lastUpdate) / 1000) || 1;
             this.state.coherence = Math.min(0.95, baseCoherence * timeDecay + 0.1);
 
-            // Calcular campo cuántico
+            // Calcular campo algorithmic
             const fieldNoise = this.rng.nextNormal(0, 0.1);
             this.state.quantumField = Math.max(-1, Math.min(1, 
                 Math.sin(Date.now() / 10000) * 0.8 + fieldNoise
@@ -124,12 +124,12 @@ class QuantumEngine {
             this.state.lastUpdate = Date.now();
 
         } catch (error) {
-            this.logger.error('❌ Error actualizando estado cuántico:', error);
+            this.logger.error('❌ Error actualizando estado algorithmic:', error);
         }
     }
 
     /**
-     * Obtener estado del motor cuántico (API endpoint)
+     * Obtener estado del motor algorithmic (API endpoint)
      */
     getQuantumStatus() {
         return {
@@ -234,3 +234,4 @@ if (require.main === module) {
 }
 
 module.exports = QuantumEngine;
+

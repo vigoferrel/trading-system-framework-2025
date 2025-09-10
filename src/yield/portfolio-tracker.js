@@ -1,10 +1,10 @@
-/**
+﻿/**
  * 📊 PORTFOLIO TRACKER - INTEGRACIÓN LLM NEURAL ORCHESTRATOR
  * Sistema de seguimiento de portfolio para holders que buscan yield adicional
  * 
  * Integra con:
  * - LLM Neural Orchestrator (Gemini Flash 1.5)
- * - Sistema cuántico QBTC existente
+ * - Sistema algorithmic QBTC existente
  * - Kernel RNG (sin Math.random)
  * - Logging en segundo plano para métricas
  * 
@@ -17,7 +17,7 @@ const EventEmitter = require('events');
 const KernelRNG = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -29,7 +29,7 @@ const PORTFOLIO_CONSTANTS = {
     MAX_EXPOSURE_PER_ASSET: 0.3,  // 30% máximo por activo
     REBALANCE_THRESHOLD: 0.05,    // 5% desviación para rebalanceo
     CORRELATION_THRESHOLD: 0.7,   // Límite correlación entre activos
-    QUANTUM_SYNC_INTERVAL: 30000, // 30 segundos sync cuántico
+    QUANTUM_SYNC_INTERVAL: 30000, // 30 segundos sync algorithmic
 };
 
 class PortfolioTracker extends EventEmitter {
@@ -79,11 +79,11 @@ class PortfolioTracker extends EventEmitter {
         if (this.config.enableLLMAnalysis) {
             this.llmOrchestrator = new LLMNeuralOrchestrator({
                 apiKey: process.env.GEMINI_API_KEY,
-                consciousnessWeight: 0.25 // Menos agresivo para holders
+                confidenceWeight: 0.25 // Menos agresivo para holders
             });
         }
 
-        // Sistema de eventos cuánticos
+        // Sistema de eventos algorithmics
         this.quantumState = {
             coherence: 0.8,
             energy: 75,
@@ -141,7 +141,7 @@ class PortfolioTracker extends EventEmitter {
                 await this.synchronizeQuantumState();
                 await this.analyzePortfolioWithQuantumMetrics();
             } catch (error) {
-                this.logger.error('Error en sync cuántico portfolio:', error);
+                this.logger.error('Error en sync algorithmic portfolio:', error);
             }
         }, PORTFOLIO_CONSTANTS.QUANTUM_SYNC_INTERVAL);
     }
@@ -162,7 +162,7 @@ class PortfolioTracker extends EventEmitter {
     }
 
     /**
-     * Sincronizar estado cuántico del portfolio
+     * Sincronizar estado algorithmic del portfolio
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
@@ -182,7 +182,7 @@ class PortfolioTracker extends EventEmitter {
         this.quantumState.phase = (Date.now() / 86400000) % (2 * Math.PI); // Fase diaria
         this.quantumState.lastSync = Date.now();
 
-        // Emitir evento cuántico
+        // Emitir evento algorithmic
         this.emit('quantum_sync', {
             coherence: this.quantumState.coherence,
             energy: this.quantumState.energy,
@@ -217,7 +217,7 @@ class PortfolioTracker extends EventEmitter {
             // Señales cuánticas del portfolio
             const quantumSignals = {
                 dimensionalSignals: [this.quantumState.coherence, this.quantumState.energy],
-                hermeticIndicators: {
+                secureIndicators: {
                     diversification: this.portfolio.diversificationScore,
                     yield_efficiency: this.yieldMetrics.averageYieldRate,
                     risk_adjusted_return: this.yieldMetrics.sharpeRatio
@@ -236,12 +236,12 @@ class PortfolioTracker extends EventEmitter {
             await this.processLLMRecommendations(analysis);
 
         } catch (error) {
-            this.logger.error('Error en análisis cuántico-LLM:', error);
+            this.logger.error('Error en análisis algorithmic-LLM:', error);
         }
     }
 
     /**
-     * Generar paths de Feynman para análisis cuántico del portfolio
+     * Generar paths de Feynman para análisis algorithmic del portfolio
      */
     generateFeynmanPortfolioPaths() {
         const paths = [];
@@ -705,3 +705,4 @@ module.exports = PortfolioTracker;
  * ✅ Logging estructurado para debugging y métricas
  * ✅ Fallback automático si LLM no disponible
  */
+

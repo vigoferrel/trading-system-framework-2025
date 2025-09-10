@@ -1,4 +1,4 @@
-/**
+﻿/**
  * QBTC Central Control Dashboard - θ-aware Interface
  * 
  * Dashboard web centralizado para monitoreo y control del sistema θ-aware
@@ -20,12 +20,12 @@ const path = require('path');
 const cors = require('cors');
 const { kernelRNG } = require('../utils/kernel-rng');
 const safeMath = require('../utils/safe-math');
-const { HermeticLogger } = require('../utils/hermetic-logger');
-const { HermeticCoreCycle } = require('../temporal/hermetic-core-cycle');
+const { secureLogger } = require('../utils/secure-logger');
+const { secureCoreCycle } = require('../temporal/secure-core-cycle');
 
 class CentralControlDashboard {
     constructor(config = {}) {
-        this.logger = new HermeticLogger('CentralDashboard');
+        this.logger = new secureLogger('CentralDashboard');
         this.config = {
             port: config.port || 8080,
             wsPort: config.wsPort || 8081,
@@ -40,7 +40,7 @@ class CentralControlDashboard {
         this.masterControl = null;
         
         // Ciclo hermético core (10 segundos)
-        this.hermeticCore = null;
+        this.secureCore = null;
 
         // Estado del dashboard
         this.dashboardState = {
@@ -80,7 +80,7 @@ class CentralControlDashboard {
             this.initializeMetrics();
             
             // Inicializar ciclo hermético core
-            await this.initializeHermeticCore();
+            await this.initializesecureCore();
             
             // Iniciar servidores
             await this.startServers();
@@ -182,22 +182,22 @@ class CentralControlDashboard {
         });
 
         // API del ciclo hermético core
-        this.app.get('/api/hermetic-core', (req, res) => {
-            if (this.hermeticCore) {
-                res.json(this.hermeticCore.getCoreState());
+        this.app.get('/api/secure-core', (req, res) => {
+            if (this.secureCore) {
+                res.json(this.secureCore.getCoreState());
             } else {
                 res.status(503).json({ error: 'Ciclo hermético core no disponible' });
             }
         });
 
         // API de métricas avanzadas del core
-        this.app.get('/api/hermetic-core/advanced-metrics', (req, res) => {
-            if (this.hermeticCore) {
-                const coreState = this.hermeticCore.getCoreState();
+        this.app.get('/api/secure-core/advanced-metrics', (req, res) => {
+            if (this.secureCore) {
+                const coreState = this.secureCore.getCoreState();
                 res.json({
                     temporalHarmonics: coreState.advancedMetrics.temporalHarmonics,
                     quantumFluctuations: coreState.advancedMetrics.quantumFluctuations,
-                    hermeticSignatures: coreState.advancedMetrics.hermeticSignatures,
+                    secureSignatures: coreState.advancedMetrics.secureSignatures,
                     cosmicAlignment: coreState.advancedMetrics.cosmicAlignment,
                     dimensionalStability: coreState.advancedMetrics.dimensionalStability
                 });
@@ -296,21 +296,21 @@ class CentralControlDashboard {
     /**
      * Inicializar ciclo hermético core
      */
-    async initializeHermeticCore() {
+    async initializesecureCore() {
         try {
             // Crear instancia del ciclo core con configuración sincronizada
-            this.hermeticCore = new HermeticCoreCycle({
+            this.secureCore = new secureCoreCycle({
                 coreInterval: 10000, // 10 segundos (complementa los 5 segundos del dashboard)
                 deepAnalysisThreshold: 0.8,
-                quantumCoherenceTarget: 0.618,
+                algorithmicCoherenceTarget: 0.618,
                 primeResonanceMultiplier: 1.618
             });
 
             // Configurar handlers de eventos del ciclo core
-            this.setupHermeticCoreHandlers();
+            this.setupsecureCoreHandlers();
 
             // Inicializar el ciclo core
-            await this.hermeticCore.initializeCoreCycle();
+            await this.secureCore.initializeCoreCycle();
 
             this.logger.info('🔮 Ciclo hermético core inicializado y sincronizado');
         } catch (error) {
@@ -322,14 +322,14 @@ class CentralControlDashboard {
     /**
      * Configurar handlers de eventos del ciclo hermético core
      */
-    setupHermeticCoreHandlers() {
+    setupsecureCoreHandlers() {
         // Handler para métricas del ciclo core
-        this.hermeticCore.on('coreMetrics', (metrics) => {
+        this.secureCore.on('coreMetrics', (metrics) => {
             // Integrar métricas del core con las métricas del dashboard
-            this.dashboardState.temporalMetrics.hermeticCore = {
+            this.dashboardState.temporalMetrics.secureCore = {
                 cycleNumber: metrics.cycleNumber,
                 cycleTime: metrics.cycleTime,
-                quantumCoherence: metrics.quantumCoherence,
+                algorithmicCoherence: metrics.algorithmicCoherence,
                 temporalResonance: metrics.temporalResonance,
                 cosmicAlignment: metrics.cosmicAlignment,
                 dimensionalStability: metrics.dimensionalStability,
@@ -341,41 +341,41 @@ class CentralControlDashboard {
         });
 
         // Handler para alertas herméticas críticas
-        this.hermeticCore.on('hermeticAlert', (alert) => {
+        this.secureCore.on('secureAlert', (alert) => {
             // Agregar alerta hermética a la lista de alertas del dashboard
             this.dashboardState.alerts.push({
                 ...alert,
-                source: 'HermeticCore',
+                source: 'secureCore',
                 id: `core_${Date.now()}_${alert.type}`
             });
 
             // Broadcast alerta crítica inmediata
-            this.broadcastHermeticAlert(alert);
+            this.broadcastsecureAlert(alert);
             
             this.logger.warn(`🚨 Alerta hermética: ${alert.message}`);
         });
 
         // Handler para errores del ciclo core
-        this.hermeticCore.on('coreError', (errorData) => {
+        this.secureCore.on('coreError', (errorData) => {
             this.logger.error(`❌ Error en ciclo hermético core: ${errorData.error}`);
             
             // Agregar alerta de error del sistema
             this.dashboardState.alerts.push({
-                type: 'HERMETIC_CORE_ERROR',
+                type: 'secure_CORE_ERROR',
                 severity: 'HIGH',
                 message: `Error en ciclo hermético: ${errorData.error}`,
-                source: 'HermeticCore',
+                source: 'secureCore',
                 timestamp: errorData.timestamp,
                 id: `core_error_${errorData.timestamp}`
             });
         });
 
         // Handler para inicialización del core
-        this.hermeticCore.on('coreInitialized', (data) => {
+        this.secureCore.on('coreInitialized', (data) => {
             this.logger.info('✅ Ciclo hermético core completamente inicializado');
             
             // Actualizar estado del sistema
-            this.dashboardState.systemHealth.hermeticCore = {
+            this.dashboardState.systemHealth.secureCore = {
                 status: 'active',
                 initialized: data.timestamp,
                 cyclesCompleted: 0
@@ -383,11 +383,11 @@ class CentralControlDashboard {
         });
 
         // Handler para detención del core
-        this.hermeticCore.on('coreStopped', (data) => {
+        this.secureCore.on('coreStopped', (data) => {
             this.logger.info('🛑 Ciclo hermético core detenido');
             
             // Actualizar estado del sistema
-            this.dashboardState.systemHealth.hermeticCore = {
+            this.dashboardState.systemHealth.secureCore = {
                 status: 'stopped',
                 stoppedAt: data.timestamp
             };
@@ -423,8 +423,8 @@ class CentralControlDashboard {
         this.masterControl = components.masterControl;
 
         // Conectar componentes con el ciclo hermético core
-        if (this.hermeticCore) {
-            this.hermeticCore.connectSystemComponents({
+        if (this.secureCore) {
+            this.secureCore.connectSystemComponents({
                 dashboard: this,
                 temporalEngine: this.temporalEngine,
                 positionManager: this.positionManager
@@ -470,7 +470,7 @@ class CentralControlDashboard {
      */
     broadcastCoreMetrics(coreMetrics) {
         const message = {
-            type: 'hermeticCoreMetrics',
+            type: 'secureCoreMetrics',
             data: coreMetrics,
             timestamp: Date.now()
         };
@@ -486,9 +486,9 @@ class CentralControlDashboard {
     /**
      * Broadcast alerta hermética crítica
      */
-    broadcastHermeticAlert(alert) {
+    broadcastsecureAlert(alert) {
         const message = {
-            type: 'hermeticAlert',
+            type: 'secureAlert',
             data: {
                 ...alert,
                 priority: 'HIGH',
@@ -541,14 +541,14 @@ class CentralControlDashboard {
         const temporalResonance = Math.abs(Math.sin((now / 1000) * Math.PI / lambda));
 
         // Métricas de coherencia cuántica
-        const quantumCoherence = safeMath.add(0.618, kernelRNG.nextFloat() * 0.2 - 0.1);
+        const algorithmicCoherence = safeMath.add(0.618, kernelRNG.nextFloat() * 0.2 - 0.1);
         
         return {
             timestamp: now,
             currentHour,
             nextPrimeHour,
             temporalResonance,
-            quantumCoherence,
+            algorithmicCoherence,
             lambdaFactor: lambda,
             primeSequence: primeHours,
             thetaDecayRate: this.calculateThetaDecayRate(),
@@ -639,7 +639,7 @@ class CentralControlDashboard {
             thetaDecayRate: this.calculateThetaDecayRate(),
             primeResonance: this.calculatePrimeResonance(),
             lambdaDissonance: this.calculateLambdaDissonance(),
-            quantumCoherence: this.calculateQuantumCoherence(),
+            algorithmicCoherence: this.calculatealgorithmicCoherence(),
             temporalDrift: this.calculateTemporalDrift(),
             synchronizationIndex: this.calculateSynchronizationIndex()
         };
@@ -887,7 +887,7 @@ class CentralControlDashboard {
         return Math.abs(Math.sin(timeRatio * Math.PI));
     }
 
-    calculateQuantumCoherence() {
+    calculatealgorithmicCoherence() {
         return safeMath.add(0.618, safeMath.multiply(kernelRNG.nextFloat(), 0.2) - 0.1);
     }
 
@@ -897,7 +897,7 @@ class CentralControlDashboard {
     }
 
     calculateSynchronizationIndex() {
-        const coherence = this.calculateQuantumCoherence();
+        const coherence = this.calculatealgorithmicCoherence();
         const resonance = this.calculatePrimeResonance();
         const dissonance = this.calculateLambdaDissonance();
         
@@ -1070,3 +1070,4 @@ class CentralControlDashboard {
 }
 
 module.exports = CentralControlDashboard;
+

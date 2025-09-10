@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔄 SERVICE RECOVERY MANAGER - INTELLIGENT AUTO-RECOVERY SYSTEM
  * Sistema inteligente de recuperación automática para servicios del ecosistema QBTC
  * 
@@ -11,7 +11,7 @@
 
 const { spawn } = require('child_process');
 const http = require('http');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const { kernelRNG } = require('./kernel-rng');
 
 /**
@@ -565,3 +565,4 @@ class ServiceRecoveryManager {
 }
 
 module.exports = ServiceRecoveryManager;
+

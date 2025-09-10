@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📈 YIELD DASHBOARD REAL - 6 SÍMBOLOS DEL SISTEMA
  * Dashboard comprehensivo de métricas y performance para holders de crypto
  * 
@@ -16,7 +16,7 @@
  * - BinanceSimpleConnector para datos REALES de precios históricos
  * - PortfolioTracker, CoveredCallOptimizer, YieldStrategyEngine
  * - AssignmentRiskManager para métricas de riesgo
- * - Sistema cuántico QBTC para optimización de métricas
+ * - Sistema algorithmic QBTC para optimización de métricas
  * 
  * @author QBTC Development Team
  * @version 2.0
@@ -27,7 +27,7 @@ const EventEmitter = require('events');
 const KernelRNG = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -134,7 +134,7 @@ class YieldDashboardReal extends EventEmitter {
                 lastAnalysis: null
             },
             
-            // Estado cuántico del dashboard
+            // Estado algorithmic del dashboard
             quantumState: {
                 coherence: 0.8,
                 energy: 75,
@@ -155,7 +155,7 @@ class YieldDashboardReal extends EventEmitter {
         if (this.config.enableLLMInsights) {
             this.llmOrchestrator = new LLMNeuralOrchestrator({
                 apiKey: process.env.GEMINI_API_KEY,
-                consciousnessWeight: 0.20,
+                confidenceWeight: 0.20,
                 decisionThreshold: 0.65,
                 maxDecisionTime: 90000
             });
@@ -1026,3 +1026,4 @@ module.exports = YieldDashboardReal;
  * ✅ Sistema de alertas y recomendaciones
  * ✅ Optimizado para holders conservadores
  */
+

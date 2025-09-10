@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🎛️ MASTER CONTROL HUB - CENTRAL SYSTEM COORDINATOR
  * Sistema maestro de control y coordinación para todo el ecosistema QBTC
  * 
@@ -13,7 +13,7 @@ const express = require('express');
 const WebSocket = require('ws');
 const KernelRNG = require('../utils/kernel-rng');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 
 // Importar componentes críticos
 const LLMNeuralOrchestrator = require('./llm-neural-orchestrator');
@@ -60,7 +60,7 @@ class MasterControlHub extends EventEmitter {
             riskManager: null,
             executionEngine: null,
             dataIngestion: null,
-            consciousnessEngine: null
+            confidenceEngine: null
         };
 
         // Servidores web y WebSocket
@@ -528,14 +528,14 @@ class MasterControlHub extends EventEmitter {
             if (name === 'llmOrchestrator') {
                 const metrics = component.getNeuralMetrics();
                 const connectivityScore = metrics.systemStatus.neuralSyncStatus === 'connected' ? 1.0 : 0.0;
-                const coherenceScore = metrics.systemStatus.quantumCoherence || 0.5;
+                const coherenceScore = metrics.systemStatus.algorithmicCoherence || 0.5;
                 const queueScore = metrics.decisionMetrics.queueSize < 10 ? 1.0 : 0.5;
                 
                 return (connectivityScore * 0.4 + coherenceScore * 0.3 + queueScore * 0.3);
             }
 
             if (name === 'quantumOrchestrator') {
-                // Verificar estado cuántico
+                // Verificar estado algorithmic
                 return KernelRNG.nextFloat() * 0.3 + 0.7; // Simulación de health score
             }
 
@@ -942,3 +942,4 @@ module.exports = MasterControlHub;
  * ✅ Graceful shutdown con manejo de señales del sistema
  * ✅ Gestión centralizada de componentes con restart automático
  */
+

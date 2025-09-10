@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 💹 TRADING ENGINE - MOTOR DE TRADING BÁSICO PARA QBTC
  * Motor de trading simplificado para permitir el arranque del sistema
@@ -11,7 +11,7 @@
  * @since 2025-01-09
  */
 
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const { kernelRNG } = require('../utils/kernel-rng');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const { getServiceConfig } = require('../config/system-optimization');
@@ -225,3 +225,4 @@ if (require.main === module) {
 }
 
 module.exports = TradingEngine;
+

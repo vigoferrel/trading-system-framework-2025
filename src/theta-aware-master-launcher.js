@@ -1,4 +1,4 @@
-/**
+﻿/**
  * QBTC θ-aware Master Launcher
  * 
  * Launcher maestro que orquesta todos los componentes del sistema θ-aware
@@ -13,13 +13,13 @@
  * - Quantum Event Orchestrator
  * - LLM Neural Orchestrator
  * - Kernel RNG y Safe Math
- * - Hermetic Logger
+ * - secure Logger
  */
 
 const path = require('path');
 const { kernelRNG } = require('./utils/kernel-rng');
 const safeMath = require('./utils/safe-math');
-const { HermeticLogger } = require('./utils/hermetic-logger');
+const { secureLogger } = require('./utils/secure-logger');
 
 // Componentes principales del sistema
 const RealExchangeGateway = require('./exchange/real-exchange-gateway');
@@ -30,7 +30,7 @@ const { QuantumEventOrchestrator } = require('./core/quantum-event-orchestrator'
 
 class ThetaAwareMasterLauncher {
     constructor(config = {}) {
-        this.logger = new HermeticLogger('θ-MasterLauncher');
+        this.logger = new secureLogger('θ-MasterLauncher');
         this.config = {
             environment: process.env.NODE_ENV || 'development',
             paperTrading: process.env.PAPER_TRADING !== 'false',
@@ -138,14 +138,14 @@ class ThetaAwareMasterLauncher {
         this.logger.info('');
         this.logger.info('╔═══════════════════════════════════════════════╗');
         this.logger.info('║        QBTC θ-aware Trading System           ║');
-        this.logger.info('║     Quantum-Based Trading Consciousness      ║');
+        this.logger.info('║     Quantum-Based Trading confidence      ║');
         this.logger.info('╚═══════════════════════════════════════════════╝');
         this.logger.info('');
         this.logger.info(`🌐 Environment: ${this.config.environment.toUpperCase()}`);
         this.logger.info(`📊 Paper Trading: ${this.config.paperTrading ? 'ENABLED' : 'DISABLED'}`);
         this.logger.info(`🔢 Kernel RNG: ACTIVE (Seed: ${kernelRNG.seed || 'Dynamic'})`);
         this.logger.info(`⚡ Safe Math: ENABLED`);
-        this.logger.info(`📝 Hermetic Logging: ACTIVE`);
+        this.logger.info(`📝 secure Logging: ACTIVE`);
         this.logger.info('');
     }
 
@@ -388,7 +388,7 @@ class ThetaAwareMasterLauncher {
         const orchestrator = this.components.quantumOrchestrator;
         const gateway = this.components.exchangeGateway;
         
-        // Escuchar eventos cuánticos para ejecutar órdenes
+        // Escuchar eventos algorithmics para ejecutar órdenes
         orchestrator.on('quantumSignal', async (data) => {
             if (data.signal && data.signal.action === 'execute_order') {
                 try {
@@ -687,3 +687,4 @@ if (require.main === module) {
 }
 
 module.exports = ThetaAwareMasterLauncher;
+

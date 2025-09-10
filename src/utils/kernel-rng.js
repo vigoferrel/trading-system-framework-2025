@@ -1,8 +1,8 @@
-/**
+﻿/**
  * KERNEL RNG - GENERADOR DE NÚMEROS PSEUDOALEATORIOS DETERMINISTA
  * ==============================================================
  * 
- * Sistema de generación de números cuánticos determinista que reemplaza
+ * Sistema de generación de números algorithmics determinista que reemplaza
  * completamente Math.random() en todo el sistema QBTC.
  * 
  * Características:
@@ -505,3 +505,4 @@ module.exports = {
     // Constantes
     KERNEL_RNG_CONSTANTS
 };
+

@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 🚀 QBTC OPTIMIZED LAUNCHER - LAUNCHER OPTIMIZADO DEL SISTEMA QBTC
  * Launcher principal que aplica todas las optimizaciones y configuraciones
@@ -15,7 +15,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs').promises;
 const { getSystemConfig, getServiceConfig, SYSTEM_CATEGORY } = require('../config/system-optimization');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 
 /**
  * QBTC Optimized Launcher
@@ -576,3 +576,4 @@ if (require.main === module) {
 }
 
 module.exports = QBTCOptimizedLauncher;
+

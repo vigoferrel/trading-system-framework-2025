@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 🎛️ ENHANCED MASTER CONTROL - INTEGRATED AUTO-RECOVERY SYSTEM
  * Sistema maestro mejorado con auto-recovery, optimización de memoria y monitoreo inteligente
@@ -13,7 +13,7 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const ServiceRecoveryManager = require('../utils/service-recovery-manager');
 const { kernelRNG } = require('../utils/kernel-rng');
@@ -831,3 +831,4 @@ if (require.main === module) {
 }
 
 module.exports = EnhancedMasterControl;
+

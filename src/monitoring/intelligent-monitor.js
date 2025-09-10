@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 🧠 INTELLIGENT MONITOR - SISTEMA DE MONITOREO INTELIGENTE QBTC
  * Monitor inteligente con análisis predictivo y alertas automáticas
@@ -11,7 +11,7 @@
  * @since 2025-01-09
  */
 
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const { kernelRNG } = require('../utils/kernel-rng');
 
@@ -323,7 +323,7 @@ class IntelligentMonitor {
                 break;
 
             case 'hybridOptimizer':
-                metrics.quantumCoherence = healthData.quantum_coherence || 0;
+                metrics.algorithmicCoherence = healthData.quantum_coherence || 0;
                 metrics.classicalConfidence = healthData.classical_confidence || 0;
                 metrics.hybridSynergy = healthData.hybrid_synergy || 0;
                 metrics.optimizationsTotal = healthData.optimizations_total || 0;
@@ -1199,3 +1199,4 @@ if (require.main === module) {
 }
 
 module.exports = IntelligentMonitor;
+

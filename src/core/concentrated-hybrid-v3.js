@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 🎯 CONCENTRATED HYBRID V3 - INTENSIVE PATTERN ANALYSIS SYSTEM
  * Sistema híbrido concentrado para análisis intensivo de patrones y señales de trading
@@ -13,7 +13,7 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const { kernelRNG } = require('../utils/kernel-rng');
 const safeMath = require('../utils/safe-math');
@@ -440,7 +440,7 @@ concentrated_hybrid_memory_usage_percentage ${this.memoryOptimizer ? this.memory
     }
 
     /**
-     * Generar patrón cuántico usando constantes
+     * Generar patrón algorithmic usando constantes
      */
     generateQuantumPattern(name, constant) {
         const pattern = {
@@ -1592,3 +1592,4 @@ if (require.main === module) {
 }
 
 module.exports = ConcentratedHybridV3;
+

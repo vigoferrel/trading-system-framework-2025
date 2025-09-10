@@ -1,4 +1,4 @@
-/**
+﻿/**
  * QBTC Real Exchange Gateway - θ-aware Integration
  * 
  * Exchange Gateway con conectores reales para múltiples exchanges
@@ -22,11 +22,11 @@ const axios = require('axios');
 const crypto = require('crypto');
 const { kernelRNG } = require('../utils/kernel-rng');
 const safeMath = require('../utils/safe-math');
-const { HermeticLogger } = require('../utils/hermetic-logger');
+const { secureLogger } = require('../utils/secure-logger');
 
 class RealExchangeGateway {
     constructor(config = {}) {
-        this.logger = new HermeticLogger('ExchangeGateway');
+        this.logger = new secureLogger('ExchangeGateway');
         this.config = config;
         this.exchanges = new Map();
         this.webSockets = new Map();
@@ -38,7 +38,7 @@ class RealExchangeGateway {
             thetaBudgetByTier: new Map(),
             primeRollTargets: [7, 11, 13, 17, 19, 23, 29],
             lambdaDissonanceThreshold: 7919,
-            quantumCoherence: 0.618,
+            algorithmicCoherence: 0.618,
             lastTemporalSync: Date.now()
         };
         
@@ -784,7 +784,7 @@ class RealExchangeGateway {
                 lastSync: this.temporalMetrics.lastTemporalSync,
                 primeTargets: this.temporalMetrics.primeRollTargets,
                 lambdaThreshold: this.temporalMetrics.lambdaDissonanceThreshold,
-                coherence: this.temporalMetrics.quantumCoherence
+                coherence: this.temporalMetrics.algorithmicCoherence
             },
             timestamp: Date.now()
         };
@@ -1004,3 +1004,4 @@ class RealExchangeGateway {
 }
 
 module.exports = RealExchangeGateway;
+

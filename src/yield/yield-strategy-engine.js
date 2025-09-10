@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ⚙️ YIELD STRATEGY ENGINE - LLM NEURAL ORCHESTRATOR INTEGRATION
  * Motor central que combina múltiples estrategias de yield para holders de crypto
  * 
@@ -12,7 +12,7 @@
  * Integra con:
  * - LLM Neural Orchestrator (Gemini Flash 1.5)
  * - PortfolioTracker y CoveredCallOptimizer
- * - Sistema cuántico QBTC existente
+ * - Sistema algorithmic QBTC existente
  * - BinanceSimpleConnector (preservado y extendido)
  * 
  * @author QBTC Development Team
@@ -24,7 +24,7 @@ const EventEmitter = require('events');
 const KernelRNG = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -50,7 +50,7 @@ const YIELD_STRATEGY_CONSTANTS = {
     // Frecuencias de análisis
     STRATEGY_REVIEW_INTERVAL: 3600000, // 1 hora review estrategias
     MARKET_SCAN_INTERVAL: 900000,      // 15 minutos scan mercado
-    QUANTUM_SYNC_INTERVAL: 120000,     // 2 minutos sync cuántico
+    QUANTUM_SYNC_INTERVAL: 120000,     // 2 minutos sync algorithmic
 };
 
 /**
@@ -148,7 +148,7 @@ class YieldStrategyEngine extends EventEmitter {
         if (this.config.enableLLMAnalysis) {
             this.llmOrchestrator = new LLMNeuralOrchestrator({
                 apiKey: process.env.GEMINI_API_KEY,
-                consciousnessWeight: 0.15, // Conservador para yield strategies
+                confidenceWeight: 0.15, // Conservador para yield strategies
                 decisionThreshold: 0.70,   // Threshold alto para estrategias de renta
                 maxDecisionTime: 45000     // 45 segundos para análisis complejos
             });
@@ -242,13 +242,13 @@ class YieldStrategyEngine extends EventEmitter {
                 await this.synchronizeQuantumState();
                 await this.applyQuantumOptimization();
             } catch (error) {
-                this.logger.error('Error en sync cuántico:', error);
+                this.logger.error('Error en sync algorithmic:', error);
             }
         }, YIELD_STRATEGY_CONSTANTS.QUANTUM_SYNC_INTERVAL);
     }
 
     /**
-     * Sincronizar estado cuántico del engine
+     * Sincronizar estado algorithmic del engine
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
@@ -277,7 +277,7 @@ class YieldStrategyEngine extends EventEmitter {
         // Resonancia basada en win rate
         this.state.quantumState.resonance = Math.min(this.state.performance.winRate, 1);
 
-        // Emitir evento cuántico
+        // Emitir evento algorithmic
         this.emit('quantum_sync', {
             coherence: this.state.quantumState.coherence,
             energy: this.state.quantumState.energy,
@@ -298,7 +298,7 @@ class YieldStrategyEngine extends EventEmitter {
         for (const [strategyId, strategy] of this.state.activeStrategies.entries()) {
             if (strategy.quantumEnhanced) continue;
 
-            // Aplicar boost cuántico a estrategias exitosas
+            // Aplicar boost algorithmic a estrategias exitosas
             if (strategy.performance.winRate > 0.7) {
                 strategy.targetYield *= (1 + quantumBoost);
                 strategy.quantumEnhanced = true;
@@ -795,7 +795,7 @@ class YieldStrategyEngine extends EventEmitter {
                     this.state.quantumState.energy,
                     this.state.quantumState.resonance
                 ],
-                hermeticIndicators: {
+                secureIndicators: {
                     market_trend: this.state.marketConditions.trend,
                     volatility_regime: this.state.marketConditions.volatility > 0.35 ? 'HIGH' : 'LOW',
                     yield_efficiency: this.state.performance.totalYieldGenerated / 1000,
@@ -1209,7 +1209,7 @@ module.exports = YieldStrategyEngine;
  * ✅ Perfiles configurables (Income Focused, Balanced, Growth Income)
  * ✅ Integración completa con LLM Neural Orchestrator (Gemini Flash 1.5)
  * ✅ Estrategias implementadas: Covered Calls, Cash-Secured Puts, Collars, Wheel
- * ✅ Análisis cuántico-enhanced de oportunidades
+ * ✅ Análisis algorithmic-enhanced de oportunidades
  * ✅ Optimización automática de allocaciones
  * ✅ Sistema de rebalanceo inteligente
  * ✅ Métricas comprehensivas (Sharpe ratio, win rate, yield por estrategia)
@@ -1219,3 +1219,4 @@ module.exports = YieldStrategyEngine;
  * ✅ Logging estructurado en segundo plano para debugging
  * ✅ Integración preservada con BinanceSimpleConnector y sistemas existentes
  */
+

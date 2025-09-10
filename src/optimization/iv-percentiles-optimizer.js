@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 🎯 IV PERCENTILES OPTIMIZATION ENGINE
  * ====================================
@@ -80,7 +80,7 @@ class IVPercentilesOptimizer {
         
         // Quantum enhancement factors
         this.quantumFactors = getPhysicalConstants();
-        this.quantumCoherence = getConstant('QUANTUM_COHERENCE') || 0.75;
+        this.algorithmicCoherence = getConstant('QUANTUM_COHERENCE') || 0.75;
     }
     
     /**
@@ -343,7 +343,7 @@ class IVPercentilesOptimizer {
     }
     
     /**
-     * ⚛️ Aplicar enhancement cuántico
+     * ⚛️ Aplicar enhancement algorithmic
      */
     applyQuantumEnhancement(features, symbol) {
         const lambda = Math.log(7919); // Constante lambda cuántica
@@ -351,7 +351,7 @@ class IVPercentilesOptimizer {
         const quantumPhase = (symbolHash % 1000) * lambda;
         
         // Calcular coherencia cuántica
-        const coherence = Math.cos(quantumPhase + features[0] * lambda) * this.quantumCoherence;
+        const coherence = Math.cos(quantumPhase + features[0] * lambda) * this.algorithmicCoherence;
         
         // Calcular entanglement con volatilidad
         const entanglement = Math.sin(features[1] * lambda + quantumPhase) * 
@@ -684,7 +684,7 @@ class IVPercentilesOptimizer {
                 currentWeights: this.mlModel.weights
             },
             quantumEnhancement: {
-                coherence: this.quantumCoherence,
+                coherence: this.algorithmicCoherence,
                 constantsLoaded: Object.keys(this.quantumFactors).length
             }
         };
@@ -692,3 +692,4 @@ class IVPercentilesOptimizer {
 }
 
 module.exports = IVPercentilesOptimizer;
+

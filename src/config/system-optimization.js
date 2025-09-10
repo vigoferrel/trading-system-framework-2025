@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 🚀 SYSTEM OPTIMIZATION - CONFIGURACIÓN OPTIMIZADA PARA QBTC
  * Configuración centralizada de parámetros de rendimiento y optimización
@@ -12,7 +12,7 @@
  */
 
 const os = require('os');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const { kernelRNG } = require('../utils/kernel-rng');
 
 /**
@@ -596,3 +596,4 @@ console.log(`🚀 Sistema QBTC optimizado para: ${systemOptimization.systemInfo.
 console.log(`💾 Memoria: ${systemOptimization.systemInfo.memory.total.toFixed(1)}GB disponible`);
 console.log(`⚡ CPU: ${systemOptimization.systemInfo.cpu.cores} cores`);
 console.log(`⚙️ Configuración cargada con ${Object.keys(systemOptimization.config.services).length} servicios`);
+

@@ -1,13 +1,13 @@
-/**
+﻿/**
  * 🏗️ TEMPORAL PRIME LADDER - Sistema de gestión de ladders de expiración
  * Maneja rolls automáticos y distribución theta optimizada por bandas primas
  * 
- * @author QBTC Quantum Consciousness Trading System
+ * @author QBTC Quantum confidence Trading System
  * @version 1.0.0  
  * @since 2024
  */
 
-const { hermetic_logger } = require('./utils/hermetic-logger');
+const { secure_logger } = require('./utils/secure-logger');
 const { random, generateUUID } = require('../utils/kernel-rng');
 const safeMath = require('../utils/safe-math');
 
@@ -15,7 +15,7 @@ class TemporalPrimeLadder {
     constructor(positionManager, temporalEngine, options = {}) {
         this.positionManager = positionManager;
         this.temporalEngine = temporalEngine;
-        this.logger = hermetic_logger.createLogger('TemporalPrimeLadder');
+        this.logger = secure_logger.createLogger('TemporalPrimeLadder');
         
         // Configuración optimizada para ladders primas
         this.config = {
@@ -702,3 +702,4 @@ class TemporalPrimeLadder {
 }
 
 module.exports = { TemporalPrimeLadder };
+

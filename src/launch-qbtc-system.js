@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 🚀 QBTC SYSTEM LAUNCHER - INTEGRATED QUANTUM TRADING SYSTEM
  * Script principal para iniciar todo el ecosistema QBTC con todos los componentes integrados
@@ -10,7 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Logger = require('./logging/hermetic-logger');
+const Logger = require('./logging/secure-logger');
 
 // Importar componentes principales
 const MasterControlHub = require('./core/master-control-hub');
@@ -141,7 +141,7 @@ class QBTCSystemLauncher {
             './utils/kernel-rng.js',
             './utils/safe-math.js',
             './constants/quantum-constants.js',
-            './logging/hermetic-logger.js'
+            './logging/secure-logger.js'
         ];
 
         for (const file of requiredFiles) {
@@ -536,7 +536,7 @@ class QBTCSystemLauncher {
             this.logger.info(`💼 Position Manager: Activo con límites de riesgo configurados`);
             this.logger.info(`🧠 LLM Neural: ${this.components.llmOrchestrator ? 'Activo con Gemini API' : 'Modo Fallback'}`);
             this.logger.info(`🔗 Exchange: ${this.components.exchangeGateway?.state?.connected ? 'Conectado' : 'Mock/Simulado'}`);
-            this.logger.info('🎉 Sistema listo para trading cuántico!');
+            this.logger.info('🎉 Sistema listo para trading algorithmic!');
             this.logger.info('🎉 ========================================');
 
             // Mostrar estadísticas iniciales
@@ -778,7 +778,7 @@ module.exports = QBTCSystemLauncher;
  * ✅ Shutdown graceful con limpieza de recursos
  * ✅ Manejo robusto de errores y recuperación
  * ✅ Configuración flexible por línea de comandos
- * ✅ Logging comprehensivo con hermetic logger
+ * ✅ Logging comprehensivo con secure logger
  * ✅ Métricas de performance y estadísticas del sistema
  * 
  * 🚀 MODOS DE USO:
@@ -792,3 +792,4 @@ module.exports = QBTCSystemLauncher;
  * Con logging debug:
  * node src/launch-qbtc-system.js --mode=paper --log-level=debug
  */
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🎯 COVERED CALL OPTIMIZER - LLM NEURAL ORCHESTRATOR INTEGRATION
  * Sistema de optimización de covered calls para holders de crypto
  * 
@@ -10,7 +10,7 @@
  * Integra con:
  * - LLM Neural Orchestrator (Gemini Flash 1.5)
  * - PortfolioTracker para holdings existentes
- * - Sistema cuántico QBTC
+ * - Sistema algorithmic QBTC
  * - Kernel RNG y Safe Math
  * 
  * @author QBTC Development Team
@@ -22,7 +22,7 @@ const EventEmitter = require('events');
 const KernelRNG = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -51,7 +51,7 @@ const COVERED_CALL_CONSTANTS = {
     
     // Frecuencia de análisis
     ANALYSIS_INTERVAL: 300000,    // 5 minutos
-    QUANTUM_SYNC_INTERVAL: 60000, // 1 minuto sync cuántico
+    QUANTUM_SYNC_INTERVAL: 60000, // 1 minuto sync algorithmic
 };
 
 /**
@@ -125,7 +125,7 @@ class CoveredCallOptimizer extends EventEmitter {
         if (this.config.enableLLMAnalysis) {
             this.llmOrchestrator = new LLMNeuralOrchestrator({
                 apiKey: process.env.GEMINI_API_KEY,
-                consciousnessWeight: 0.2, // Conservador para holders
+                confidenceWeight: 0.2, // Conservador para holders
                 decisionThreshold: 0.75   // Threshold alto para seguridad
             });
         }
@@ -203,13 +203,13 @@ class CoveredCallOptimizer extends EventEmitter {
                 await this.synchronizeQuantumState();
                 await this.applyQuantumEnhancement();
             } catch (error) {
-                this.logger.error('Error en sync cuántico:', error);
+                this.logger.error('Error en sync algorithmic:', error);
             }
         }, COVERED_CALL_CONSTANTS.QUANTUM_SYNC_INTERVAL);
     }
 
     /**
-     * Sincronizar estado cuántico del optimizador
+     * Sincronizar estado algorithmic del optimizador
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
@@ -235,7 +235,7 @@ class CoveredCallOptimizer extends EventEmitter {
         this.state.quantumState.energy = 50 + (successRate * 100);
         this.state.quantumState.phase = (Date.now() / 86400000) % (2 * Math.PI);
 
-        // Emitir evento cuántico
+        // Emitir evento algorithmic
         this.emit('quantum_sync', {
             coherence: this.state.quantumState.coherence,
             energy: this.state.quantumState.energy,
@@ -250,12 +250,12 @@ class CoveredCallOptimizer extends EventEmitter {
     async applyQuantumEnhancement() {
         if (this.state.quantumState.coherence < 0.6) return;
 
-        // Filtrar oportunidades con boost cuántico
+        // Filtrar oportunidades con boost algorithmic
         for (const [symbol, opportunity] of this.state.activeOpportunities.entries()) {
             const quantumBoost = this.state.quantumState.coherence * 0.1;
             opportunity.expectedYield *= (1 + quantumBoost);
             opportunity.quantumEnhanced = true;
-            opportunity.quantumCoherence = this.state.quantumState.coherence;
+            opportunity.algorithmicCoherence = this.state.quantumState.coherence;
         }
     }
 
@@ -501,7 +501,7 @@ class CoveredCallOptimizer extends EventEmitter {
 
             const quantumSignals = {
                 dimensionalSignals: [this.state.quantumState.coherence, this.state.quantumState.energy],
-                hermeticIndicators: {
+                secureIndicators: {
                     holder_safety: this.holderProfile.otmBuffer,
                     yield_efficiency: marketContext.opportunities.reduce((avg, opp) => 
                         avg + opp.analysis.annualizedYield, 0) / marketContext.opportunities.length,
@@ -903,7 +903,7 @@ module.exports = CoveredCallOptimizer;
  * ✅ Reemplaza NakedOptionsDetector con enfoque conservador para holders
  * ✅ Buffers de seguridad OTM configurables por perfil de holder
  * ✅ Integración completa con LLM Neural Orchestrator (Gemini Flash 1.5)
- * ✅ Análisis cuántico-enhanced de oportunidades
+ * ✅ Análisis algorithmic-enhanced de oportunidades
  * ✅ Perfiles de holder (Conservador, Moderado, Agresivo)
  * ✅ Cálculo de riesgo de assignment con modelo Black-Scholes simplificado
  * ✅ Sistema de priorización de oportunidades
@@ -914,3 +914,4 @@ module.exports = CoveredCallOptimizer;
  * ✅ Logging estructurado en segundo plano para debugging
  * ✅ Fallback automático para testing sin portfolio real
  */
+

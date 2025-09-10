@@ -1,20 +1,20 @@
-/**
+﻿/**
  * 💼 POSITION MANAGER θ-AWARE
  * Gestor de posiciones con métricas temporales integradas
  * 
- * @author QBTC Quantum Consciousness Trading System
+ * @author QBTC Quantum confidence Trading System
  * @version 1.0.0
  * @since 2024
  */
 
-const { hermetic_logger } = require('../utils/hermetic-logger');
+const { secure_logger } = require('../utils/secure-logger');
 const { random, generateUUID } = require('../../utils/kernel-rng');
 const safeMath = require('../../utils/safe-math');
 const { TemporalPrimeLadder } = require('../temporal-prime-ladder-fixed');
 
 class PositionManager {
     constructor(options = {}) {
-        this.logger = hermetic_logger.createLogger('PositionManager');
+        this.logger = secure_logger.createLogger('PositionManager');
         
         // Configuración
         this.config = {
@@ -515,3 +515,4 @@ class PositionManager {
 }
 
 module.exports = PositionManager;
+

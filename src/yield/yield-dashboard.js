@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 📈 YIELD DASHBOARD - LLM NEURAL ORCHESTRATOR INTEGRATION
  * Dashboard comprehensivo de métricas y performance para holders de crypto
  * 
@@ -16,7 +16,7 @@
  * - BinanceSimpleConnector para datos de precios históricos
  * - PortfolioTracker, CoveredCallOptimizer, YieldStrategyEngine
  * - AssignmentRiskManager para métricas de riesgo
- * - Sistema cuántico QBTC para optimización de métricas
+ * - Sistema algorithmic QBTC para optimización de métricas
  * 
  * @author QBTC Development Team
  * @version 1.0
@@ -27,7 +27,7 @@ const EventEmitter = require('events');
 const KernelRNG = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -156,7 +156,7 @@ class YieldDashboard extends EventEmitter {
                 lastAnalysis: null
             },
             
-            // Estado cuántico del dashboard
+            // Estado algorithmic del dashboard
             quantumState: {
                 coherence: 0.8,
                 energy: 75,
@@ -177,7 +177,7 @@ class YieldDashboard extends EventEmitter {
         if (this.config.enableLLMInsights) {
             this.llmOrchestrator = new LLMNeuralOrchestrator({
                 apiKey: process.env.GEMINI_API_KEY,
-                consciousnessWeight: 0.20, // Moderado para analysis de performance
+                confidenceWeight: 0.20, // Moderado para analysis de performance
                 decisionThreshold: 0.65,   // Threshold medio para insights
                 maxDecisionTime: 90000     // 90 segundos para análisis complejos
             });
@@ -290,13 +290,13 @@ class YieldDashboard extends EventEmitter {
                 await this.synchronizeQuantumState();
                 await this.applyQuantumEnhancement();
             } catch (error) {
-                this.logger.error('Error en sync cuántico dashboard:', error);
+                this.logger.error('Error en sync algorithmic dashboard:', error);
             }
         }, 60000); // 1 minuto
     }
 
     /**
-     * Sincronizar estado cuántico del dashboard
+     * Sincronizar estado algorithmic del dashboard
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
@@ -325,7 +325,7 @@ class YieldDashboard extends EventEmitter {
         const insightAccuracy = this.calculateInsightAccuracy();
         this.state.quantumState.insightResonance = Math.min(insightAccuracy, 1);
 
-        // Emitir evento cuántico
+        // Emitir evento algorithmic
         this.emit('quantum_sync', {
             coherence: this.state.quantumState.coherence,
             energy: this.state.quantumState.energy,
@@ -341,7 +341,7 @@ class YieldDashboard extends EventEmitter {
     async applyQuantumEnhancement() {
         if (this.state.quantumState.coherence < 0.8) return;
 
-        // Boost cuántico a accuracy de métricas
+        // Boost algorithmic a accuracy de métricas
         const quantumBoost = (this.state.quantumState.coherence - 0.8) * 0.25;
         
         // Aplicar a métricas en tiempo real
@@ -352,7 +352,7 @@ class YieldDashboard extends EventEmitter {
             metrics.sortinoRatio *= (1 + quantumBoost);
             metrics.accuracy += quantumBoost;
             metrics.quantumEnhanced = true;
-            metrics.quantumCoherence = this.state.quantumState.coherence;
+            metrics.algorithmicCoherence = this.state.quantumState.coherence;
         }
     }
 
@@ -1080,7 +1080,7 @@ class YieldDashboard extends EventEmitter {
                 this.state.quantumState.energy,
                 this.state.quantumState.insightResonance
             ],
-            hermeticIndicators: {
+            secureIndicators: {
                 performance_stability: this.calculatePerformanceStability(),
                 risk_adjusted_return: this.calculateRiskAdjustedReturn(),
                 yield_efficiency: this.calculateYieldEfficiency(),
@@ -1626,3 +1626,4 @@ module.exports = YieldDashboard;
  * ✅ Uso exclusivo de kernel RNG (no Math.random)
  * ✅ Sistema de alertas y recomendaciones de acción
  */
+

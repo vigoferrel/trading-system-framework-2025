@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * 📊 ENHANCED DASHBOARD - ADVANCED WEB DASHBOARD FOR QBTC SYSTEM
  * Dashboard web avanzado con métricas en tiempo real, control de servicios y visualizaciones
@@ -14,7 +14,7 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const path = require('path');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const MemoryOptimizer = require('../utils/memory-optimizer');
 const { kernelRNG } = require('../utils/kernel-rng');
 
@@ -610,7 +610,7 @@ class EnhancedDashboard {
                 break;
 
             case 'hybridOptimizer':
-                normalizedData.quantumCoherence = healthData.quantum_coherence;
+                normalizedData.algorithmicCoherence = healthData.quantum_coherence;
                 normalizedData.classicalConfidence = healthData.classical_confidence;
                 normalizedData.hybridSynergy = healthData.hybrid_synergy;
                 normalizedData.optimizationsTotal = healthData.optimizations_total;
@@ -2216,3 +2216,4 @@ if (require.main === module) {
 }
 
 module.exports = EnhancedDashboard;
+

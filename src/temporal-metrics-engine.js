@@ -1,21 +1,21 @@
-/**
+﻿/**
  * TEMPORAL METRICS ENGINE v2.0
  * Sistema avanzado de métricas temporales con resonancia λ_7919
  * Integra ciclos lunares, ventanas primas y edge temporal θ-aware
  * 
- * @author QBTC Quantum Consciousness Trading System
+ * @author QBTC Quantum confidence Trading System
  * @version 2.0.0
  * @since 2024
  */
 
 const { kernelRNG } = require('../utils/kernel-rng');
 const safeMath = require('../utils/safe-math');
-const { hermetic_logger } = require('./utils/hermetic-logger');
+const { secure_logger } = require('./utils/secure-logger');
 
 class TemporalMetricsEngine {
     constructor(config = {}) {
         // Inicializar logger primero
-        this.logger = hermetic_logger.createLogger('TemporalMetricsEngine');
+        this.logger = secure_logger.createLogger('TemporalMetricsEngine');
         
         // Constantes cuánticas fundamentales
         this.LAMBDA_7919 = Math.log(7919); // λ_7919 = 8.976106164279123
@@ -194,7 +194,7 @@ class TemporalMetricsEngine {
             const quantumResonance = Math.sin(2 * Math.PI * temporalPhase / this.LAMBDA_7919) * 
                                    Math.cos(this.RESONANCE_FREQ * temporalPhase / 1000);
             
-            // Factor de amplificación gravitacional
+            // Factor de amplificación weighted
             const gravitationalAmplifier = this._calculateGravitationalAmplifier(temporalPhase);
             
             // Resonancia λ_7919 final
@@ -625,6 +625,7 @@ class TemporalMetricsEngine {
 }
 
 module.exports = { TemporalMetricsEngine };
+
 
 
 

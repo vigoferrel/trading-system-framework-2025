@@ -1,10 +1,10 @@
-/**
+﻿/**
  * 🚨 ASSIGNMENT RISK MANAGER - LLM NEURAL ORCHESTRATOR INTEGRATION  
  * Sistema avanzado de gestión de riesgo de assignment para holders de crypto
  * 
  * Funcionalidades principales:
  * - Monitoreo continuo de riesgo de assignment en opciones vendidas
- * - Alertas predictivas basadas en modelos cuánticos y LLM
+ * - Alertas predictivas basadas en modelos algorithmics y LLM
  * - Estrategias automáticas de roll (up, out, up-and-out)
  * - Gestión de early assignment y dividend/earning events
  * - Optimización de timing para cierre de posiciones
@@ -13,7 +13,7 @@
  * Integra con:
  * - LLM Neural Orchestrator (Gemini Flash 1.5) para decisiones inteligentes
  * - CoveredCallOptimizer y YieldStrategyEngine
- * - Sistema cuántico QBTC para predicción avanzada
+ * - Sistema algorithmic QBTC para predicción avanzada
  * - Kernel RNG y logging estructurado
  * 
  * @author QBTC Development Team
@@ -25,7 +25,7 @@ const EventEmitter = require('events');
 const KernelRNG = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 const LLMNeuralOrchestrator = require('../core/llm-neural-orchestrator');
 
 /**
@@ -54,7 +54,7 @@ const ASSIGNMENT_RISK_CONSTANTS = {
     CONTINUOUS_MONITOR_INTERVAL: 60000, // 1 minuto - monitoring continuo
     RISK_ANALYSIS_INTERVAL: 300000,    // 5 minutos - análisis de riesgo
     LLM_ANALYSIS_INTERVAL: 900000,     // 15 minutos - análisis LLM
-    QUANTUM_SYNC_INTERVAL: 120000,     // 2 minutos - sync cuántico
+    QUANTUM_SYNC_INTERVAL: 120000,     // 2 minutos - sync algorithmic
     
     // Configuración de roll strategies
     MIN_CREDIT_FOR_ROLL: 0.05,         // 5 cents mínimo crédito para roll
@@ -172,7 +172,7 @@ class AssignmentRiskManager extends EventEmitter {
         if (this.config.enableLLMAnalysis) {
             this.llmOrchestrator = new LLMNeuralOrchestrator({
                 apiKey: process.env.GEMINI_API_KEY,
-                consciousnessWeight: 0.10, // Muy conservador para risk management
+                confidenceWeight: 0.10, // Muy conservador para risk management
                 decisionThreshold: 0.80,   // Threshold muy alto para decisiones de riesgo
                 maxDecisionTime: 60000     // 1 minuto para análisis críticos
             });
@@ -283,13 +283,13 @@ class AssignmentRiskManager extends EventEmitter {
                 await this.synchronizeQuantumState();
                 await this.applyQuantumPredictionModel();
             } catch (error) {
-                this.logger.error('Error en sync cuántico:', error);
+                this.logger.error('Error en sync algorithmic:', error);
             }
         }, ASSIGNMENT_RISK_CONSTANTS.QUANTUM_SYNC_INTERVAL);
     }
 
     /**
-     * Sincronizar estado cuántico para predicción
+     * Sincronizar estado algorithmic para predicción
      */
     async synchronizeQuantumState() {
         // Usar kernel RNG en lugar de Math.random (regla de usuario)
@@ -320,7 +320,7 @@ class AssignmentRiskManager extends EventEmitter {
         );
         this.state.quantumState.resonance = Math.min(successRate, 1);
 
-        // Emitir evento cuántico
+        // Emitir evento algorithmic
         this.emit('quantum_sync', {
             coherence: this.state.quantumState.coherence,
             energy: this.state.quantumState.energy,
@@ -338,7 +338,7 @@ class AssignmentRiskManager extends EventEmitter {
         if (!this.config.enableQuantumPrediction) return;
         if (this.state.quantumState.coherence < 0.7) return;
 
-        // Aplicar boost cuántico a predicciones de alto confidence
+        // Aplicar boost algorithmic a predicciones de alto confidence
         for (const [positionId, position] of this.state.monitoredPositions.entries()) {
             if (position.quantumEnhanced) continue;
 
@@ -350,7 +350,7 @@ class AssignmentRiskManager extends EventEmitter {
             position.assignmentProbability = Math.min(position.assignmentProbability, 0.99);
             
             position.quantumEnhanced = true;
-            position.quantumCoherence = this.state.quantumState.coherence;
+            position.algorithmicCoherence = this.state.quantumState.coherence;
         }
     }
 
@@ -854,7 +854,7 @@ class AssignmentRiskManager extends EventEmitter {
                     this.state.quantumState.energy,
                     this.state.quantumState.resonance
                 ],
-                hermeticIndicators: {
+                secureIndicators: {
                     assignment_risk: position.assignmentProbability,
                     time_decay_factor: (60 - position.dte) / 60,
                     moneyness_factor: position.moneyness,
@@ -1156,7 +1156,7 @@ module.exports = AssignmentRiskManager;
  * ✅ Integración completa con LLM Neural Orchestrator (Gemini Flash 1.5)
  * ✅ Monitoreo continuo con alertas predictivas inteligentes
  * ✅ Estrategias automáticas de roll (out, up, up-and-out)
- * ✅ Modelo cuántico-enhanced para predicción de assignment
+ * ✅ Modelo algorithmic-enhanced para predicción de assignment
  * ✅ Análisis crítico con LLM para posiciones de alto riesgo
  * ✅ Métricas comprehensivas de performance y accuracy
  * ✅ Sistema de alertas por niveles de severidad
@@ -1165,3 +1165,4 @@ module.exports = AssignmentRiskManager;
  * ✅ Logging estructurado en segundo plano para debugging
  * ✅ Integración completa con CoveredCallOptimizer y YieldStrategyEngine
  */
+

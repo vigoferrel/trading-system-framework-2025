@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🔗 EXCHANGE GATEWAY - BINANCE FUTURES API INTEGRATION
  * Gateway real para conectar con Binance Futures API con autenticación y gestión completa
  * 
@@ -13,7 +13,8 @@ const axios = require('axios');
 const WebSocket = require('ws');
 const KernelRNG = require('../utils/kernel-rng');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
+const { realisticMarketMock } = require('../mocks/realistic-market-mock');
 
 /**
  * Gateway completo para integración con exchanges (enfoque principal: Binance Futures)
@@ -791,20 +792,26 @@ class ExchangeGateway extends EventEmitter {
         
         this.state.serverTime = Date.now();
         
-        // Mock de métodos principales
+        // Mock de métodos principales usando simulador realista
         this.getSymbolPrice = async (symbol) => {
-            const prices = {
-                'BTCUSDT': 45000 + (Math.random() - 0.5) * 2000,
-                'ETHUSDT': 2800 + (Math.random() - 0.5) * 200,
-                'SOLUSDT': 100 + (Math.random() - 0.5) * 10,
-                'ADAUSDT': 0.5 + (Math.random() - 0.5) * 0.1
-            };
-            return prices[symbol.toUpperCase()] || 100;
+            return realisticMarketMock.getPrice(symbol);
+        };
+        
+        this.getSymbolTicker = async (symbol) => {
+            return realisticMarketMock.getTicker(symbol);
+        };
+        
+        this.getOrderBook = async (symbol, limit = 100) => {
+            return realisticMarketMock.getOrderBook(symbol, limit);
         };
         
         this.createMarketOrder = async (symbol, side, quantity, options = {}) => {
             const price = await this.getSymbolPrice(symbol);
-            const orderId = `MOCK_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const orderId = `MOCK_${Date.now()}_${Math.floor(KernelRNG.nextFloat() * 1000000).toString(36)}`;
+            
+            // Simular slippage realista
+            const slippage = (KernelRNG.nextFloat() - 0.5) * 0.002; // ±0.1% slippage
+            const executionPrice = price * (1 + slippage);
             
             const order = {
                 orderId,
@@ -813,15 +820,17 @@ class ExchangeGateway extends EventEmitter {
                 side,
                 type: 'MARKET',
                 quantity: parseFloat(quantity),
-                price: parseFloat(price.toFixed(2)),
-                avgPrice: parseFloat(price.toFixed(2)),
+                price: parseFloat(executionPrice.toFixed(8)),
+                avgPrice: parseFloat(executionPrice.toFixed(8)),
                 status: 'FILLED',
                 executedQty: parseFloat(quantity),
                 timestamp: Date.now(),
-                transactTime: Date.now()
+                transactTime: Date.now(),
+                commission: parseFloat((quantity * executionPrice * 0.0005).toFixed(8)), // 0.05% commission
+                commissionAsset: 'USDT'
             };
             
-            this.logger.info(`📝 Mock order ejecutada: ${symbol} ${side} ${quantity} @ $${price.toFixed(2)}`);
+            this.logger.info(`📝 Mock order ejecutada: ${symbol} ${side} ${quantity} @ $${executionPrice.toFixed(4)} (slippage: ${(slippage*100).toFixed(3)}%)`);
             this.metrics.ordersExecuted++;
             
             return order;
@@ -918,3 +927,4 @@ module.exports = ExchangeGateway;
  * ✅ Logging completo para debugging y monitoreo
  * ✅ Event-driven architecture para integración con otros componentes
  */
+

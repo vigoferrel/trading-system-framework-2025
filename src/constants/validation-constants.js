@@ -1,15 +1,15 @@
-/**
+﻿/**
  * VALIDATION CONSTANTS - CONSTANTES DE VALIDACIÓN CUÁNTICA
  * ========================================================
  * 
  * Define rangos válidos y límites seguros para todos los parámetros
- * del sistema cuántico QBTC. Estas constantes previenen valores
+ * del sistema algorithmic QBTC. Estas constantes previenen valores
  * fuera de rango que podrían causar inestabilidad numérica.
  * 
  * Basado en las constantes primas: z = 9 + 16i, λ = ln(7919), 888 MHz
  */
 
-// Constantes fundamentales del sistema cuántico
+// Constantes fundamentales del sistema algorithmic
 const QUANTUM_FUNDAMENTALS = {
     // Constantes primas base
     Z_REAL: 9,
@@ -330,3 +330,4 @@ module.exports = {
     isValidValue,
     getLimitsForType
 };
+

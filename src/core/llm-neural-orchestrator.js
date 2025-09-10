@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 🧠 LLM NEURAL ORCHESTRATOR - GOOGLE GEMINI FLASH 1.5 INTEGRATION
  * Sistema de orquestación neural con IA avanzada para decisiones de trading unificadas
  * 
@@ -18,10 +18,10 @@ const EventEmitter = require('events');
 const KernelRNG = require('../utils/kernel-rng');
 const { QUANTUM_CONSTANTS } = require('../constants/quantum-constants');
 const SafeMath = require('../utils/safe-math');
-const Logger = require('../logging/hermetic-logger');
+const Logger = require('../logging/secure-logger');
 
 /**
- * Integración completa con Google Gemini Flash 1.5 para decisiones de trading cuántico
+ * Integración completa con Google Gemini Flash 1.5 para decisiones de trading algorithmic
  */
 class LLMNeuralOrchestrator extends EventEmitter {
     constructor(config = {}) {
@@ -34,7 +34,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
             maxDecisionTime: config.maxDecisionTime || 30000, // 30 segundos
             decisionThreshold: config.decisionThreshold || 0.7,
             quantumSyncInterval: config.quantumSyncInterval || 10000, // 10 segundos
-            consciousnessWeight: config.consciousnessWeight || 0.3,
+            confidenceWeight: config.confidenceWeight || 0.3,
             ...config
         };
 
@@ -43,8 +43,8 @@ class LLMNeuralOrchestrator extends EventEmitter {
             initialized: false,
             lastDecision: null,
             decisionHistory: [],
-            quantumCoherence: 0.5,
-            consciousnessLevel: 0.6,
+            algorithmicCoherence: 0.5,
+            confidenceLevel: 0.6,
             neuralSyncStatus: 'disconnected',
             decisionQueue: [],
             activeDecisions: new Map()
@@ -57,10 +57,10 @@ class LLMNeuralOrchestrator extends EventEmitter {
         // Sistema de decisiones neurales
         this.neuralDecisionMatrix = {
             QUANTUM_ANALYSIS: { weight: 0.25, priority: 1 },
-            CONSCIOUSNESS_FILTER: { weight: 0.20, priority: 2 },
+            confidence_FILTER: { weight: 0.20, priority: 2 },
             RISK_ASSESSMENT: { weight: 0.20, priority: 3 },
             MARKET_SENTIMENT: { weight: 0.15, priority: 4 },
-            HERMETIC_SIGNALS: { weight: 0.10, priority: 5 },
+            secure_SIGNALS: { weight: 0.10, priority: 5 },
             TEMPORAL_PATTERNS: { weight: 0.10, priority: 6 }
         };
 
@@ -167,25 +167,25 @@ class LLMNeuralOrchestrator extends EventEmitter {
     }
 
     /**
-     * Sincronizar estado cuántico con sistemas QBTC
+     * Sincronizar estado algorithmic con sistemas QBTC
      */
     async synchronizeQuantumState() {
         try {
             // Generar coherencia cuántica usando kernel RNG
-            this.state.quantumCoherence = this.calculateQuantumCoherence();
+            this.state.algorithmicCoherence = this.calculatealgorithmicCoherence();
             
             // Actualizar nivel de consciencia
-            this.state.consciousnessLevel = this.calculateConsciousnessLevel();
+            this.state.confidenceLevel = this.calculateconfidenceLevel();
 
             // Emitir evento de sincronización
             this.emit('quantum_sync', {
-                coherence: this.state.quantumCoherence,
-                consciousness: this.state.consciousnessLevel,
+                coherence: this.state.algorithmicCoherence,
+                confidence: this.state.confidenceLevel,
                 timestamp: Date.now()
             });
 
             // Log según reglas de usuario (en segundo plano para métricas)
-            this.logger.info(`⚛️ Sync cuántico - Coherencia: ${this.state.quantumCoherence.toFixed(3)}, Consciencia: ${this.state.consciousnessLevel.toFixed(3)}`);
+            this.logger.info(`⚛️ Sync algorithmic - Coherencia: ${this.state.algorithmicCoherence.toFixed(3)}, Consciencia: ${this.state.confidenceLevel.toFixed(3)}`);
 
         } catch (error) {
             this.logger.error('Error en sincronización cuántica:', error);
@@ -195,7 +195,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
     /**
      * Calcular coherencia cuántica usando matemática segura
      */
-    calculateQuantumCoherence() {
+    calculatealgorithmicCoherence() {
         // Usar kernel RNG en lugar de Math.random y Math.sin (regla de usuario)
         const randomFactor = KernelRNG.nextFloat();
         const timeBasedSeed = (Date.now() % QUANTUM_CONSTANTS.LAMBDA_7919) / QUANTUM_CONSTANTS.LAMBDA_7919;
@@ -214,17 +214,17 @@ class LLMNeuralOrchestrator extends EventEmitter {
     /**
      * Calcular nivel de consciencia evolutiva
      */
-    calculateConsciousnessLevel() {
+    calculateconfidenceLevel() {
         const historyFactor = this.state.decisionHistory.length > 0 ? 
             this.state.decisionHistory.slice(-10).reduce((acc, d) => acc + d.success, 0) / 10 : 0.5;
         
-        const quantumFactor = this.state.quantumCoherence * 0.3;
+        const quantumFactor = this.state.algorithmicCoherence * 0.3;
         // Usar métricas del sistema en lugar de Math.sin
         const timeBasedEvolution = (Date.now() % (QUANTUM_CONSTANTS.LAMBDA_7919 * 1000)) / (QUANTUM_CONSTANTS.LAMBDA_7919 * 1000);
         const evolutionFactor = (timeBasedEvolution - 0.5) * 0.2 + 0.5; // Oscilar alrededor de 0.5
 
-        const consciousness = historyFactor * 0.4 + quantumFactor + evolutionFactor * 0.3;
-        return Math.max(0.1, Math.min(consciousness, 1.0));
+        const confidence = historyFactor * 0.4 + quantumFactor + evolutionFactor * 0.3;
+        return Math.max(0.1, Math.min(confidence, 1.0));
     }
 
     /**
@@ -258,7 +258,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
                     time_horizon: 'SHORT',
                     risk_level: 'LOW',
                     quantum_alignment: context.quantum.coherence,
-                    consciousness_factor: context.quantum.consciousness
+                    confidence_factor: context.quantum.confidence
                 });
             }
 
@@ -293,10 +293,10 @@ class LLMNeuralOrchestrator extends EventEmitter {
                 trend: marketData.trend || 'neutral'
             },
             quantum: {
-                coherence: this.state.quantumCoherence,
-                consciousness: this.state.consciousnessLevel,
+                coherence: this.state.algorithmicCoherence,
+                confidence: this.state.confidenceLevel,
                 dimensionalSignals: quantumSignals.dimensionalSignals || [],
-                hermeticIndicators: quantumSignals.hermeticIndicators || {},
+                secureIndicators: quantumSignals.secureIndicators || {},
                 feynmanPaths: quantumSignals.feynmanPaths || []
             },
             system: {
@@ -309,7 +309,7 @@ class LLMNeuralOrchestrator extends EventEmitter {
     }
 
     /**
-     * Construir prompt especializado para trading cuántico
+     * Construir prompt especializado para trading algorithmic
      */
     buildTradingPrompt(context, options) {
         return `
@@ -324,9 +324,9 @@ class LLMNeuralOrchestrator extends EventEmitter {
 
 ## QUANTUM STATE
 - Quantum Coherence: ${context.quantum.coherence.toFixed(3)}
-- Consciousness Level: ${context.quantum.consciousness.toFixed(3)}
+- confidence Level: ${context.quantum.confidence.toFixed(3)}
 - Dimensional Signals: ${context.quantum.dimensionalSignals.length} active
-- Hermetic Indicators: ${Object.keys(context.quantum.hermeticIndicators).length} signals
+- secure Indicators: ${Object.keys(context.quantum.secureIndicators).length} signals
 
 ## SYSTEM STATUS
 - Risk Level: ${context.system.riskLevel}
@@ -339,8 +339,8 @@ Analyze the quantum trading context and provide a unified trading decision.
 Consider:
 1. Quantum coherence levels and dimensional signals
 2. Market volatility and trend alignment
-3. Risk management with consciousness-based adjustments
-4. Hermetic principles and timing synchronicity
+3. Risk management with confidence-based adjustments
+4. secure principles and timing synchronicity
 5. Historical decision performance
 
 Respond with a JSON structure:
@@ -354,7 +354,7 @@ Respond with a JSON structure:
     "time_horizon": "SHORT|MEDIUM|LONG",
     "risk_level": "LOW|MEDIUM|HIGH",
     "quantum_alignment": 0.0-1.0,
-    "consciousness_factor": 0.0-1.0
+    "confidence_factor": 0.0-1.0
 }
         `;
     }
@@ -412,7 +412,7 @@ Respond with a JSON structure:
                 timeHorizon: this.validateTimeHorizon(decisionData.time_horizon),
                 riskLevel: this.validateRiskLevel(decisionData.risk_level),
                 quantumAlignment: this.clampValue(decisionData.quantum_alignment || 0.5, 0, 1),
-                consciousnessFactor: this.clampValue(decisionData.consciousness_factor || context.quantum.consciousness, 0, 1),
+                confidenceFactor: this.clampValue(decisionData.confidence_factor || context.quantum.confidence, 0, 1),
                 
                 // Metadatos adicionales
                 context: context,
@@ -468,10 +468,10 @@ Respond with a JSON structure:
     calculateNeuralScore(decisionData, context) {
         const confidenceScore = decisionData.confidence || 0.5;
         const quantumScore = decisionData.quantum_alignment || 0.5;
-        const consciousnessScore = context.quantum.consciousness;
+        const confidenceScore = context.quantum.confidence;
         const coherenceScore = context.quantum.coherence;
 
-        return (confidenceScore * 0.3 + quantumScore * 0.25 + consciousnessScore * 0.25 + coherenceScore * 0.2);
+        return (confidenceScore * 0.3 + quantumScore * 0.25 + confidenceScore * 0.25 + coherenceScore * 0.2);
     }
 
     /**
@@ -492,7 +492,7 @@ Respond with a JSON structure:
             timeHorizon: 'SHORT',
             riskLevel: 'LOW',
             quantumAlignment: context.quantum.coherence,
-            consciousnessFactor: context.quantum.consciousness,
+            confidenceFactor: context.quantum.confidence,
             context: context,
             processingTime: Date.now() - context.system.timestamp,
             neuralScore: 0.3,
@@ -586,8 +586,8 @@ Respond with a JSON structure:
             systemStatus: {
                 initialized: this.state.initialized,
                 neuralSyncStatus: this.state.neuralSyncStatus,
-                quantumCoherence: this.state.quantumCoherence,
-                consciousnessLevel: this.state.consciousnessLevel
+                algorithmicCoherence: this.state.algorithmicCoherence,
+                confidenceLevel: this.state.confidenceLevel
             },
             decisionMetrics: {
                 totalDecisions: this.state.decisionHistory.length,
@@ -650,7 +650,7 @@ module.exports = LLMNeuralOrchestrator;
  * 📋 CARACTERÍSTICAS PRINCIPALES:
  * 
  * ✅ Integración completa con Google Gemini Flash 1.5
- * ✅ Decisiones de trading unificadas con contexto cuántico
+ * ✅ Decisiones de trading unificadas con contexto algorithmic
  * ✅ Sincronización cuántica periódica automática
  * ✅ Procesamiento en segundo plano para métricas (regla usuario)
  * ✅ Uso exclusivo de kernel RNG (no Math.random)
@@ -662,3 +662,4 @@ module.exports = LLMNeuralOrchestrator;
  * ✅ Manejo de timeouts y recuperación de errores
  * ✅ Historial de decisiones para aprendizaje continuo
  */
+
