@@ -50,17 +50,19 @@ const KERNEL_RNG_CONSTANTS = {
  */
 class KernelRNG {
     constructor(seed = null) {
-        this.initializeSeeds(seed);
-        this.distributionCache = {
-            hasSpareNormal: false,
-            spareNormal: 0.0
-        };
+        // Inicializar statistics ANTES de initializeSeeds
         this.statistics = {
             floatCalls: 0,
             intCalls: 0,
             normalCalls: 0,
             exponentialCalls: 0,
             seedChanges: 0
+        };
+        
+        this.initializeSeeds(seed);
+        this.distributionCache = {
+            hasSpareNormal: false,
+            spareNormal: 0.0
         };
         
         console.log(`[KERNEL RNG] Inicializado con semilla: ${this.currentSeed}`);

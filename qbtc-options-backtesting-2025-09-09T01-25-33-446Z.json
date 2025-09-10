@@ -1,0 +1,383 @@
+{
+  "timestamp": "2025-09-09T01:25:33.448Z",
+  "quantum_constants": {
+    "Z_REAL": 9,
+    "Z_IMAG": 16,
+    "LAMBDA_7919": 8.977020214210413,
+    "PHI_GOLDEN": 1.618033988749895,
+    "RESONANCE_FREQ": 888,
+    "COHERENCE_THRESHOLD": 0.85,
+    "CONSCIOUSNESS_LEVEL": 2.5,
+    "UF_CONSTANT": 7919,
+    "QUANTUM_FIBONACCI": [
+      1,
+      1,
+      2,
+      3,
+      5,
+      8,
+      13,
+      21,
+      34,
+      55,
+      89,
+      144,
+      233,
+      377,
+      610,
+      987
+    ],
+    "AKASHIC_FREQUENCY": 14403,
+    "NEURAL_CONFIDENCE": 0.85
+  },
+  "results": {
+    "Bull Market": {
+      "Buy & Hold": {
+        "strategy": "Buy & Hold",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "transactions": 1,
+        "max_drawdown": 0.004623074005570234,
+        "sharpe_ratio": 8.291475144487
+      },
+      "Covered Calls": {
+        "strategy": "Covered Calls",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": null,
+        "transactions": 9,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": null
+      },
+      "Cash Secured Puts": {
+        "strategy": "Cash Secured Puts",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 54.66003066088966,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": 0.0006149253449350087
+      },
+      "Hybrid Wheel": {
+        "strategy": "Hybrid Wheel",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 54.66003066088966,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "wheel_cycles": 0,
+        "quantum_synergy": 0.001768835748708617,
+        "consciousness_factor": 1
+      },
+      "Quantum Consciousness": {
+        "strategy": "Quantum Consciousness",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 886.1249999999999,
+        "transactions": 0,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "consciousness_level": null,
+        "quantum_coherence": 3.219978429460109,
+        "neural_confidence": 0.85,
+        "quantum_enhancement": 0.1595025,
+        "akashic_resonance": null
+      }
+    },
+    "Bear Market": {
+      "Buy & Hold": {
+        "strategy": "Buy & Hold",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0
+      },
+      "Covered Calls": {
+        "strategy": "Covered Calls",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": null,
+        "transactions": 9,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": null
+      },
+      "Cash Secured Puts": {
+        "strategy": "Cash Secured Puts",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 0,
+        "transactions": 0,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": 0
+      },
+      "Hybrid Wheel": {
+        "strategy": "Hybrid Wheel",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 0,
+        "transactions": 0,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "wheel_cycles": 0,
+        "quantum_synergy": 0,
+        "consciousness_factor": 1
+      },
+      "Quantum Consciousness": {
+        "strategy": "Quantum Consciousness",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": null,
+        "transactions": 0,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "consciousness_level": null,
+        "quantum_coherence": 3.219978429460109,
+        "neural_confidence": 0.85,
+        "quantum_enhancement": null,
+        "akashic_resonance": null
+      }
+    },
+    "Sideways Market": {
+      "Buy & Hold": {
+        "strategy": "Buy & Hold",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "transactions": 1,
+        "max_drawdown": 0.0045694176118784525,
+        "sharpe_ratio": 6.936717290968906
+      },
+      "Covered Calls": {
+        "strategy": "Covered Calls",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": null,
+        "transactions": 9,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": null
+      },
+      "Cash Secured Puts": {
+        "strategy": "Cash Secured Puts",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 70.07275205670234,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": 0.0007883184606379014
+      },
+      "Hybrid Wheel": {
+        "strategy": "Hybrid Wheel",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 70.07275205670234,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "wheel_cycles": 0,
+        "quantum_synergy": 0.00226760189025977,
+        "consciousness_factor": 1
+      },
+      "Quantum Consciousness": {
+        "strategy": "Quantum Consciousness",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 886.1249999999999,
+        "transactions": 0,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "consciousness_level": null,
+        "quantum_coherence": 3.219978429460109,
+        "neural_confidence": 0.85,
+        "quantum_enhancement": 0.1595025,
+        "akashic_resonance": null
+      }
+    },
+    "High Volatility": {
+      "Buy & Hold": {
+        "strategy": "Buy & Hold",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 15.771565224587428
+      },
+      "Covered Calls": {
+        "strategy": "Covered Calls",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": null,
+        "transactions": 9,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": null
+      },
+      "Cash Secured Puts": {
+        "strategy": "Cash Secured Puts",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 59.75110902109204,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": 0.0006721999764872855
+      },
+      "Hybrid Wheel": {
+        "strategy": "Hybrid Wheel",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 59.75110902109204,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "wheel_cycles": 0,
+        "quantum_synergy": 0.0019335865052325478,
+        "consciousness_factor": 1
+      },
+      "Quantum Consciousness": {
+        "strategy": "Quantum Consciousness",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 886.1249999999999,
+        "transactions": 0,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "consciousness_level": null,
+        "quantum_coherence": 3.219978429460109,
+        "neural_confidence": 0.85,
+        "quantum_enhancement": 0.1595025,
+        "akashic_resonance": null
+      }
+    },
+    "Recovery Phase": {
+      "Buy & Hold": {
+        "strategy": "Buy & Hold",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0
+      },
+      "Covered Calls": {
+        "strategy": "Covered Calls",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": null,
+        "transactions": 9,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": null
+      },
+      "Cash Secured Puts": {
+        "strategy": "Cash Secured Puts",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 45.664460069713755,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "quantum_enhancement": 0.0005137251757842797
+      },
+      "Hybrid Wheel": {
+        "strategy": "Hybrid Wheel",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 45.664460069713755,
+        "transactions": 1,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "wheel_cycles": 0,
+        "quantum_synergy": 0.001477732969414185,
+        "consciousness_factor": 1
+      },
+      "Quantum Consciousness": {
+        "strategy": "Quantum Consciousness",
+        "initial_capital": 50000,
+        "final_value": null,
+        "total_return": null,
+        "total_premiums": 886.1249999999999,
+        "transactions": 0,
+        "max_drawdown": 0,
+        "sharpe_ratio": 0,
+        "consciousness_level": null,
+        "quantum_coherence": 3.219978429460109,
+        "neural_confidence": 0.85,
+        "quantum_enhancement": 0.1595025,
+        "akashic_resonance": null
+      }
+    }
+  },
+  "aggregated_statistics": {
+    "Buy & Hold": {
+      "avg_return": null,
+      "avg_drawdown": 0.0018384983234897372,
+      "avg_sharpe": 6.199951532008667,
+      "return_volatility": 0,
+      "avg_rank": 1
+    },
+    "Covered Calls": {
+      "avg_return": null,
+      "avg_drawdown": 0,
+      "avg_sharpe": 0,
+      "return_volatility": 0,
+      "avg_rank": 2
+    },
+    "Cash Secured Puts": {
+      "avg_return": null,
+      "avg_drawdown": 0,
+      "avg_sharpe": 0,
+      "return_volatility": 0,
+      "avg_rank": 3
+    },
+    "Hybrid Wheel": {
+      "avg_return": null,
+      "avg_drawdown": 0,
+      "avg_sharpe": 0,
+      "return_volatility": 0,
+      "avg_rank": 4
+    },
+    "Quantum Consciousness": {
+      "avg_return": null,
+      "avg_drawdown": 0,
+      "avg_sharpe": 0,
+      "return_volatility": 0,
+      "avg_rank": 5
+    }
+  },
+  "metadata": {
+    "entropy_generator": "Kernel-based (no Math.random)",
+    "strategies_tested": 5,
+    "scenarios_tested": 5,
+    "quantum_enhanced": true
+  }
+}

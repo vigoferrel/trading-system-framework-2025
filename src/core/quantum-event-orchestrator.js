@@ -729,7 +729,9 @@ class QuantumEventOrchestrator extends EventEmitter {
      * @returns {string} - ID del evento
      */
     generateEventId() {
-        return `qe_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        // Usar kernel RNG en lugar de Math.random() (regla del usuario)
+        const { kernelRNG } = require('../utils/kernel-rng');
+        return `qe_${Date.now()}_${kernelRNG.nextFloat().toString(36).substr(2, 9)}`;
     }
     
     /**
@@ -905,6 +907,41 @@ class QuantumEventOrchestrator extends EventEmitter {
         return { ...QUANTUM_EVENTS };
     }
     
+    /**
+     * Cleanup de recursos y operaciones asíncronas
+     */
+    async cleanup() {
+        try {
+            this.log('Initiating QuantumEventOrchestrator cleanup...');
+
+            // Detener health checks
+            if (this.healthCheckInterval) {
+                clearInterval(this.healthCheckInterval);
+                this.healthCheckInterval = null;
+            }
+
+            // Cancelar promesas activas
+            for (const promise of this.activePromises) {
+                if (promise && typeof promise.cancel === 'function') {
+                    promise.cancel();
+                }
+            }
+            this.activePromises.clear();
+
+            // Limpiar cola de eventos
+            if (this.eventQueue) {
+                this.eventQueue.queue = [];
+            }
+
+            // Parar el orquestador
+            await this.stop();
+
+            this.log('QuantumEventOrchestrator cleanup completed');
+        } catch (error) {
+            this.log('Error during QuantumEventOrchestrator cleanup', { error: error.message }, 'error');
+        }
+    }
+
     /**
      * Logging estructurado
      * @param {string} message - Mensaje

@@ -231,6 +231,40 @@ function listConstants() {
   );
 }
 
+/**
+ * Obtiene todas las constantes físicas para compatibilidad
+ */
+function getPhysicalConstants() {
+  return {
+    // Constantes físicas fundamentales
+    SPEED_OF_LIGHT: 299792458,
+    PLANCK_CONSTANT: 6.62607015e-34,
+    AVOGADRO_NUMBER: 6.02214076e23,
+    BOLTZMANN_CONSTANT: 1.380649e-23,
+    ELECTRON_CHARGE: 1.602176634e-19,
+    
+    // Constantes matemáticas
+    PI: Math.PI,
+    E: Math.E,
+    PHI: QuantumConstants.PHI_GOLDEN,
+    EULER_GAMMA: QuantumConstants.EULER_GAMMA,
+    
+    // Constantes cuánticas del sistema
+    Z_REAL: QuantumConstants.Z_REAL,
+    Z_IMAG: QuantumConstants.Z_IMAG,
+    LAMBDA_7919: QuantumConstants.LAMBDA_7919,
+    RESONANCE_FREQ: QuantumConstants.RESONANCE_FREQ,
+    BASE_ENERGY: QuantumConstants.BASE_ENERGY
+  };
+}
+
+/**
+ * Obtiene todas las constantes cuánticas
+ */
+function getQuantumConstants() {
+  return QuantumConstants;
+}
+
 // =============================================================================
 // EXPORTS
 // =============================================================================
@@ -241,6 +275,8 @@ module.exports = {
   validateConstants,
   getConstant,
   listConstants,
+  getPhysicalConstants,
+  getQuantumConstants,
 
   // Exportaciones individuales para compatibilidad
   Z_REAL: QuantumConstants.Z_REAL,

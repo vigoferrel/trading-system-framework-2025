@@ -1,0 +1,163 @@
+{
+  "timestamp": "2025-09-09T15:47:50.016Z",
+  "summary": {
+    "totalTests": 20,
+    "passed": 13,
+    "failed": 7,
+    "warnings": 0,
+    "passRate": "65.0"
+  },
+  "details": [
+    {
+      "test": "Temporal Engine Initialization",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:43.893Z"
+    },
+    {
+      "test": "Position Manager θ-aware Initialization",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.409Z"
+    },
+    {
+      "test": "Components Integration",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.410Z"
+    },
+    {
+      "test": "Edge Temporal Calculation",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.411Z"
+    },
+    {
+      "test": "Prime Coherence Calculation",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.412Z"
+    },
+    {
+      "test": "Lambda Resonance Calculation",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.413Z"
+    },
+    {
+      "test": "Integrated Temporal Evaluation",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.414Z"
+    },
+    {
+      "test": "Quantum Position Sizing with Temporal Edge",
+      "passed": false,
+      "message": "Edge temporal faltante en sizing",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.415Z"
+    },
+    {
+      "test": "Theta Budget Management",
+      "passed": false,
+      "message": "Used budget debería ser 0: 0.0008974938626784913",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.415Z"
+    },
+    {
+      "test": "Position Opening with Temporal Metrics",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:45.417Z"
+    },
+    {
+      "test": "Ladder Evaluation and Creation",
+      "passed": false,
+      "message": "No se crearon ladders",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:46.427Z"
+    },
+    {
+      "test": "Roll Criteria Evaluation",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:46.941Z"
+    },
+    {
+      "test": "Manual Roll Force",
+      "passed": false,
+      "message": "Manual roll failed: Position a90e2cef-df13-44f0-a505-91ff22eee959 not found in any ladder",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:46.942Z"
+    },
+    {
+      "test": "Theta Distribution Analysis",
+      "passed": false,
+      "message": "No ladder data for theta distribution",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:46.943Z"
+    },
+    {
+      "test": "Complete Position -> Ladder -> Roll Flow",
+      "passed": false,
+      "message": "Ladder not created for new position",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:47.960Z"
+    },
+    {
+      "test": "Cross-Component Metrics Consistency",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:47.960Z"
+    },
+    {
+      "test": "Error Handling and Fallbacks",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:47.961Z"
+    },
+    {
+      "test": "Temporal Calculations Performance",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:47.970Z"
+    },
+    {
+      "test": "Multiple Ladders Stress Test",
+      "passed": false,
+      "message": "No ladders created in stress test",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:49.973Z"
+    },
+    {
+      "test": "Memory Usage and Cleanup",
+      "passed": true,
+      "message": "Passed",
+      "type": "normal",
+      "timestamp": "2025-09-09T15:47:50.014Z"
+    }
+  ],
+  "systemInfo": {
+    "nodeVersion": "v22.18.0",
+    "platform": "win32",
+    "memory": {
+      "rss": 77230080,
+      "heapTotal": 54095872,
+      "heapUsed": 27614240,
+      "external": 1764078,
+      "arrayBuffers": 24867
+    }
+  }
+}

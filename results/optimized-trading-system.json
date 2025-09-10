@@ -1,0 +1,104 @@
+{
+  "name": "QBTC_Performance_Amplified_v2",
+  "version": "2.0.0",
+  "configuration": {
+    "quantum": {
+      "lambda_multiplier": 1.8948736077873036,
+      "resonance_freq": 689.5516734570265,
+      "coherence_threshold": 0.5966652740957216,
+      "consciousness_level": 2.197966176760383,
+      "quantum_z_real": 7.038952803704888,
+      "quantum_z_imag": 13.134631001157686
+    },
+    "market": {
+      "volatility_base": 0.25367969596991313,
+      "drift_rate": -0.07081963976379485,
+      "mean_reversion_speed": 0.5857847594888881,
+      "jump_frequency": 0.022064672270789745,
+      "jump_magnitude": 0.1267238210886717
+    },
+    "risk": {
+      "kelly_fraction": 0.15655751005746424,
+      "max_drawdown_limit": 0.11862003451213239,
+      "position_size_limit": 0.24433227069675922,
+      "stop_loss_threshold": 0.0737600579392165,
+      "take_profit_ratio": 1.642912605078891
+    }
+  },
+  "metadata": {
+    "basedOn": "TopConfig_Conservative",
+    "performanceImprovement": {
+      "returnImprovement": 607.5012644477084,
+      "sharpeImprovement": 240.51985287859927
+    },
+    "generatedAt": "2025-09-09T21:17:02.185Z",
+    "validationResults": {
+      "totalReturn": 0.062250029095864155,
+      "sharpeRatio": 0.9017889566693831,
+      "maxDrawdown": 0.10547150062483815,
+      "winRate": 0.44047619047619047,
+      "profitFactor": 1.167881449672545,
+      "finalPortfolio": 106225.00290958642,
+      "numTrades": 252,
+      "avgTradeReturn": 24.702392498358417
+    }
+  },
+  "tradingRules": {
+    "entryConditions": {
+      "minQuantumCoherence": 0.5966652740957216,
+      "minConsciousnessLevel": 1.7583729414083065,
+      "maxVolatilityEntry": 0.30441563516389575
+    },
+    "exitConditions": {
+      "profitTarget": 1.642912605078891,
+      "stopLoss": 0.0737600579392165,
+      "maxHoldPeriod": 48,
+      "coherenceDegradation": 0.4176656918670051
+    },
+    "positionSizing": {
+      "baseKelly": 0.15655751005746424,
+      "maxPosition": 0.24433227069675922,
+      "scaleWithCoherence": true
+    }
+  },
+  "riskManagement": {
+    "dailyLimits": {
+      "maxDrawdown": 0.11862003451213239,
+      "maxTrades": 10,
+      "maxExposure": 0.7329968120902777
+    },
+    "adaptiveStops": {
+      "volatilityMultiplier": 1.5,
+      "quantumCoherenceThreshold": 0.3579991644574329,
+      "emergencyStop": 0.95
+    },
+    "hedging": {
+      "enableHedging": true,
+      "hedgeThreshold": 0.15,
+      "hedgeRatio": 0.5
+    }
+  },
+  "adaptiveParameters": {
+    "marketRegimeDetection": {
+      "bullThreshold": 0.15,
+      "bearThreshold": -0.1,
+      "volatilityThreshold": 0.6
+    },
+    "parameterAdjustments": {
+      "bull": {
+        "consciousness_multiplier": 1.2,
+        "kelly_multiplier": 1.1
+      },
+      "bear": {
+        "consciousness_multiplier": 0.8,
+        "kelly_multiplier": 0.7
+      },
+      "sideways": {
+        "consciousness_multiplier": 1,
+        "kelly_multiplier": 0.9
+      }
+    },
+    "rebalanceFrequency": "6h",
+    "optimizationFrequency": "24h"
+  }
+}

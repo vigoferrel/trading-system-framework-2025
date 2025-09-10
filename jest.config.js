@@ -48,6 +48,10 @@ module.exports = {
   // Timeout
   testTimeout: 30000,
   
+  // Detect open handles for async cleanup debugging
+  detectOpenHandles: true,
+  forceExit: true,
+  
   // Modules
   moduleFileExtensions: [
     'js',

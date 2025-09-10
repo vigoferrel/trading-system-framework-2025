@@ -10,7 +10,7 @@ const {
   getConstant,
   getPhysicalConstants,
   getQuantumConstants
-} = require('./src/constants/quantum-constants');
+} = require('../../src/constants/quantum-constants');
 
 // Para compatibilidad backward - mantener PHYSICAL_CONSTANTS disponible
 const PHYSICAL_CONSTANTS = getPhysicalConstants();

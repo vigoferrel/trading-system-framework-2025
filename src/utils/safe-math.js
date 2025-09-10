@@ -356,7 +356,38 @@ function precomputeTrigonometric(steps = 360) {
     return precomputed;
 }
 
+/**
+ * Operaciones matemáticas básicas seguras
+ */
+function add(a, b) {
+    if (!isFinite(a) || !isFinite(b)) return 0;
+    const result = a + b;
+    return isFinite(result) ? result : 0;
+}
+
+function subtract(a, b) {
+    if (!isFinite(a) || !isFinite(b)) return 0;
+    const result = a - b;
+    return isFinite(result) ? result : 0;
+}
+
+function multiply(a, b) {
+    if (!isFinite(a) || !isFinite(b)) return 0;
+    const result = a * b;
+    return isFinite(result) ? result : 0;
+}
+
+function divide(a, b) {
+    return safeDiv(a, b, 0);
+}
+
 module.exports = {
+    // Operaciones básicas
+    add,
+    subtract, 
+    multiply,
+    divide,
+    
     // Funciones principales
     safeDiv,
     safeTrigSin,
