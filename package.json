@@ -5,7 +5,7 @@
   "description": "QBTC Options/Futures Bot Service",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node src/dashboard/start-dashboard.js",
     "test": "node __tests__/run-tests.js",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -19,12 +19,12 @@
     "reports:generate": "node scripts/generate-reports.js",
     "quality:monitor": "node scripts/quality-monitor.js",
     "quality:dashboard": "node scripts/quality-monitor.js && echo Dashboard disponible en __tests__/reports/quality-dashboard.md",
-    "dev": "nodemon index.js",
-    "futures:fg": "node quantum/integrated-system.js",
-    "futures:bg": "node quantum/launch-futures-background.js start",
-    "futures:stop": "node quantum/launch-futures-background.js stop",
-    "futures:status": "node quantum/launch-futures-background.js status",
-    "futures:logs": "node quantum/launch-futures-background.js logs 100"
+    "dev": "nodemon src/dashboard/start-dashboard.js",
+    "unified:core": "node src/core/reverse-engineering-core.js",
+    "unified:system": "node scripts/run-integrated-system.js",
+    "unified:dashboard": "node src/dashboard/start-dashboard.js",
+    "lint": "npx eslint . --ext .js",
+    "lint:quantum": "npx eslint . --ext .js --max-warnings=0"
   },
   "dependencies": {
     "axios": "^1.11.0",
@@ -41,10 +41,10 @@
   "devDependencies": {
     "nodemon": "^3.1.0",
     "jest": "^29.7.0",
-    "@jest/environment-node": "^29.7.0",
     "supertest": "^6.3.3",
     "nock": "^13.4.0",
     "sinon": "^17.0.1",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "@eslint/js": "^9.35.0"
   }
 }
