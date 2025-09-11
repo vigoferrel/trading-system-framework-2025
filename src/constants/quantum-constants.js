@@ -1,4 +1,4 @@
-/**
+﻿/**
  * QUANTUM CONSTANTS - Sistema Unificado de Constantes Cuánticas
  *
  * Este archivo centraliza todas las constantes cuánticas del sistema
@@ -15,12 +15,12 @@
 // =============================================================================
 
 /**
- * Constantes del Número Cuántico Complejo z = 9 + 16i
+ * Constantes del Número algorithmic Complejo z = 9 + 16i
  * Basado en la teoría de Feynman y mecánica cuántica avanzada
  */
 const QUANTUM_COMPLEX = Object.freeze({
-  Z_REAL: 9,                    // Parte real del número cuántico complejo z = 9 + 16i
-  Z_IMAG: 16,                   // Parte imaginaria del número cuántico complejo
+  Z_REAL: 9,                    // Parte real del número algorithmic complejo z = 9 + 16i
+  Z_IMAG: 16,                   // Parte imaginaria del número algorithmic complejo
   Z_MAGNITUDE: Math.sqrt(9 * 9 + 16 * 16), // |z| = √(9² + 16²) = 18.3576
   Z_PHASE: Math.atan2(16, 9),   // Fase de z = atan2(16, 9) = 1.0637 rad
 });
@@ -37,7 +37,7 @@ const QUANTUM_WAVELENGTH = Object.freeze({
 
 /**
  * Constantes de Resonancia y Frecuencia
- * Basadas en análisis espectral cuántico
+ * Basadas en análisis espectral algorithmic
  */
 const QUANTUM_RESONANCE = Object.freeze({
   RESONANCE_FREQ: 888,         // Frecuencia de resonancia fundamental 888 MHz
@@ -62,7 +62,7 @@ const MATHEMATICAL_CONSTANTS = Object.freeze({
  */
 const QUANTUM_COHERENCE = Object.freeze({
   COHERENCE_THRESHOLD: 0.85,   // Umbral mínimo de coherencia para operaciones válidas
-  ENTANGLEMENT_FACTOR: 0.95,   // Factor de entrelazamiento cuántico
+  ENTANGLEMENT_FACTOR: 0.95,   // Factor de entrelazamiento algorithmic
   SUPERPOSITION_DEPTH: 0.90,   // Profundidad de superposición
 });
 
@@ -78,15 +78,15 @@ const QUANTUM_ENERGY = Object.freeze({
 
 /**
  * Secuencia Fibonacci Cuántica
- * Primeros 16 números de Fibonacci para algoritmos cuánticos
+ * Primeros 16 números de Fibonacci para algoritmos algorithmics
  */
 const QUANTUM_FIBONACCI = Object.freeze([
   1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987
 ]);
 
 /**
- * Primos Cuánticos Optimizados
- * Secuencia prima para generadores cuánticos y hash
+ * Primos algorithmics Optimizados
+ * Secuencia prima para generadores algorithmics y hash
  */
 const QUANTUM_PRIMES = Object.freeze({
   PRIMES: [7919, 9973, 1597, 887], // Secuencia prima optimizada
@@ -95,11 +95,11 @@ const QUANTUM_PRIMES = Object.freeze({
 });
 
 /**
- * Constantes de Tiempo Cuántico
+ * Constantes de Tiempo algorithmic
  * Factores temporales para algoritmos dinámicos
  */
 const QUANTUM_TIME = Object.freeze({
-  QUANTUM_TIME_FACTOR: 0.0001,     // Factor temporal cuántico base
+  QUANTUM_TIME_FACTOR: 0.0001,     // Factor temporal algorithmic base
   RESONANCE_PERIOD: 1 / 888,       // Período de resonancia
   COHERENCE_WINDOW: 1000,          // Ventana de coherencia en ms
 });
@@ -124,7 +124,7 @@ const VALIDATION_CONSTANTS = Object.freeze({
  * Congela el objeto para prevenir modificaciones accidentales
  */
 const QuantumConstants = Object.freeze({
-  // Números Cuánticos Complejos
+  // Números algorithmics Complejos
   Z_REAL: QUANTUM_COMPLEX.Z_REAL,
   Z_IMAG: QUANTUM_COMPLEX.Z_IMAG,
   Z_MAGNITUDE: QUANTUM_COMPLEX.Z_MAGNITUDE,
@@ -231,6 +231,40 @@ function listConstants() {
   );
 }
 
+/**
+ * Obtiene todas las constantes físicas para compatibilidad
+ */
+function getPhysicalConstants() {
+  return {
+    // Constantes físicas fundamentales
+    SPEED_OF_LIGHT: 299792458,
+    PLANCK_CONSTANT: 6.62607015e-34,
+    AVOGADRO_NUMBER: 6.02214076e23,
+    BOLTZMANN_CONSTANT: 1.380649e-23,
+    ELECTRON_CHARGE: 1.602176634e-19,
+    
+    // Constantes matemáticas
+    PI: Math.PI,
+    E: Math.E,
+    PHI: QuantumConstants.PHI_GOLDEN,
+    EULER_GAMMA: QuantumConstants.EULER_GAMMA,
+    
+    // Constantes cuánticas del sistema
+    Z_REAL: QuantumConstants.Z_REAL,
+    Z_IMAG: QuantumConstants.Z_IMAG,
+    LAMBDA_7919: QuantumConstants.LAMBDA_7919,
+    RESONANCE_FREQ: QuantumConstants.RESONANCE_FREQ,
+    BASE_ENERGY: QuantumConstants.BASE_ENERGY
+  };
+}
+
+/**
+ * Obtiene todas las constantes cuánticas
+ */
+function getQuantumConstants() {
+  return QuantumConstants;
+}
+
 // =============================================================================
 // EXPORTS
 // =============================================================================
@@ -241,6 +275,8 @@ module.exports = {
   validateConstants,
   getConstant,
   listConstants,
+  getPhysicalConstants,
+  getQuantumConstants,
 
   // Exportaciones individuales para compatibilidad
   Z_REAL: QuantumConstants.Z_REAL,
@@ -260,3 +296,4 @@ console.log('🔬 [QUANTUM CONSTANTS] Sistema de constantes cuánticas inicializ
 console.log(`   📊 ${listConstants().length} constantes cargadas`);
 console.log(`   🎯 Energía base: ${QuantumConstants.BASE_ENERGY.toFixed(3)}`);
 console.log(`   📈 Coherencia mínima: ${(QuantumConstants.MIN_COHERENCE_LEVEL * 100).toFixed(1)}%`);
+

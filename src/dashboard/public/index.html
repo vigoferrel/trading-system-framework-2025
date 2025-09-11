@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QBTC θ-aware Central Control Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+
+        .header .theta-symbol {
+            font-size: 2.5rem;
+            color: #ff6b6b;
+            text-shadow: 0 0 15px #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid #333;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        .status-connected { background: #00ff88; }
+        .status-warning { background: #ffb347; }
+        .status-error { background: #ff6b6b; }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 1.5rem;
+            padding: 2rem;
+            min-height: calc(100vh - 120px);
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .panel-title {
+            color: #00ff88;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 0 0 5px #00ff88;
+        }
+
+        .theta-metrics {
+            grid-column: span 1;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.05) 100%);
+            border-color: #ff6b6b;
+        }
+
+        .exchange-status {
+            grid-column: span 1;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 255, 136, 0.05) 100%);
+            border-color: #00ff88;
+        }
+
+        .temporal-resonance {
+            grid-column: span 1;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(138, 43, 226, 0.05) 100%);
+            border-color: #8a2be2;
+        }
+
+        .system-alerts {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+            border-color: #ffc107;
+        }
+
+        .control-panel {
+            grid-column: span 1;
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.1) 0%, rgba(23, 162, 184, 0.05) 100%);
+            border-color: #17a2b8;
+        }
+
+        .charts-container {
+            grid-column: span 3;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .chart-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 1rem;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .theta-fill { background: linear-gradient(90deg, #ff6b6b, #ff4757); }
+        .lambda-fill { background: linear-gradient(90deg, #8a2be2, #6a1b9a); }
+
+        .exchange-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .exchange-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #00ff88;
+        }
+
+        .exchange-item.error { border-left-color: #ff6b6b; }
+        .exchange-item.warning { border-left-color: #ffb347; }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #ff6b6b;
+            border-radius: 8px;
+        }
+
+        .alert-item.medium { 
+            background: rgba(255, 179, 71, 0.1); 
+            border-left-color: #ffb347; 
+        }
+
+        .alert-item.low { 
+            background: rgba(0, 255, 136, 0.1); 
+            border-left-color: #00ff88; 
+        }
+
+        .alert-icon {
+            font-size: 1.2rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-time {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.3rem;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .button.danger {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            color: #fff;
+        }
+
+        .button.warning {
+            background: linear-gradient(135deg, #ffb347, #ff9500);
+            color: #000;
+        }
+
+        .prime-ladder {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .prime-hour {
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(138, 43, 226, 0.2);
+            border: 1px solid #8a2be2;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .prime-hour.active {
+            background: #8a2be2;
+            color: #fff;
+            box-shadow: 0 0 15px #8a2be2;
+        }
+
+        .wave-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 100px;
+            opacity: 0.3;
+        }
+
+        .wave {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            animation: wave 3s linear infinite;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            border: 1px solid #333;
+            z-index: 1000;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes wave {
+            0% { left: -200px; }
+            100% { left: 200px; }
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 5px currentColor; }
+            50% { text-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+        }
+
+        .glow-text { animation: glow 2s ease-in-out infinite; }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .theta-metrics, .exchange-status, .temporal-resonance {
+                grid-column: span 1;
+            }
+            .system-alerts, .charts-container {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            .panel {
+                grid-column: span 1 !important;
+            }
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status -->
+    <div class="connection-status" id="connectionStatus">
+        <span class="status-dot status-warning"></span>
+        <span id="connectionText">Conectando...</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <h1>QBTC θ-aware Central Control Dashboard</h1>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-dot status-connected"></span>
+                    <span>Sistema Activo</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot status-connected"></span>
+                    <span id="clientCount">0 Clientes</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot status-warning"></span>
+                    <span id="alertCount">0 Alertas</span>
+                </div>
+            </div>
+        </div>
+        <div class="theta-symbol glow-text">θ</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Theta Metrics Panel -->
+        <div class="panel theta-metrics">
+            <h3 class="panel-title">θ-Budget Metrics</h3>
+            <div id="thetaMetrics">
+                <div class="metric-label">TIER_1 θ-Budget</div>
+                <div class="metric-value" id="tier1Budget">0.00%</div>
+                <div class="metric-bar">
+                    <div class="metric-fill theta-fill" id="tier1Bar" style="width: 0%"></div>
+                </div>
+                
+                <div class="metric-label">TIER_PRIME θ-Budget</div>
+                <div class="metric-value" id="tierPrimeBudget">0.00%</div>
+                <div class="metric-bar">
+                    <div class="metric-fill theta-fill" id="tierPrimeBar" style="width: 0%"></div>
+                </div>
+                
+                <div class="metric-label">θ-Decay Rate</div>
+                <div class="metric-value" id="thetaDecay">0.000</div>
+            </div>
+        </div>
+
+        <!-- Exchange Status Panel -->
+        <div class="panel exchange-status">
+            <h3 class="panel-title">Exchange Status</h3>
+            <div id="exchangeList" class="exchange-list">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+
+        <!-- Temporal Resonance Panel -->
+        <div class="panel temporal-resonance">
+            <h3 class="panel-title">Temporal Resonance</h3>
+            <div class="prime-ladder" id="primeLadder">
+                <!-- Prime hours will be populated here -->
+            </div>
+            
+            <div class="metric-label">λ-Dissonance Level</div>
+            <div class="metric-value" id="lambdaDissonance">0.000</div>
+            <div class="metric-bar">
+                <div class="metric-fill lambda-fill" id="lambdaBar" style="width: 0%"></div>
+            </div>
+            
+            <div class="metric-label">Quantum Coherence</div>
+            <div class="metric-value" id="quantumCoherence">0.618</div>
+            
+            <div class="wave-animation">
+                <div class="wave"></div>
+            </div>
+        </div>
+
+        <!-- System Alerts Panel -->
+        <div class="panel system-alerts">
+            <h3 class="panel-title">System Alerts</h3>
+            <div id="alertsList">
+                <div class="alert-item low">
+                    <div class="alert-icon">ℹ️</div>
+                    <div class="alert-content">
+                        <div>Sistema inicializado correctamente</div>
+                        <div class="alert-time">Hace 2 minutos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="panel control-panel">
+            <h3 class="panel-title">Manual Control</h3>
+            <button class="button" onclick="executeManualOrder()">📋 Execute Order</button>
+            <button class="button warning" onclick="clearAlerts()">🗑️ Clear Alerts</button>
+            <button class="button danger" onclick="restartSystem()">🔄 Restart System</button>
+            
+            <hr style="margin: 1rem 0; border-color: #333;">
+            
+            <div class="metric-label">System Uptime</div>
+            <div class="metric-value" id="systemUptime">00:00:00</div>
+            
+            <div class="metric-label">Memory Usage</div>
+            <div class="metric-value" id="memoryUsage">0 MB</div>
+            <div class="metric-bar">
+                <div class="metric-fill" id="memoryBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Charts Container -->
+        <div class="charts-container">
+            <div class="chart-panel">
+                <h4 style="color: #00ff88; text-align: center; margin-bottom: 1rem;">θ-Budget Timeline</h4>
+                <canvas id="thetaChart" width="400" height="200"></canvas>
+            </div>
+            <div class="chart-panel">
+                <h4 style="color: #8a2be2; text-align: center; margin-bottom: 1rem;">Temporal Metrics</h4>
+                <canvas id="temporalChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div>QBTC θ-aware System v1.0 | Quantum-Based Trading Consciousness</div>
+        <div id="lastUpdate">Last update: Never</div>
+    </div>
+
+    <script>
+        // Dashboard State
+        let dashboardState = {
+            websocket: null,
+            connected: false,
+            data: {},
+            charts: {}
+        };
+
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeWebSocket();
+            initializeCharts();
+            updatePrimeLadder();
+            setInterval(updateDisplay, 1000); // Update every second
+        });
+
+        // WebSocket Connection
+        function initializeWebSocket() {
+            const wsUrl = `ws://${window.location.hostname}:8081`;
+            dashboardState.websocket = new WebSocket(wsUrl);
+
+            dashboardState.websocket.onopen = () => {
+                console.log('WebSocket connected');
+                dashboardState.connected = true;
+                updateConnectionStatus('connected');
+            };
+
+            dashboardState.websocket.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                handleWebSocketMessage(message);
+            };
+
+            dashboardState.websocket.onclose = () => {
+                console.log('WebSocket disconnected');
+                dashboardState.connected = false;
+                updateConnectionStatus('disconnected');
+                
+                // Reconnect after 5 seconds
+                setTimeout(initializeWebSocket, 5000);
+            };
+
+            dashboardState.websocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                updateConnectionStatus('error');
+            };
+        }
+
+        // Handle WebSocket Messages
+        function handleWebSocketMessage(message) {
+            switch (message.type) {
+                case 'init':
+                    dashboardState.data = message.data;
+                    updateAllDisplays();
+                    break;
+                    
+                case 'update':
+                    dashboardState.data = { ...dashboardState.data, ...message.data };
+                    updateAllDisplays();
+                    break;
+                    
+                case 'alert':
+                    addAlert(message.data);
+                    break;
+                    
+                case 'manual_order_result':
+                    showOrderResult(message.data);
+                    break;
+                    
+                default:
+                    console.log('Unknown message type:', message.type);
+            }
+        }
+
+        // Update Connection Status
+        function updateConnectionStatus(status) {
+            const statusElement = document.getElementById('connectionStatus');
+            const textElement = document.getElementById('connectionText');
+            const dot = statusElement.querySelector('.status-dot');
+            
+            dot.className = 'status-dot';
+            
+            switch (status) {
+                case 'connected':
+                    dot.classList.add('status-connected');
+                    textElement.textContent = 'Conectado';
+                    break;
+                case 'disconnected':
+                    dot.classList.add('status-warning');
+                    textElement.textContent = 'Desconectado';
+                    break;
+                case 'error':
+                    dot.classList.add('status-error');
+                    textElement.textContent = 'Error';
+                    break;
+                default:
+                    dot.classList.add('status-warning');
+                    textElement.textContent = 'Conectando...';
+            }
+        }
+
+        // Update All Displays
+        function updateAllDisplays() {
+            updateThetaMetrics();
+            updateExchangeStatus();
+            updateTemporalMetrics();
+            updateSystemInfo();
+            updateCharts();
+        }
+
+        // Update Theta Metrics
+        function updateThetaMetrics() {
+            const thetaBudgets = dashboardState.data.systemMetrics?.exchanges?.thetaBudgets || {};
+            
+            // Update TIER_1
+            const tier1 = thetaBudgets.TIER_1;
+            if (tier1) {
+                const utilization = (tier1.utilization * 100).toFixed(2);
+                document.getElementById('tier1Budget').textContent = `${utilization}%`;
+                document.getElementById('tier1Bar').style.width = `${tier1.utilization * 100}%`;
+            }
+            
+            // Update TIER_PRIME
+            const tierPrime = thetaBudgets.TIER_PRIME;
+            if (tierPrime) {
+                const utilization = (tierPrime.utilization * 100).toFixed(2);
+                document.getElementById('tierPrimeBudget').textContent = `${utilization}%`;
+                document.getElementById('tierPrimeBar').style.width = `${tierPrime.utilization * 100}%`;
+            }
+            
+            // Update theta decay rate
+            const thetaDecay = dashboardState.data.temporalMetrics?.thetaDecayRate;
+            if (thetaDecay) {
+                document.getElementById('thetaDecay').textContent = thetaDecay.toFixed(4);
+            }
+        }
+
+        // Update Exchange Status
+        function updateExchangeStatus() {
+            const exchanges = dashboardState.data.systemMetrics?.exchanges?.exchanges || {};
+            const exchangeList = document.getElementById('exchangeList');
+            
+            exchangeList.innerHTML = '';
+            
+            Object.entries(exchanges).forEach(([exchangeId, data]) => {
+                const item = document.createElement('div');
+                item.className = `exchange-item ${data.status === 'connected' ? '' : 'error'}`;
+                
+                const statusDot = data.status === 'connected' ? '🟢' : '🔴';
+                const lastActivity = data.lastActivity ? 
+                    new Date(data.lastActivity).toLocaleTimeString() : 'Never';
+                
+                item.innerHTML = `
+                    <div>
+                        <strong>${statusDot} ${exchangeId.toUpperCase()}</strong>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">
+                            Last: ${lastActivity} | Messages: ${data.messageCount || 0}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>${data.status.toUpperCase()}</div>
+                    </div>
+                `;
+                
+                exchangeList.appendChild(item);
+            });
+        }
+
+        // Update Temporal Metrics
+        function updateTemporalMetrics() {
+            const temporal = dashboardState.data.temporalMetrics || {};
+            
+            // Update lambda dissonance
+            if (temporal.lambdaDissonance !== undefined) {
+                document.getElementById('lambdaDissonance').textContent = 
+                    temporal.lambdaDissonance.toFixed(3);
+                document.getElementById('lambdaBar').style.width = 
+                    `${temporal.lambdaDissonance * 100}%`;
+            }
+            
+            // Update quantum coherence
+            if (temporal.quantumCoherence !== undefined) {
+                document.getElementById('quantumCoherence').textContent = 
+                    temporal.quantumCoherence.toFixed(3);
+            }
+        }
+
+        // Update System Info
+        function updateSystemInfo() {
+            const system = dashboardState.data.systemMetrics?.system;
+            
+            if (system) {
+                // Update uptime
+                const uptime = formatUptime(system.uptime);
+                document.getElementById('systemUptime').textContent = uptime;
+                
+                // Update memory usage
+                if (system.memory) {
+                    const memoryMB = (system.memory.heapUsed / 1024 / 1024).toFixed(0);
+                    const memoryPercent = (system.memory.heapUsed / system.memory.heapTotal * 100);
+                    document.getElementById('memoryUsage').textContent = `${memoryMB} MB`;
+                    document.getElementById('memoryBar').style.width = `${memoryPercent}%`;
+                }
+                
+                // Update client count
+                document.getElementById('clientCount').textContent = `${system.connectedClients} Clientes`;
+            }
+            
+            // Update alert count
+            const alertCount = dashboardState.data.alerts?.length || 0;
+            document.getElementById('alertCount').textContent = `${alertCount} Alertas`;
+            
+            // Update last update time
+            const lastUpdate = new Date().toLocaleTimeString();
+            document.getElementById('lastUpdate').textContent = `Last update: ${lastUpdate}`;
+        }
+
+        // Update Prime Ladder
+        function updatePrimeLadder() {
+            const primeHours = [7, 11, 13, 17, 19, 23, 29]; // 29 as next day 5 AM placeholder
+            const primeLadder = document.getElementById('primeLadder');
+            const currentHour = new Date().getHours();
+            
+            primeLadder.innerHTML = '';
+            
+            primeHours.forEach(hour => {
+                const div = document.createElement('div');
+                div.className = `prime-hour ${hour === currentHour ? 'active' : ''}`;
+                div.textContent = hour < 24 ? `${hour}:00` : '5:00+1';
+                primeLadder.appendChild(div);
+            });
+        }
+
+        // Add Alert
+        function addAlert(alert) {
+            const alertsList = document.getElementById('alertsList');
+            const alertElement = document.createElement('div');
+            
+            const priorityClass = alert.priority === 'high' ? '' : 
+                                 alert.priority === 'medium' ? 'medium' : 'low';
+            const icon = alert.priority === 'high' ? '🚨' : 
+                        alert.priority === 'medium' ? '⚠️' : 'ℹ️';
+            
+            alertElement.className = `alert-item ${priorityClass}`;
+            alertElement.innerHTML = `
+                <div class="alert-icon">${icon}</div>
+                <div class="alert-content">
+                    <div><strong>${alert.rule}:</strong> ${alert.message}</div>
+                    <div class="alert-time">${new Date(alert.timestamp).toLocaleString()}</div>
+                </div>
+                <button class="button" style="margin-left: auto;" 
+                        onclick="acknowledgeAlert('${alert.id}')">✓</button>
+            `;
+            
+            alertsList.insertBefore(alertElement, alertsList.firstChild);
+        }
+
+        // Initialize Charts (placeholder - would use Chart.js in real implementation)
+        function initializeCharts() {
+            // This would initialize actual charts with Chart.js or similar library
+            console.log('Charts initialized (placeholder)');
+        }
+
+        // Update Charts
+        function updateCharts() {
+            // This would update chart data
+            console.log('Charts updated (placeholder)');
+        }
+
+        // Manual Control Functions
+        function executeManualOrder() {
+            const orderRequest = {
+                symbol: 'BTCUSDT',
+                side: 'buy',
+                type: 'limit',
+                quantity: 0.001,
+                price: 50000,
+                urgency: 'normal'
+            };
+            
+            if (dashboardState.websocket && dashboardState.websocket.readyState === WebSocket.OPEN) {
+                dashboardState.websocket.send(JSON.stringify({
+                    type: 'execute_order',
+                    order: orderRequest
+                }));
+            } else {
+                alert('WebSocket not connected');
+            }
+        }
+
+        function clearAlerts() {
+            fetch('/api/alerts', { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('alertsList').innerHTML = '';
+                    }
+                })
+                .catch(error => console.error('Error clearing alerts:', error));
+        }
+
+        function restartSystem() {
+            if (confirm('¿Seguro que desea reiniciar el sistema?')) {
+                fetch('/api/system/restart', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message || 'Sistema reiniciado');
+                    })
+                    .catch(error => console.error('Error restarting system:', error));
+            }
+        }
+
+        function acknowledgeAlert(alertId) {
+            if (dashboardState.websocket && dashboardState.websocket.readyState === WebSocket.OPEN) {
+                dashboardState.websocket.send(JSON.stringify({
+                    type: 'acknowledge_alert',
+                    alertId: alertId
+                }));
+            }
+        }
+
+        // Utility Functions
+        function formatUptime(uptimeSeconds) {
+            const hours = Math.floor(uptimeSeconds / 3600);
+            const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+            const seconds = Math.floor(uptimeSeconds % 60);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function showOrderResult(data) {
+            const message = data.result.success ? 
+                `✅ Orden ejecutada: ${data.result.orderId}` :
+                `❌ Error en orden: ${data.result.error}`;
+            
+            alert(message);
+        }
+
+        // Update display periodically
+        function updateDisplay() {
+            updatePrimeLadder(); // Update prime ladder to show current hour
+        }
+    </script>
+</body>
+</html>
