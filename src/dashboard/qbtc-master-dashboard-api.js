@@ -155,7 +155,7 @@ class QBTCMasterDashboardAPI {
         }
         .container {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
             padding: 20px;
             max-width: 1400px;
@@ -206,7 +206,7 @@ class QBTCMasterDashboardAPI {
             margin-top: 5px;
         }
         .controls {
-            grid-column: span 3;
+            grid-column: span 2;
             text-align: center;
         }
         .btn {
@@ -272,7 +272,7 @@ class QBTCMasterDashboardAPI {
         </div>
 
         <div class="card">
-            <h3>⚛️ Quantum Metrics</h3>
+            <h3>⚙️ Quantum Metrics</h3>
             <div class="metrics-grid">
                 <div class="metric">
                     <div class="metric-value" id="coherenceValue">--</div>
@@ -289,6 +289,28 @@ class QBTCMasterDashboardAPI {
                 <div class="metric">
                     <div class="metric-value" id="signalsValue">--</div>
                     <div class="metric-label">Signals Generated</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🏦 Binance Connection</h3>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <div class="metric-value" id="binanceMessages">--</div>
+                    <div class="metric-label">Messages Received</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="binanceUptime">--</div>
+                    <div class="metric-label">Connection Uptime</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="binanceSymbols">--</div>
+                    <div class="metric-label">Symbols Tracked</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="binanceErrors">--</div>
+                    <div class="metric-label">Connection Errors</div>
                 </div>
             </div>
         </div>
@@ -373,6 +395,13 @@ class QBTCMasterDashboardAPI {
                 
                 const uptimeMin = data.startedAt ? Math.floor((Date.now() - data.startedAt) / 60000) : 0;
                 document.getElementById('uptimeValue').textContent = uptimeMin;
+            } else if (data.scope === 'binance') {
+                // Actualizar métricas de Binance
+                document.getElementById('binanceMessages').textContent = data.messagesReceived || '--';
+                document.getElementById('binanceUptime').textContent = 
+                    data.uptime ? Math.floor(data.uptime / 60000) + 'm' : '--';
+                document.getElementById('binanceSymbols').textContent = data.symbolsTracked || '--';
+                document.getElementById('binanceErrors').textContent = data.errors || '0';
             }
         }
 
