@@ -23,6 +23,11 @@
     "unified:core": "node src/core/reverse-engineering-core.js",
     "unified:system": "node scripts/run-integrated-system.js",
     "unified:dashboard": "node src/dashboard/start-dashboard.js",
+    "background:start": "node scripts/start-background.js",
+    "background:stop": "node scripts/stop-background.js",
+    "background:status": "node scripts/check-status.js",
+    "background:logs": "node scripts/check-status.js --logs --lines 20",
+    "test:binance": "node scripts/test-binance-connection.js",
     "lint": "npx eslint . --ext .js",
     "lint:quantum": "npx eslint . --ext .js --max-warnings=0"
   },
